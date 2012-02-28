@@ -25,12 +25,18 @@ public class Player {
 	 *            Player's Last name
 	 * @param userID
 	 *            Player's user ID
-	 * @param numContestants
-	 *            Number of contestants in pool
+	 * @param numRounds
+	 *            Number of rounds in the game
 	 */
 	public Player(String firstName, String lastName, String userID,
-			int numContestants) {
-
+			int numRounds) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.userID = userID;
+		this.finalPick = null;
+		this.roundOfFinalPick = 0;
+		this.score = 0;
+		this.weeklyPicks = new RoundPick[numRounds];
 	}
 
 	// Accessor methods
@@ -143,7 +149,7 @@ public class Player {
 	 *            the contestant to be eliminated on the specified round
 	 */
 	public void makeRoundPick(int roundNum, Contestant cont) {
-
+		this.weeklyPicks[roundNum - 1] = new RoundPick(roundNum, cont);
 	}
 
 	/**
@@ -153,9 +159,13 @@ public class Player {
 	 *            the contestant the player thinks will win
 	 * @param currRound
 	 *            the round that the player chose the final round pick
+	 * @param numRounds
+	 *            the number of rounds in the game
 	 */
-	public void chooseWinner(Contestant cont, int currRound) {
-
+	public void chooseWinner(Contestant cont, int currRound, int numRounds) {
+		this.finalPick = new RoundPick(numRounds, cont);
+		this.roundOfFinalPick = currRound;
+		this.weeklyPicks[numRounds - 1] = this.finalPick;
 	}
 
 }

@@ -31,6 +31,12 @@ public class Contestant {
 	 */
 	public Contestant(String first, String last, String contID, String tribe,
 			String picture) {
+		this.firstName=first;
+		this.lastName=last;
+		this.contID=contID;
+		this.tribe=tribe;
+		this.picture=picture;
+		this.eliminationRound=null;
 
 	}
 
@@ -84,7 +90,7 @@ public class Contestant {
 	/**
 	 * Gets the round that the contestant was eliminated
 	 * 
-	 * @return the round that the contestant was eliminated
+	 * @return the round that the contestant was eliminated, if contestant has not been eliminated returns null
 	 */
 	public Round getElimRound() {
 		return this.eliminationRound;
@@ -99,7 +105,7 @@ public class Contestant {
 	 *            the tribe of the contestant
 	 */
 	public void setTribe(String tribe) {
-
+		this.tribe=tribe;
 	}
 
 	/**
@@ -109,6 +115,6 @@ public class Contestant {
 	 *            the round that the contestant was eliminated
 	 */
 	public void setElimRound(Round elimRound) {
-
+		this.eliminationRound=elimRound;
 	}
 }

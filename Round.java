@@ -19,6 +19,9 @@ public class Round {
 	 *            the round number of the round
 	 */
 	public Round(int roundNum) {
+		this.roundNum = roundNum;
+		this.bonusQuestion = null;
+		this.contestantEliminated = null;
 
 	}
 
@@ -70,7 +73,24 @@ public class Round {
 	 *            the bonus question to be added to the round
 	 */
 	public void addBonusQuestion(BonusQuestion quest) {
-
+		// if the round has no bonus questions
+		if (this.bonusQuestion == null) {
+			// create an array of size 1 to store bonus questions and add
+			// question
+			this.bonusQuestion = new BonusQuestion[1];
+			this.bonusQuestion[0] = quest;
+		}
+		// if the round already has bonus questions
+		else {
+			// create a new array that is one slot larger than the old array
+			BonusQuestion[] newArray = new BonusQuestion[this.bonusQuestion.length + 1];
+			// copy questions from old array to new array
+			for (int i = 0; i < this.bonusQuestion.length; i++)
+				newArray[i] = this.bonusQuestion[i];
+			// add question and set bonusQuestion attribute to new array
+			newArray[newArray.length - 1] = quest;
+			this.bonusQuestion = newArray;
+		}
 	}
 
 	/**
@@ -80,6 +100,34 @@ public class Round {
 	 *            the question to be removed from the round
 	 */
 	public void removeBonusQuestion(String question) {
+		boolean isBonusQuestion = false;
+		int i = 0;
+		// while the bonus question has not been found, search all bonus
+		// questions
+		while (!isBonusQuestion && i < this.bonusQuestion.length) {
+			// if we found the bonus question, set the marker to true
+			if (this.bonusQuestion[i].getQuestion().equals(question))
+				isBonusQuestion = true;
+			// else increment index
+			else
+				i++;
+		}
+		// if we found the bonus question
+		if (isBonusQuestion) {
+			// create a new array of size one less than old array
+			BonusQuestion[] newArray = new BonusQuestion[this.bonusQuestion.length - 1];
+			// copy all questions except the question to be deleted from the old
+			// array to the new array
+			for (int j = 0; j < newArray.length; j++) {
+				if (j < i)
+					newArray[j] = this.bonusQuestion[j];
+				else
+					newArray[j] = this.bonusQuestion[j + 1];
+			}
+			// set the bonus question attribute equal to the new array
+			this.bonusQuestion = newArray;
+		}
 
 	}
+
 }
