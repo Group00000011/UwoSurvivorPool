@@ -10,6 +10,10 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/****************************** Attributes ***************************************/
 	// The default measurements for the main window
 	private static final int WIDTH = 1024;
