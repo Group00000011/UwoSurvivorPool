@@ -50,8 +50,14 @@ public class SplashScreen extends MainScreen implements FieldChangeListener {
 
        public void fieldChanged(Field field, int context) {
     	   	  //if login button is pressed search text file for username
-              if (field == loginButton) {        	  
+              if (field == loginButton) {    
             	  
+            	  
+            	  MainmenuScreen mms = new MainmenuScreen();
+      	  		UiApplication.getUiApplication().pushScreen(mms); 
+      	  		this.close();
+      	  		
+            	/*  
 				try {
 					fconn = (FileConnection)Connector.open("file:///SDCard/BlackBerry/filename.txt", Connector.READ_WRITE);
 				} catch (IOException e) {
@@ -87,7 +93,7 @@ public class SplashScreen extends MainScreen implements FieldChangeListener {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-            	  	}
+            	  	}*/
               }
     	   	  //if quit button is pressed exit
               if (field == exitButton) {
