@@ -21,7 +21,7 @@ import javax.swing.text.*;
  */
 public class TextInputFields extends JPanel implements ActionListener {
 	/************   Attributes ***************************/
-    private JTextField firstNameField, lastNameField, uniqueIDField, tribeField;
+    private JTextField firstNameField, lastNameField, tribeField;
     private JSpinner firstNameSpinner, lastNameSpinner, uniqueIDSpinner, TribeSpinner;
     private JButton uploadBtn, updateBtn, addBtn, deleteBtn, resetBtn;
     private JLabel recordDisplay;
@@ -37,7 +37,7 @@ public class TextInputFields extends JPanel implements ActionListener {
     /**************  Constructor *************************/
     public TextInputFields() {
     	super(new FlowLayout(FlowLayout.LEADING));
-    	createNameFields();
+    	createFieldsPlayer();
     }
     
     /**************  Methods ***********************/
@@ -118,7 +118,7 @@ public class TextInputFields extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
     	/**  Add+ Button Handler **/
     	if(e.getActionCommand().equals("+")) {
-    		if(firstNameField.getText().equals("") && lastNameField.getText().equals("") && uniqueIDField.getText().equals(""))
+    		if(firstNameField.getText().equals("") && lastNameField.getText().equals(""))
     			JOptionPane.showMessageDialog(null, "Fields cannot be blank.", null, JOptionPane.WARNING_MESSAGE, null);
     		else {
     			// Add Record ***** TO DO ******
@@ -126,7 +126,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     			JOptionPane.showMessageDialog(null, "Item Added Successfully.",null, JOptionPane.INFORMATION_MESSAGE);
     			firstNameField.selectAll();
     			lastNameField.selectAll();
-    			uniqueIDField.selectAll();
     		}
     	}
     	/**  Update Button Handler **/
@@ -139,10 +138,9 @@ public class TextInputFields extends JPanel implements ActionListener {
     	}
     	/**  Reset Button Handler  **/
     	else if(e.getActionCommand().equals("reset")) {
-    		if(firstNameField.getText() != "" || lastNameField.getText() !=  " " || uniqueIDField.getText() != " " || tribeField.getText() != " ") {
+    		if(firstNameField.getText() != "" || lastNameField.getText() !=  " " || tribeField.getText() != " ") {
     		firstNameField.setText("");
     		lastNameField.setText("");
-    		uniqueIDField.setText("");
     		tribeField.setText("");    		
     		}
     	}
@@ -186,12 +184,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     	
     	updateDisplays();
     	
-    	//Lay out the panel
-//    	recordPanel.setBorder(BorderFactory.createEmptyBorder(
-//    								GAP/2, 	//top
-//    								0,    	//left
-//    								GAP/2,	//bottom
-//    								0));	//right
     	recordPanel.setOpaque(false);
     	recordPanel.setBackground(Color.YELLOW);
     	recordPanel.setForeground(Color.WHITE);
@@ -209,11 +201,10 @@ public class TextInputFields extends JPanel implements ActionListener {
     * Formats the text fields to the within project specifications
     */
     protected String formatField() {
-    	if(!updated) return " \nNo record set.";
+    	if(!updated) return "No record set.";
     	
     	String firstName = firstNameField.getText();
     	String lastName = lastNameField.getText();
-    	String uniqueID = uniqueIDField.getText();
     	String tribe = tribeField.getText();
     	String empty = "";
     	
@@ -225,10 +216,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     		lastName = "<em>(no last name specified)</em>";
     		//+ must be 1-20 letters
     	}
-    	if((uniqueID == null) || empty.equals(uniqueID)) {
-    		uniqueID = "";
-
-    	}
     	if((firstName == null) || empty.equals(firstName)) {
     		firstName = "<em>(no first name specified)</em>";
     	}
@@ -238,7 +225,7 @@ public class TextInputFields extends JPanel implements ActionListener {
     	sb.append(firstName);
     	sb.append(" ");
     	sb.append(lastName);
-    	sb.append(uniqueID);
+//    	sb.append(uniqueID); // TODO Append to display panel
     	sb.append("<br>");
     	sb.append(tribe);
     	sb.append("</p></html>");
@@ -308,14 +295,14 @@ public class TextInputFields extends JPanel implements ActionListener {
     public void focusLost(FocusEvent e) { } //ignore
     
     /**
-     * General Entry Text Fields
+     * General Entry Text Fields for player
      * @return First & Last name & Unique ID Text Fields
      */
-    public JComponent createNameFields() {
+    public JComponent createFieldsPlayer() {
     	JPanel namePanel = new JPanel(new SpringLayout());
     	
     	String[] labelStrings = {
-    			"User ID: ",
+//    			"User ID: ",
     			"First Name: ",
     			"Last Name: "    			
     	};
@@ -323,11 +310,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     	labels = new JLabel[labelStrings.length];
     	JComponent[] fields = new JComponent[labelStrings.length];
     	int fieldNum = 0;
-    	
-    	// Create the text field & set it up
-    	uniqueIDField = new JTextField(uniqueIDGenerator("","",6)); /*****  Must fix this upon implementation *****/
-    	uniqueIDField.setColumns(9);
-    	fields[fieldNum++] = uniqueIDField;
     	
     	firstNameField = new JTextField();
     	firstNameField.setColumns(20);
@@ -354,8 +336,55 @@ public class TextInputFields extends JPanel implements ActionListener {
     									GAP, GAP/2); //xpad, ypad
     	return namePanel; 	    	
     }
-    public JLabel[] getLabel() {
-    	return this.labels;
+    /**
+     * General Entry Text Fields for player
+     * @return First & Last name & Unique ID Text Fields
+     */
+    public JComponent createFieldsCont() {
+    	JPanel namePanel = new JPanel(new SpringLayout());
+    	
+    	String[] labelStrings = {
+//    			"User ID: ",
+    			"First Name: ",
+    			"Last Name: ",
+    			"Tribe Name: "
+    	};
+    	
+    	labels = new JLabel[labelStrings.length];
+    	JComponent[] fields = new JComponent[labelStrings.length];
+    	int fieldNum = 0;
+    	
+//    	// Create the text field & set it up
+//    	uniqueIDField = new JTextField(uniqueIDGenerator("","",6)); /*****  Must fix this upon implementation *****/
+//    	uniqueIDField.setColumns(9);
+//    	fields[fieldNum++] = uniqueIDField;
+    	
+    	firstNameField = new JTextField();
+    	firstNameField.setColumns(20);
+    	fields[fieldNum++] = firstNameField;
+    	
+    	lastNameField = new JTextField();
+    	lastNameField.setColumns(20);
+    	fields[fieldNum++] = lastNameField;
+    	
+    	tribeField = new JTextField();
+    	
+    	namePanel.setOpaque(false);
+    	
+    	//Associate label/field pairs, add everything and lay it out
+    	for(int i=0; i<labelStrings.length;i++) {
+    		labels[i] = new JLabel(labelStrings[i], JLabel.TRAILING);
+    		labels[i].setLabelFor(fields[i]);
+    		namePanel.add(labels[i]);
+    		namePanel.add(fields[i]);
+    		
+    		// for each field, create a spinner for every entry added
+    		/******  To Do  ********/
+    	}
+    	SpringUtilities.makeCompactGrid(namePanel, labelStrings.length, 2, 
+    									GAP, GAP, //init x,y
+    									GAP, GAP/2); //xpad, ypad
+    	return namePanel; 	    	
     }
     /**
      * A panel for Contestant entry fields - Tribe Name, a JSpinner is created when entries are made
@@ -414,15 +443,11 @@ public class TextInputFields extends JPanel implements ActionListener {
 
     	JPanel panel = new JPanel();
     	
-    	JLabel id = labels[0];
-    	id.setFont(font);
-    	id.setForeground(color);
-    	
-    	JLabel first = labels[1];
+    	JLabel first = labels[0];
     	first.setFont(font);
     	first.setForeground(color);
     	
-    	JLabel last = labels[2];
+    	JLabel last = labels[1];
     	last.setFont(font);
     	last.setForeground(color);
     	
@@ -435,7 +460,17 @@ public class TextInputFields extends JPanel implements ActionListener {
     	return textInputFieldColor;
     }
 
- 
+    public static void main(String args[]) {
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+    SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                //Turn off metal's use of bold fonts
+                UIManager.put("swing.boldMetal", Boolean.FALSE);
+        new TextInputFields().setVisible(true);
+            }
+        });
+    }
     
     
     
