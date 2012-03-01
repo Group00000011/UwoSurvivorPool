@@ -6,6 +6,13 @@
  */
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.swing.*;
 
@@ -25,7 +32,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	
 	// Buttons
 	private JButton quitBtn, mainMenuBtn, createNewGameBtn, playersBtn, contestantsBtn, standingsBtn, bonusQBtn, themeSelectBtn;		
-
+	
 	// JLabels
 	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, standingBg, titleBanner, contestantPicFrame;
 	
@@ -43,9 +50,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private PlayerListGUI standingsTable;
 	
 	private Font gFont, jFont;
+	
+	//contestant and player holder
+	private Player[] players;
+	private Contestant[] contestants;
 
 	/******************************** Constructor *************************************/
 	public SurvivorPoolAdminGUI() {	
+		//initialize players and contestants array
+		String fileName="players.txt";
+		readPlayers(fileName);
+		contestants=null;
+		
 		textFields_p = new TextInputFields();
 		textFields_c = new TextInputFields();
 		standingsTable = new PlayerListGUI();
@@ -93,6 +109,90 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	}// End of SurvivorPoolAdminGUI Constructor
 	
 	/******************************  Methods  *********************************/
+	
+	public void readPlayers(String fileName){
+        try{
+            DataInputStream input = new DataInputStream(new FileInputStream(fileName));
+            BufferedReader in = new BufferedReader(new InputStreamReader(input));
+            String currPlayer = in.readLine(), firstName="", lastName="", userID="";
+            Player currPlayerObj;
+            Boolean first, last, ID;
+            first=last=ID=false;
+            while(currPlayer!=null){
+            for(int i=0; i<currPlayer.length(); i++){
+                char ch=currPlayer.charAt(i);
+                System.out.print(ch);
+                if(!first){
+                	if(ch=='+')
+                		first=true;
+                	else
+                		firstName=firstName+ch;
+               }//end of first name field
+                else if(!last && first){
+                	if(ch=='+')
+                		last=true;
+                	else
+                		lastName=lastName+ch;
+               }//end of  last name field
+                else if(!ID && last){
+                	if(ch=='+')
+                		ID=true;
+                	else
+                		userID=userID+ch;
+               }//end of first last name field
+               if(ID && (last && first)){
+               currPlayerObj=new Player(firstName, lastName, userID);
+               addPlayer(currPlayerObj);
+               break;
+               }
+            }//end of scanning through currplayer
+            first=last=ID=false;
+            firstName=lastName=userID="";
+            currPlayer=in.readLine();
+            }//end of currplayer
+        }
+        catch(IOException e){}//unharmful
+	}
+	
+	public void writePlayers(String fileName){
+        BufferedWriter bWr = null;
+        String currString="";
+        try {
+            
+            bWr = new BufferedWriter(new FileWriter(fileName));
+            for(int i=0;i<this.players.length;i++){
+            	currString=currString+this.players[i].getFirst()+"+";
+            	currString=currString+this.players[i].getLast()+"+";
+            	currString=currString+this.players[i].getID()+"+";
+            	currString=currString+"\n";
+            }
+            //Start writing to the output stream
+            bWr.write(currString);
+            bWr.flush();
+            bWr.close();
+	}
+        catch(IOException e){}//unharmful
+        
+	}
+	
+	public void addPlayer(Player p){
+		
+		if(this.players==null){
+			this.players=new Player[1];
+			this.players[0]= p;
+		}
+		else{
+			Player[] newPlayers=new Player[this.players.length+1];
+			for(int i=0;i<this.players.length; i++){
+				newPlayers[i]=this.players[i];
+			}
+			newPlayers[this.players.length] = p ;
+			this.players=newPlayers;
+		}
+	}
+	public Player[] getPlayers(){
+		return this.players;
+	}
 /**
  * The menu bar
  * @return menu bar with menu items
