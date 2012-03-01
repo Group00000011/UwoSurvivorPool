@@ -10,10 +10,6 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	/****************************** Attributes ***************************************/
 	// The default measurements for the main window
 	private static final int WIDTH = 1024;
@@ -21,7 +17,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
     final static int GAP = 20;
 	
 	// Images
-	private ImageIcon survivorLogoImg = createImageIcon("images/survivorLogo.png");
+//	private ImageIcon survivorLogoImg = createImageIcon("images/survivorLogo.png");
 	private ImageIcon title, quitImg, mainMenuBtnImg;
 	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"), jungleBackground;
 	private ImageIcon newGame, playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg;
@@ -33,10 +29,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// JLabels
 	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, titleBanner, contestantPicFrame;
 	
+	// For the standings Panel
+	private JLabel poolLabel, currWkLabel, numContLabel, recElimLabel;  
+	private JTextArea poolArea, currWkArea, numContArea, recElimArea;
+	
+	private String currWkString = "Current Week: ";
+	
 	// JPanels
-	private JPanel mainPanel, quitPanel, mMenuBtnPanel, titlePanel, mainButtonsPanel, pPanel, playerPanel, cPanel, contestantPanel;
+	private JPanel mainPanel, quitPanel, mMenuBtnPanel, titlePanel, mainButtonsPanel, pPanel, cPanel, sPanel;
 	
 	private TextInputFields textFields_p, textFields_c;
+	
+	private PlayerListGUI standingsTable;
 	
 	private Font gFont, jFont;
 
@@ -44,11 +48,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	public SurvivorPoolAdminGUI() {	
 		textFields_p = new TextInputFields();
 		textFields_c = new TextInputFields();
+		standingsTable = new PlayerListGUI();
 		
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero",Font.PLAIN,18);
 		// The jungle theme font
 		jFont = new Font("Viner Hand ITC",Font.PLAIN,18);
+
+    	playerGBg = createImageIcon("images/playerGoldenBg.jpg");
+		playerBg = new JLabel(playerGBg);
 
 		SpringLayout guiLayout = new SpringLayout();	
         this.setLayout(guiLayout);
@@ -57,9 +65,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
         getContentPane().add(quitButton());
         getContentPane().add(mainScreen());	
-
-    	playerGBg = createImageIcon("images/playerGoldenBg.jpg");
-		playerBg = new JLabel(playerGBg);
 
         guiLayout.putConstraint(SpringLayout.WEST, quitPanel, 40, SpringLayout.WEST, getContentPane());
 	    guiLayout.putConstraint(SpringLayout.NORTH, quitPanel, 40, SpringLayout.NORTH, getContentPane());
@@ -75,7 +80,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		this.setTitle("UWOSurvivorPoolAdmin");
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);		 	
-	}// End of AdminGUI Constructor
+	}// End of SurvivorPoolAdminGUI Constructor
 	
 	/******************************  Methods  *********************************/
 /**
@@ -367,7 +372,38 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
         
         return quitPanel;
     }
+//	/**
+//	 * Current Week Panel
+//	 */
+//	protected JComponent currentWkPane() {
+//		
+//	}
+	
 	/**
+	 * Standings Panel
+	 * A Chart and current information
+	 */
+	protected JComponent standingsPanel() {
+		sPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		
+		// Create the background
+		// sPanel.addBackground
+		// TODO
+		
+		// Add the list
+		JPanel centerPanel = new JPanel();
+		centerPanel.add(standingsTable.createPlayerList());
+		
+		// Create the labels and text areas for this panel
+		String poolString = "Total in Pool";
+		
+		JLabel poolLabel, currWkLabel, numContLabel, recElimLabel;  
+//		private JTextArea poolArea, currWkArea, numContArea, recElimArea;
+		
+		return sPanel;
+	}
+	/**
+
 	 * Players Edit, Add & Store Panel/Screen
 	 */
 	protected JComponent playersPanel() {
@@ -379,7 +415,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		leftHalf_p.add(textFields_p.addUpdateDeleteButtons("Player"));
 		leftHalf_p.setOpaque(false);
 
-		// Create a seperator
+		// Create a separator
 		leftHalf_p.setBorder(BorderFactory.createEmptyBorder(	GAP/4, //top
 												                0,     //left
 												                GAP/4, //bottom
@@ -393,7 +429,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		
 		// Assemble the text fields with the background as a large panel
 		SpringLayout pLayout = new SpringLayout();
-		playerPanel = new JPanel(pLayout);
+		JPanel playerPanel = new JPanel(pLayout);
 	    this.setLayout(pLayout);
 		
 	    getContentPane().add(mainMenuButton());
@@ -449,7 +485,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	    
 		// Assemble the text fields with the background as a large panel
 		SpringLayout cLayout = new SpringLayout();
-		contestantPanel = new JPanel(cLayout);
+		JPanel contestantPanel = new JPanel(cLayout);
 	    this.setLayout(cLayout);
 		
 	    getContentPane().add(mainMenuButton());
@@ -466,7 +502,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	    cLayout.putConstraint(SpringLayout.NORTH, cPanel, 150, SpringLayout.NORTH, getContentPane());
 
 		return contestantPanel;
-	}
+	}	
 	/**
 	 * The Golden Ruins Theme
 	 */
@@ -546,7 +582,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * @return the requested file
 	 */
 	public ImageIcon createImageIcon(String path) {
-		java.net.URL imgURL = AdminGUI.class.getResource(path);
+		java.net.URL imgURL = SurvivorPoolAdminGUI.class.getResource(path);
 		if(imgURL != null) {
 			return new ImageIcon(imgURL);
 		} else {

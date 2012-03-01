@@ -10,8 +10,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class TextInputFieldsPlayer extends JPanel implements ActionListener {
+public class TextInputFieldsPlayer extends JFrame implements ActionListener {
 	private final int GAP = 20;
+	private static final int WIDTH = 500;
+	private static final int HEIGHT = 350;
 	
 	//Labels of the fields
 	private JLabel uniqueIDLabel, firstLabel, lastLabel;
@@ -24,23 +26,31 @@ public class TextInputFieldsPlayer extends JPanel implements ActionListener {
 	//Fields for name entry
 	private JTextField uniqueIDField, firstField, lastField;
 	
-	//Buttons
 	private JButton addButton, updateButton, cancelButton;
 	
+	private JPanel playerPanel;
+	
+    private Font textInputFieldFont;
+    private Color textInputFieldColor;
+	
+	/**************** 	CONSTRUCTOR ***********************/
 	public TextInputFieldsPlayer() {
-		super(new BorderLayout());
+		BorderLayout gui = new BorderLayout();	
+        this.setLayout(gui);
 		
-//		//Create Textfields
-//		//Create Buttons
-//		//Assemble Panel
-//	}
-//	/**
-//	 * The labelled textfields
-//	 * @return a panel of textfield aligned with labels
-//	 */
-//	protected JComponent textFields() {
-//		JPanel tf = new JPanel();
+		getContentPane().add(playerPanel());
 		
+        // Set up methods for the frame
+        this.setSize(WIDTH,HEIGHT);
+		this.setLocationRelativeTo(null);
+		this.setTitle("UWOSurvivorPoolAdmin");
+		this.setVisible(true);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	} // End of Constructor
+	
+	/******************		METHODS		*******************/
+	private JComponent playerPanel()  {
+		playerPanel = new JPanel();
 		// Create Labels
 		uniqueIDLabel = new JLabel(uniqueIDString);
 		firstLabel = new JLabel(firstString);
@@ -96,11 +106,13 @@ public class TextInputFieldsPlayer extends JPanel implements ActionListener {
 		buttonPane.add(cancelButton);
 		
 		//Add panels to another panel
-		setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));
-		add(labelPane, BorderLayout.CENTER);
-		add(fieldPane, BorderLayout.LINE_END);
-		add(buttonPane, BorderLayout.PAGE_END);
-	} // End of constructor
+		playerPanel.setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));
+		playerPanel.add(labelPane, BorderLayout.CENTER);
+		playerPanel.add(fieldPane, BorderLayout.LINE_END);
+		playerPanel.add(buttonPane, BorderLayout.PAGE_END);
+		
+		return playerPanel;
+	} 
 		
 	
 	public void actionPerformed(ActionEvent e) {
@@ -115,22 +127,52 @@ public class TextInputFieldsPlayer extends JPanel implements ActionListener {
 		}
 	}
 	/**
-	 * Create GUI & Show it. For thread safety, this method should be invoked from the even dispatch thread
+	 * Change the font labels for this window
+	 * @param font
+	 * @param color
 	 */
-	public static void textInputFieldsPlayer() {
+    protected JComponent setGameFont(Font font, Color color) {
+    	this.textInputFieldFont = font;
+    	this.textInputFieldColor = color;
+
+    	JPanel panel = new JPanel();
+
+    	uniqueIDLabel.setFont(font);
+    	uniqueIDLabel.setForeground(color);
+    	
+    	firstLabel.setFont(font);
+    	firstLabel.setForeground(color);
+    	
+    	lastLabel.setFont(font);
+    	lastLabel.setForeground(color);
+    	
+    	return panel;
+    }
+    protected Font getGameFont() {
+    	return textInputFieldFont;
+    }
+    protected Color getGameFontColor() {
+    	return textInputFieldColor;
+    }
+
+	/**
+	 * Create GUI & Show it. For thread safety, this method should be invoked from the even dispatch thread
+	 * Invokes this table in other classes
+	 */
+	public void addPlayerCreatorPanel() {
 		JFrame frame = new JFrame("Text Input Fields Player");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(new TextInputFieldsPlayer());
 		frame.pack();
 		frame.setVisible(true);
 	}
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				UIManager.put("swing.boldMetal", Boolean.FALSE);
-				textInputFieldsPlayer();
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		SwingUtilities.invokeLater(new Runnable() {
+//			public void run() {
+//				UIManager.put("swing.boldMetal", Boolean.FALSE);
+//				addPlayerCreatorPanel();
+//			}
+//		});
+//	}
 
 }
