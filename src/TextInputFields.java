@@ -21,15 +21,15 @@ import javax.swing.text.*;
  */
 public class TextInputFields extends JPanel implements ActionListener {
 	/************   Attributes ***************************/
-    private JTextField firstNameField, lastNameField, tribeField;
-    private JSpinner firstNameSpinner, lastNameSpinner, uniqueIDSpinner, TribeSpinner;
+    private JTextField firstFieldP, lastFieldP, tribeField, firstFieldC, lastFieldC, tribeFieldC;
+	private String firstNameString = "", lastNameString = "", tribeString = "";  // Record Display String
     private JButton uploadBtn, updateBtn, addBtn, deleteBtn, resetBtn;
     private JLabel recordDisplay;
     private ImageIcon uploadedImage;
     private Font regularFont, italicFont, textInputFieldFont;
     private Color textInputFieldColor;
     private boolean updated = false;
-    private JLabel[] labels;
+    private JLabel[] cLabels, pLabels;
     private JPanel recordPanel;
     
     final static int GAP = 10;
@@ -38,6 +38,7 @@ public class TextInputFields extends JPanel implements ActionListener {
     public TextInputFields() {
     	super(new FlowLayout(FlowLayout.LEADING));
     	createFieldsPlayer();
+    	createFieldsCont();
     }
     
     /**************  Methods ***********************/
@@ -118,14 +119,14 @@ public class TextInputFields extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
     	/**  Add+ Button Handler **/
     	if(e.getActionCommand().equals("+")) {
-    		if(firstNameField.getText().equals("") && lastNameField.getText().equals(""))
+    		if(firstFieldP.getText().equals("") && lastFieldP.getText().equals("") || firstFieldC.getText().equals("") && lastFieldC.getText().equals(""))
     			JOptionPane.showMessageDialog(null, "Fields cannot be blank.", null, JOptionPane.WARNING_MESSAGE, null);
     		else {
     			// Add Record ***** TO DO ******
     			// Add To Spinner
     			JOptionPane.showMessageDialog(null, "Item Added Successfully.",null, JOptionPane.INFORMATION_MESSAGE);
-    			firstNameField.selectAll();
-    			lastNameField.selectAll();
+    			firstFieldP.selectAll();
+    			lastFieldP.selectAll();
     		}
     	}
     	/**  Update Button Handler **/
@@ -138,10 +139,14 @@ public class TextInputFields extends JPanel implements ActionListener {
     	}
     	/**  Reset Button Handler  **/
     	else if(e.getActionCommand().equals("reset")) {
-    		if(firstNameField.getText() != "" || lastNameField.getText() !=  " " || tribeField.getText() != " ") {
-    		firstNameField.setText("");
-    		lastNameField.setText("");
-    		tribeField.setText("");    		
+    		if(firstFieldP.getText() != "" || lastFieldP.getText() !=  " ") {
+    			firstFieldP.setText("");
+    			firstFieldP.setText("");
+    		}
+    		if(firstFieldC.getText() != "" || lastFieldC.getText() !=  " ") {
+    			firstFieldC.setText("");
+    			lastFieldC.setText("");
+        		tribeField.setText("");  
     		}
     	}
     	/**  Upload Button Handler  **/
@@ -203,31 +208,36 @@ public class TextInputFields extends JPanel implements ActionListener {
     protected String formatField() {
     	if(!updated) return "No record set.";
     	
-    	String firstName = firstNameField.getText();
-    	String lastName = lastNameField.getText();
-    	String tribe = tribeField.getText();
-    	String empty = "";
-    	
-    	if((firstName == null) || empty.equals(firstName)) {
-    		firstName = "<em>(no first name specified)</em>";
-    		//+ must be 1-20 letters
+    	if(firstFieldP.getText() != null && lastFieldP.getText() != null)  {
+	    	firstNameString = firstFieldP.getText();
+	    	lastNameString = lastFieldP.getText();
+    	} else	{
+        	firstNameString = firstFieldC.getText();
+        	lastNameString = lastFieldC.getText();
+        	tribeString = tribeField.getText();	
     	}
-    	if((lastName == null) || empty.equals(lastName)) {
-    		lastName = "<em>(no last name specified)</em>";
-    		//+ must be 1-20 letters
-    	}
-    	if((firstName == null) || empty.equals(firstName)) {
-    		firstName = "<em>(no first name specified)</em>";
-    	}
+//    	String empty = "";
+//    	
+//    	if((firstName == null) || empty.equals(firstName)) {
+//    		firstName = "<em>(no first name specified)</em>";
+//    		//+ must be 1-20 letters
+//    	}
+//    	if((lastName == null) || empty.equals(lastName)) {
+//    		lastName = "<em>(no last name specified)</em>";
+//    		//+ must be 1-20 letters
+//    	}
+//    	if((firstName == null) || empty.equals(firstName)) {
+//    		firstName = "<em>(no first name specified)</em>";
+//    	}
     	
     	StringBuffer sb = new StringBuffer();
     	sb.append("<html><p align=center>");
-    	sb.append(firstName);
+    	sb.append(firstNameString);
     	sb.append(" ");
-    	sb.append(lastName);
-//    	sb.append(uniqueID); // TODO Append to display panel
+    	sb.append(lastNameString);
+//    	sb.append(uniqueID); // TODO Append to display panel with a unique id getter
     	sb.append("<br>");
-    	sb.append(tribe);
+    	sb.append(tribeString);
     	sb.append("</p></html>");
     	
     	return sb.toString();    	
@@ -307,25 +317,25 @@ public class TextInputFields extends JPanel implements ActionListener {
     			"Last Name: "    			
     	};
     	
-    	labels = new JLabel[labelStrings.length];
+    	pLabels = new JLabel[labelStrings.length];
     	JComponent[] fields = new JComponent[labelStrings.length];
     	int fieldNum = 0;
     	
-    	firstNameField = new JTextField();
-    	firstNameField.setColumns(20);
-    	fields[fieldNum++] = firstNameField;
+    	firstFieldP = new JTextField();
+    	firstFieldP.setColumns(20);
+    	fields[fieldNum++] = firstFieldP;
     	
-    	lastNameField = new JTextField();
-    	lastNameField.setColumns(20);
-    	fields[fieldNum++] = lastNameField;
+    	lastFieldP = new JTextField();
+    	lastFieldP.setColumns(20);
+    	fields[fieldNum++] = lastFieldP;
     	
     	namePanel.setOpaque(false);
     	
     	//Associate label/field pairs, add everything and lay it out
     	for(int i=0; i<labelStrings.length;i++) {
-    		labels[i] = new JLabel(labelStrings[i], JLabel.TRAILING);
-    		labels[i].setLabelFor(fields[i]);
-    		namePanel.add(labels[i]);
+    		pLabels[i] = new JLabel(labelStrings[i], JLabel.TRAILING);
+    		pLabels[i].setLabelFor(fields[i]);
+    		namePanel.add(pLabels[i]);
     		namePanel.add(fields[i]);
     		
     		// for each field, create a spinner for every entry added
@@ -344,112 +354,91 @@ public class TextInputFields extends JPanel implements ActionListener {
     	JPanel namePanel = new JPanel(new SpringLayout());
     	
     	String[] labelStrings = {
-//    			"User ID: ",
     			"First Name: ",
     			"Last Name: ",
     			"Tribe Name: "
     	};
     	
-    	labels = new JLabel[labelStrings.length];
+    	cLabels = new JLabel[labelStrings.length];
     	JComponent[] fields = new JComponent[labelStrings.length];
     	int fieldNum = 0;
     	
-//    	// Create the text field & set it up
-//    	uniqueIDField = new JTextField(uniqueIDGenerator("","",6)); /*****  Must fix this upon implementation *****/
-//    	uniqueIDField.setColumns(9);
-//    	fields[fieldNum++] = uniqueIDField;
+    	firstFieldC = new JTextField();
+    	firstFieldC.setColumns(20);
+    	fields[fieldNum++] = firstFieldC;
     	
-    	firstNameField = new JTextField();
-    	firstNameField.setColumns(20);
-    	fields[fieldNum++] = firstNameField;
-    	
-    	lastNameField = new JTextField();
-    	lastNameField.setColumns(20);
-    	fields[fieldNum++] = lastNameField;
+    	lastFieldC = new JTextField();
+    	lastFieldC.setColumns(20);
+    	fields[fieldNum++] = lastFieldC;
     	
     	tribeField = new JTextField();
+    	tribeField.setColumns(31);
+    	fields[fieldNum++] = tribeField;
     	
     	namePanel.setOpaque(false);
     	
     	//Associate label/field pairs, add everything and lay it out
     	for(int i=0; i<labelStrings.length;i++) {
-    		labels[i] = new JLabel(labelStrings[i], JLabel.TRAILING);
-    		labels[i].setLabelFor(fields[i]);
-    		namePanel.add(labels[i]);
-    		namePanel.add(fields[i]);
-    		
-    		// for each field, create a spinner for every entry added
-    		/******  To Do  ********/
+    		cLabels[i] = new JLabel(labelStrings[i], JLabel.TRAILING);
+    		cLabels[i].setLabelFor(fields[i]);
+    		namePanel.add(cLabels[i]);
+    		namePanel.add(fields[i]);   		
     	}
+    	
     	SpringUtilities.makeCompactGrid(namePanel, labelStrings.length, 2, 
     									GAP, GAP, //init x,y
     									GAP, GAP/2); //xpad, ypad
     	return namePanel; 	    	
-    }
-    /**
-     * A panel for Contestant entry fields - Tribe Name, a JSpinner is created when entries are made
-     * @return Tribe Name text field & JSpinner
-     */
-    protected JComponent createTribeField() {
-    	JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-    	
-    	JLabel label = new JLabel("Tribe Name:   ");
-    	
-    	tribeField = new JTextField();
-    	tribeField.setColumns(31);
-    	JComponent tField = tribeField;
-    	
-    	// Assemble the panel
-    	label.setLabelFor(tField);
-    	panel.setOpaque(false);
-    	panel.add(label);
-    	panel.add(tField);
-    	
-    	// Add the Spinner
-    	/*****  To Do  ******/
-    	
-    	 //Match the SpringLayout's gap, subtracting 5 to make
-        //up for the default gap FlowLayout provides.
-        panel.setBorder(BorderFactory.createEmptyBorder(0, 0,
-                                                GAP-5, GAP-5));
-        return panel;  	    	
-    }
-    /**
-     * Find Entry from any Text Field Spinner
-     */
-    public void find(String searchTerm) {
-    	// Get the string from the textfield
-    	// Search the records
-    }    
-    /**
-     * The textfield spinners
-     * The strings inputed in the textfields are stored as search terms  in the spinner
-     */
-    public JFormattedTextField getTextField(JSpinner spinner) {
-    	JComponent editor = spinner.getEditor();
-    	if(editor instanceof JSpinner.DefaultEditor) {
-    		return((JSpinner.DefaultEditor)editor).getTextField();
-    	} else {
-    		System.err.println("Unexpected editor type: "
-    							+ spinner.getEditor().getClass()
-    							+ " isn't a descendant DefaultEditor");
-    		return null;
-    	}
-    }
+    }  
+//    /**
+//     * The textfield spinners
+//     * The strings inputed in the textfields are stored as search terms  in the spinner
+//     */
+//    public JFormattedTextField getTextField(JSpinner spinner) {
+//    	JComponent editor = spinner.getEditor();
+//    	if(editor instanceof JSpinner.DefaultEditor) {
+//    		return((JSpinner.DefaultEditor)editor).getTextField();
+//    	} else {
+//    		System.err.println("Unexpected editor type: "
+//    							+ spinner.getEditor().getClass()
+//    							+ " isn't a descendant DefaultEditor");
+//    		return null;
+//    	}
+//    }
 
-    protected JComponent setGameFont(Font font, Color color) {
+    protected JComponent setGameFontP(Font font, Color color) {
     	this.textInputFieldFont = font;
     	this.textInputFieldColor = color;
 
     	JPanel panel = new JPanel();
     	
-    	JLabel first = labels[0];
+    	JLabel first = pLabels[0];
     	first.setFont(font);
     	first.setForeground(color);
     	
-    	JLabel last = labels[1];
+    	JLabel last = pLabels[1];
     	last.setFont(font);
     	last.setForeground(color);
+    	
+    	return panel;
+    }
+    protected JComponent setGameFontC(Font font, Color color) {
+    	this.textInputFieldFont = font;
+    	this.textInputFieldColor = color;
+
+    	JPanel panel = new JPanel();
+    	
+    	JLabel first = cLabels[0];
+    	first.setFont(font);
+    	first.setForeground(color);
+    	
+    	JLabel last = cLabels[1];
+    	last.setFont(font);
+    	last.setForeground(color);
+ 
+    	JLabel tribe = cLabels[2];
+    	tribe.setFont(font);
+    	tribe.setForeground(color);
     	
     	return panel;
     }

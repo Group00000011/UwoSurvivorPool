@@ -516,8 +516,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		//Switch the images
 		playerBg.setIcon(playerGBg);
 		contestantBg.setIcon(contestantGBg);
-		textFields_p.setGameFont(gFont, Color.YELLOW);
-		textFields_c.setGameFont(gFont, Color.YELLOW);
+		textFields_p.setGameFontP(gFont, Color.YELLOW);
+		textFields_c.setGameFontC(gFont, Color.YELLOW);
 		
 		themeMaker.setIcon(goldBackground);
 //		mainMenuBtn.setIcon(mainMenuImgG);
@@ -558,8 +558,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		playerBg.setIcon(playerJBg);
 		contestantBg.setIcon(contestantJBg);
 		
-		textFields_p.setGameFont(jFont, Color.WHITE);
-		textFields_c.setGameFont(jFont, Color.WHITE);
+		textFields_p.setGameFontP(jFont, Color.WHITE);
+		textFields_c.setGameFontC(jFont, Color.WHITE);
 		
 		createNewGameBtn.setFont(jFont);
 		createNewGameBtn.setForeground(Color.WHITE);
