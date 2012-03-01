@@ -516,11 +516,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		
 		getContentPane().add(sPanel);
 	    getContentPane().add(mainMenuButton());
+	    getContentPane().add(standingsTable.createPlayerList(), BorderLayout.CENTER);
 		getContentPane().add(standingBg); 		// Create the background		
 		
 		// Add the list
-		JPanel centerPanel = new JPanel();
-		centerPanel.add(standingsTable.createPlayerList());
+//		JPanel centerPanel = new JPanel();
+//		centerPanel.add(standingsTable.createPlayerList(), BorderLayout.CENTER);
 
 		// Create the labels and text areas for this panel
 		String poolString = "Total in Pool";
@@ -543,19 +544,53 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
     	JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     	
     	addBtn = new JButton("Add " + op);
-    	addBtn.setActionCommand("+");
+    	addBtn.setActionCommand("+P");
     	addBtn.addActionListener(this);
     	
     	panel.add(addBtn);
     	
     	deleteBtn = new JButton("Delete " + op);
-    	deleteBtn.setActionCommand("delete");
+    	deleteBtn.setActionCommand("deleteP");
     	deleteBtn.addActionListener(this);
     	
     	panel.add(deleteBtn);
     	
     	updateBtn = new JButton("Update " + op);
-    	updateBtn.setActionCommand("update");
+    	updateBtn.setActionCommand("updateP");
+    	updateBtn.addActionListener(this);
+    	
+    	panel.add(updateBtn);
+    	
+    	resetBtn = new JButton("Reset");
+    	resetBtn.setActionCommand("reset");
+    	resetBtn.addActionListener(this);
+    	
+    	panel.setOpaque(false);
+    	panel.add(resetBtn);
+    	
+    	//Match the SpringLayout's gap, subtracting 5 to make
+        //up for the default gap FlowLayout provides.
+    	panel.setBorder(BorderFactory.createEmptyBorder(0,0,GAP-5,GAP-5));
+    	
+    	return panel;
+    }
+    protected JComponent addUpdateDeleteButtonsC(String op) {
+    	JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+    	
+    	addBtn = new JButton("Add " + op);
+    	addBtn.setActionCommand("+C");
+    	addBtn.addActionListener(this);
+    	
+    	panel.add(addBtn);
+    	
+    	deleteBtn = new JButton("Delete " + op);
+    	deleteBtn.setActionCommand("deleteC");
+    	deleteBtn.addActionListener(this);
+    	
+    	panel.add(deleteBtn);
+    	
+    	updateBtn = new JButton("Update " + op);
+    	updateBtn.setActionCommand("updateC");
     	updateBtn.addActionListener(this);
     	
     	panel.add(updateBtn);
@@ -629,7 +664,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		leftHalf_c.add(textFields_c.createFieldsCont());
 //	    leftHalf_c.add(textFields_c.createTribeField());
 	    leftHalf_c.add(textFields_c.uploadButton());
-		leftHalf_c.add(addUpdateDeleteButtons("Contestant"));
+		leftHalf_c.add(addUpdateDeleteButtonsC("Contestant"));
 		
 		// Create a seperator
 		leftHalf_c.setBorder(BorderFactory.createEmptyBorder(
@@ -762,7 +797,35 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * Handles all Button Actions 
 	 * Each case compares the string cast as an ActionCommand
 	 */
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent e) {	
+		/**  Add Player Handler  **/
+		if(e.getActionCommand().equals("+P")) {
+			
+		}
+		/**  Update Player Handler  **/
+		if(e.getActionCommand().equals("updateP")) {
+			
+		}
+		/**  Delete Player Handler  **/
+		if(e.getActionCommand().equals("deleteP")) {
+			
+		}
+		/**  Add Contestant Handler **/
+		if(e.getActionCommand().equals("+C")) {
+			
+		}
+		/**  Update Contestant Handler  **/
+		if(e.getActionCommand().equals("udpateC")) {
+			
+		}
+		/**  Delete Contestant Handler  **/
+		if(e.getActionCommand().equals("deleteC")) {
+			
+		}
+		/**  Reset Fields Handler  **/
+		if(e.getActionCommand().equals("reset")) {
+			
+		}
 		/**  Quit Button Handler **/
 		if(e.getActionCommand().equals("q")) {
 			quitBtn.setBorder(BorderFactory.createEmptyBorder());
