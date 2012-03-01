@@ -13,6 +13,12 @@ import javax.swing.*;
 public class TextInputFieldContestant extends JPanel implements ActionListener {
 	private final int GAP = 20;
 	
+	//Main frame
+	private static JFrame frame;
+	
+	//Strings to store contestant info
+	private static String inputFirst, inputLast, inputID, inputTribe, inputPic;
+	
 	//Labels of the fields
 	private JLabel uniqueIDLabel, firstLabel, lastLabel, tribeLabel;
 	
@@ -84,6 +90,12 @@ public class TextInputFieldContestant extends JPanel implements ActionListener {
 		fieldPane.add(lastField);
 		fieldPane.add(tribeField);
 		
+		//Add action handlers for textfields
+		uniqueIDField.addActionListener(new handleIDField());
+		firstField.addActionListener(new handleFirstField());
+		lastField.addActionListener(new handleLastField());
+		tribeField.addActionListener(new handleTribeField());		
+		
 		//Create Buttons
 		addButton = new JButton("Add Contestant"); //, addIcon
 		addButton.setActionCommand("add");
@@ -113,7 +125,7 @@ public class TextInputFieldContestant extends JPanel implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("add")) {
-			
+			Contestant newCont = new Contestant(inputFirst, inputLast, inputID, inputTribe, inputPic);
 		}
 		if(e.getActionCommand().equals("update")) {
 			
@@ -122,6 +134,65 @@ public class TextInputFieldContestant extends JPanel implements ActionListener {
 			System.exit(-1);
 		}
 	}
+	
+	private class handleIDField implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// gets the data entered
+			JTextField tempText;
+			tempText = (JTextField) e.getSource();
+			inputID = tempText.getText();
+			if (inputID.length() !=2){
+				JOptionPane.showMessageDialog(frame, "Sorry that's not a valid ID, it must be two characters in length");
+			}
+
+			// check if characters are valid
+			for (int i =0 ; i < inputID.length(); i++){
+				
+				// store character one at a time
+				char character = inputID.charAt(i);
+			
+			if ((character <0 && character >9))  {
+				JOptionPane.showMessageDialog(frame, "Sorry that's not a valid ID, it must be two characters in length");
+			}
+			}
+			
+		}
+		
+	}
+	
+	
+	private class handleFirstField implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// gets the data entered
+			JTextField tempText;
+			tempText = (JTextField) e.getSource();
+		    inputFirst = tempText.getText();
+			
+		}
+		
+	}
+	
+	private class handleLastField implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// gets the data entered
+			JTextField tempText;
+			tempText = (JTextField) e.getSource();
+		    inputLast = tempText.getText();
+			
+		}
+		
+	}
+	
+	private class handleTribeField implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			// gets the data entered
+			JTextField tempText;
+			tempText = (JTextField) e.getSource();
+		    inputTribe = tempText.getText();
+		}
+		
+	}
+	
 	/**
 	 * Create GUI & Show it. For thread safety, this method should be invoked from the even dispatch thread
 	 */
