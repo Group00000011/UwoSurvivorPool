@@ -497,10 +497,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * Bonus Question Panel
 	 * A Bonus Q&A Input Area
 	 */
-	private JComponent bQPanel() {
+	private JComponent bqPanel() {
 		qPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
-		getContentPane().add(mainMenuButton());
+		getContentPane().add(qPanel);
+	    getContentPane().add(mainMenuButton());
+		getContentPane().add(bqBg); 		// Create the background		
 		
 		return qPanel;
 
@@ -512,13 +514,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	protected JComponent standingsPanel() {
 		sPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
+		getContentPane().add(sPanel);
 	    getContentPane().add(mainMenuButton());
+		getContentPane().add(standingBg); 		// Create the background		
 		
 		// Add the list
 		JPanel centerPanel = new JPanel();
 		centerPanel.add(standingsTable.createPlayerList());
-		getContentPane().add(sPanel);
-		getContentPane().add(standingBg); 		// Create the background		
 
 		// Create the labels and text areas for this panel
 		String poolString = "Total in Pool";
@@ -810,7 +812,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/**  Bonus Question Admin Button Handler **/
 		else if(e.getActionCommand().equals("bonus")) {
+			getContentPane().removeAll();
+
+			getContentPane().add(quitButton());
+			getContentPane().add(bqPanel());
 			
+			repaint();
+			validate();	
 		}
 		/**  Theme Selector Button Handler **/
 		else if(e.getActionCommand().equals("theme")) {		

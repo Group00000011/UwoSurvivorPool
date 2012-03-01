@@ -42,49 +42,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     }
     
     /**************  Methods ***********************/
-//    /**
-//     * The Standard buttons for list input/update area
-//     * addBtn: Adds the info to the appropriate register
-//     * deleteBtn: Finds and Deletes the record enitrely from its register
-//     * updateBtn: Finds the record and allows user to make changes to any field
-//     * resetBtn: Clears all fields
-//     * @param op
-//     * @return 4 buttons floating right to left Add/Update/Remove/Reset
-//     */
-//    protected JComponent addUpdateDeleteButtons(String op) {
-//    	JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-//    	
-//    	addBtn = new JButton("Add " + op);
-//    	addBtn.setActionCommand("+");
-//    	addBtn.addActionListener(this);
-//    	
-//    	panel.add(addBtn);
-//    	
-//    	deleteBtn = new JButton("Delete " + op);
-//    	deleteBtn.setActionCommand("delete");
-//    	deleteBtn.addActionListener(this);
-//    	
-//    	panel.add(deleteBtn);
-//    	
-//    	updateBtn = new JButton("Update " + op);
-//    	updateBtn.setActionCommand("update");
-//    	updateBtn.addActionListener(this);
-//    	
-//    	panel.add(updateBtn);
-//    	
-//    	resetBtn = new JButton("Reset");
-//    	resetBtn.setActionCommand("reset");
-//    	resetBtn.addActionListener(this);
-//    	
-//    	panel.setOpaque(false);
-//    	panel.add(resetBtn);
-//    	
-//    	//Match the SpringLayout's gap, subtracting 5 to make
-//        //up for the default gap FlowLayout provides.
-//    	panel.setBorder(BorderFactory.createEmptyBorder(0,0,GAP-5,GAP-5));
-//    	
-//    	return panel;
-//    }
     /**
      * This button allows the user to upload a pic from file and it will fit the image into a special frame
      * depending on the theme.
