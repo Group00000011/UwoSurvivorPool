@@ -21,13 +21,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private ImageIcon title, quitImg, mainMenuBtnImg;
 	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"), jungleBackground;
 	private ImageIcon newGame, playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg;
-	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg, blankGFrame, blankJFrame;
+	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg, standingGBg, standingJBg, blankGFrame, blankJFrame;
 	
 	// Buttons
 	private JButton quitBtn, mainMenuBtn, createNewGameBtn, playersBtn, contestantsBtn, standingsBtn, bonusQBtn, themeSelectBtn;		
 
 	// JLabels
-	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, titleBanner, contestantPicFrame;
+	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, standingBg, titleBanner, contestantPicFrame;
 	
 	// For the standings Panel
 	private JLabel poolLabel, currWkLabel, numContLabel, recElimLabel;  
@@ -55,8 +55,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// The jungle theme font
 		jFont = new Font("Viner Hand ITC",Font.PLAIN,18);
 
-    	playerGBg = createImageIcon("images/playerGoldenBg.jpg");
+		// Call all set the backgrounds for each panel
+		playerGBg = createImageIcon("images/playerGoldenBg.jpg");
 		playerBg = new JLabel(playerGBg);
+		
+		contestantGBg = createImageIcon("images/contestantGoldenBg.jpg");
+		contestantBg = new JLabel(contestantGBg);
+		
+		blankGFrame = createImageIcon("images/uploadPicFrame_goldFrame.png");
+		contestantPicFrame = new JLabel(blankGFrame);
+		
+		standingGBg = createImageIcon("images/standingGoldBg.jpg");
+		standingBg = new JLabel(standingGBg);
 
 		SpringLayout guiLayout = new SpringLayout();	
         this.setLayout(guiLayout);
@@ -389,10 +399,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// sPanel.addBackground
 		// TODO
 		
+	    getContentPane().add(mainMenuButton());
+		
 		// Add the list
 		JPanel centerPanel = new JPanel();
 		centerPanel.add(standingsTable.createPlayerList());
-		
+		getContentPane().add(sPanel);
+		getContentPane().add(playerBg);
+
 		// Create the labels and text areas for this panel
 		String poolString = "Total in Pool";
 		
@@ -504,18 +518,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	/**
 	 * The Golden Ruins Theme
 	 */
-	protected void goldenRuinsTheme() {
-		playerGBg = createImageIcon("images/playerGoldenBg.jpg");
-		playerBg = new JLabel(playerGBg);
-		
-		contestantGBg = createImageIcon("images/contestantGoldenBg.jpg");
-		blankGFrame = createImageIcon("images/uploadPicFrame_goldFrame.png");
-		contestantBg = new JLabel(contestantGBg);
-		contestantPicFrame = new JLabel(blankGFrame);
-		
+	protected void goldenRuinsTheme() {		
 		//Switch the images
 		playerBg.setIcon(playerGBg);
 		contestantBg.setIcon(contestantGBg);
+		standingBg.setIcon(standingGBg);
 		textFields_p.setGameFontP(gFont, Color.YELLOW);
 		textFields_c.setGameFontC(gFont, Color.YELLOW);
 		
