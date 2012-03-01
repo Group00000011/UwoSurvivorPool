@@ -378,7 +378,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 //	protected JComponent currentWkPane() {
 //		
 //	}
-	
 	/**
 	 * Standings Panel
 	 * A Chart and current information
@@ -403,7 +402,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		return sPanel;
 	}
 	/**
-
 	 * Players Edit, Add & Store Panel/Screen
 	 */
 	protected JComponent playersPanel() {
@@ -411,7 +409,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				
 		JPanel leftHalf_p = new JPanel();
 		leftHalf_p.setLayout(new BoxLayout(leftHalf_p, BoxLayout.PAGE_AXIS));	
-		leftHalf_p.add(textFields_p.createNameFields());
+		leftHalf_p.add(textFields_p.createFieldsPlayer());
 		leftHalf_p.add(textFields_p.addUpdateDeleteButtons("Player"));
 		leftHalf_p.setOpaque(false);
 
@@ -456,8 +454,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		JPanel leftHalf_c = new JPanel();
 		leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
 		leftHalf_c.setOpaque(false);
-		leftHalf_c.add(textFields_c.createNameFields());
-	    leftHalf_c.add(textFields_c.createTribeField());
+		leftHalf_c.add(textFields_c.createFieldsCont());
+//	    leftHalf_c.add(textFields_c.createTribeField());
 	    leftHalf_c.add(textFields_c.uploadButton());
 		leftHalf_c.add(textFields_c.addUpdateDeleteButtons("Contestant"));
 		
@@ -634,7 +632,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/**  Standings List Button Handler **/
 		else if(e.getActionCommand().equals("standings")) {
+			getContentPane().removeAll();
+
+			getContentPane().add(quitButton());
+			getContentPane().add(standingsPanel());
 			
+			repaint();
+			validate();		
 		}
 		/**  Bonus Question Admin Button Handler **/
 		else if(e.getActionCommand().equals("bonus")) {

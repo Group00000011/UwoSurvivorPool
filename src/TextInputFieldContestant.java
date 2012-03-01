@@ -10,8 +10,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-public class TextInputFieldContestant extends JPanel implements ActionListener {
+public class TextInputFieldContestant extends JFrame implements ActionListener {
 	private final int GAP = 20;
+	private static final int WIDTH = 500;
+	private static final int HEIGHT = 350;
 	
 	//Labels of the fields
 	private JLabel uniqueIDLabel, firstLabel, lastLabel, tribeLabel;
@@ -26,21 +28,53 @@ public class TextInputFieldContestant extends JPanel implements ActionListener {
 	private JTextField uniqueIDField, firstField, lastField, tribeField;
 	
 	//Buttons
-	private JButton addButton, updateButton, cancelButton, uploadButton;
+	private JButton addButton, updateButton, cancelButton, uploadBtn;
 	
+	//The record display
+	private JPanel contPanel,recordPanel;
+    private JLabel recordDisplay;
+    private boolean updated = false;
+    private ImageIcon uploadedImage;
+
+
+	
+    private Font textInputFieldFont;
+    private Color textInputFieldColor;
+	
+	/***************  CONSTRUCTOR *****************/
 	public TextInputFieldContestant() {
-		super(new BorderLayout());
+		FlowLayout layout = (new FlowLayout(FlowLayout.LEADING));
+		this.setLayout(layout);
+        
+        JPanel leftHalf = new JPanel()
+        {
+            //Don't allow us to stretch vertically.
+            public Dimension getMaximumSize() {
+                Dimension pref = getPreferredSize();
+                return new Dimension(Integer.MAX_VALUE,
+                                     pref.height);
+            }
+        };
+        leftHalf.setLayout(new BoxLayout(leftHalf,BoxLayout.PAGE_AXIS));
+        leftHalf.add(contInputPanel());
+        
+        getContentPane().add(leftHalf);
+        getContentPane().add(createRecordDisplay());
 		
-//		//Create Textfields
-//		//Create Buttons
-//		//Assemble Panel
-//	}
-//	/**
-//	 * The labelled textfields
-//	 * @return a panel of textfield aligned with labels
-//	 */
-//	protected JComponent textFields() {
-//		JPanel tf = new JPanel();
+        // Set up methods for the frame
+        this.setSize(WIDTH,HEIGHT);
+		this.setLocationRelativeTo(null);
+//		this.setTitle("UWOSurvivorPoolAdmin");
+		this.setVisible(true);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	} // End of Constructor
+	/***************  MEHTODS  *****************/
+	/**
+	 * The input panel for the contestant
+	 * @return a panel of textfield aligned with labels
+	 */
+	protected JComponent contInputPanel() {
+		contPanel = new JPanel();
 		
 		// Create Labels
 		uniqueIDLabel = new JLabel(uniqueIDString);
@@ -104,41 +138,207 @@ public class TextInputFieldContestant extends JPanel implements ActionListener {
 		buttonPane.add(cancelButton);
 		
 		//Add panels to another panel
-		setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));
-		add(labelPane, BorderLayout.CENTER);
-		add(fieldPane, BorderLayout.LINE_END);
-		add(buttonPane, BorderLayout.PAGE_END);
-	} // End of constructor
+		/* Layout pseudoCode:
+		 * vertical layout = sequential group { parallel group (BASELINE) { IDL, IDF}, parallel group (BASELINE) {FF, FL}, 
+		 * parallel group (BASELINE) {LF, LL}, parallel group (BASELINE) {TF, TL}, updateButton, parallel group (BASELINE) {Y, N} 
+		 */
+		GroupLayout layout = new GroupLayout(contPanel);
+		contPanel.setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+
+		layout.setHorizontalGroup(layout.createSequentialGroup()
+			      .addComponent(uniqueIDLabel)
+				  .addComponent(firstLabel)
+				  .addComponent(lastField)
+				  .addComponent(tribeField)		           
+				  .addComponent(uploadButton())
+				      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+					           .addComponent(addButton)
+					           .addComponent(updateButton)
+					           .addComponent(cancelButton))	
+//			      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//			           .addComponent(uniqueIDLabel)
+//			           .addComponent(uniqueIDField))
+//			      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//			           .addComponent(firstLabel)
+//			           .addComponent(firstField))
+//			      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//			           .addComponent(lastLabel)
+//			           .addComponent(lastField))
+//			      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//			           .addComponent(tribeLabel)
+//			           .addComponent(tribeField))			           
+//			      .addComponent(uploadButton())
+//			      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+//				           .addComponent(addButton)
+//				           .addComponent(updateButton)
+//				           .addComponent(cancelButton))	
+			);
+		 
+//		contPanel.setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));
+//		contPanel.add(labelPane, BorderLayout.CENTER);
+//		contPanel.add(fieldPane, BorderLayout.LINE_END);
+//		contPanel.add(buttonPane, BorderLayout.PAGE_END);
 		
+		return contPanel;
 	
+	} // End contInputPanel
+    /**
+     * This button allows the user to upload a pic from file and it will fit the image into a special frame
+     * depending on the theme.
+     * @return upload button
+     */
+    protected JComponent uploadButton() {
+    	JPanel p = new JPanel();
+    	
+    	uploadedImage = new ImageIcon(getClass().getResource("images/uploadPicFrame_Goldblank.jpg"), "No Contestant Image has been loaded yet.");
+    	
+    	uploadBtn = new JButton("Upload a Picture", uploadedImage);
+    	uploadBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
+    	uploadBtn.setHorizontalTextPosition(AbstractButton.CENTER);
+    	uploadBtn.setActionCommand("upload");
+    	uploadBtn.addActionListener(this);
+    	
+    	p.setOpaque(false);
+    	p.add(uploadBtn);
+    	return p;
+    }
+    /**
+     * Create Record Display - When a record has been added or updated
+     * a panel on the right will display the entire record
+     */
+    protected JComponent createRecordDisplay() {
+    	recordPanel = new JPanel(new BorderLayout());
+    	recordDisplay = new JLabel();
+    	recordDisplay.setHorizontalAlignment(JLabel.CENTER);
+    	
+    	updateDisplays();
+    	
+    	//Lay out the panel
+//    	recordPanel.setBorder(BorderFactory.createEmptyBorder(
+//    								GAP/2, 	//top
+//    								0,    	//left
+//    								GAP/2,	//bottom
+//    								0));	//right
+    	recordPanel.setOpaque(false);
+    	recordPanel.setBackground(Color.YELLOW);
+    	recordPanel.setForeground(Color.WHITE);
+    	recordPanel.add(recordDisplay,BorderLayout.NORTH);
+    	recordPanel.setPreferredSize(new Dimension(400,268));
+    	
+    	////////////////// TO DO: Implement adding image box to record display for Contestant panel only
+    	/// Either by creating a seperate method and adding as an if statement in this panel
+    	/// IE if TextInputField contains uploadedImage()...Add the formatted image to this panel
+    	/// Or create a second method specific for contestants/players
+    	//////cuz players dont have pics or tribes & contestants dont have unique ids
+    	return recordPanel;    	    	
+    }
+    /**
+     * Updates a formatted display of the record added or edited
+     */
+    protected void updateDisplays() {
+    	recordDisplay.setText(formatField());
+//    	if(updated) {
+//    		recordDisplay.setFont(regularFont);
+//    	} else {
+//    		recordDisplay.setFont(italicFont);
+//    	}
+    }
+    /**
+     * Formats the text fields to the within project specifications
+     */
+     protected String formatField() {
+     	if(!updated) return "No record set.";
+     	
+     	String firstName = firstField.getText();
+     	String lastName = lastField.getText();
+     	String uniqueID = uniqueIDField.getText();
+     	String tribe = tribeField.getText();
+     	String empty = "";
+     	
+     	if((firstName == null) || empty.equals(firstName)) {
+     		firstName = "<em>(no first name specified)</em>";
+     		//+ must be 1-20 letters
+     	}
+     	if((lastName == null) || empty.equals(lastName)) {
+     		lastName = "<em>(no last name specified)</em>";
+     		//+ must be 1-20 letters
+     	}
+     	if((uniqueID == null) || empty.equals(uniqueID)) {
+     		uniqueID = "";
+
+     	}
+     	if((firstName == null) || empty.equals(firstName)) {
+     		firstName = "<em>(no first name specified)</em>";
+     	}
+     	
+     	StringBuffer sb = new StringBuffer();
+     	sb.append("<html><p align=center>");
+     	sb.append(firstName);
+     	sb.append(" ");
+     	sb.append(lastName);
+     	sb.append(uniqueID);
+     	sb.append("<br>");
+     	sb.append(tribe);
+     	sb.append("</p></html>");
+     	
+     	return sb.toString();    	
+     }	
+	/**
+	 * Action Listeners for buttons
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("add")) {
 			
 		}
 		if(e.getActionCommand().equals("update")) {
-			
+			updated = true;
 		}
 		if(e.getActionCommand().equals("x")) {
 			System.exit(-1);
 		}
 	}
 	/**
-	 * Create GUI & Show it. For thread safety, this method should be invoked from the even dispatch thread
+	 * To edit the fonts for themes
+	 * @param font & font color
 	 */
-	public static void textInputFieldsContestant() {
-		JFrame frame = new JFrame("Text Input Fields Contestant");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(new TextInputFieldContestant());
-		frame.pack();
-		frame.setVisible(true);
-	}
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				UIManager.put("swing.boldMetal", Boolean.FALSE);
-				textInputFieldsContestant();
-			}
-		});
-	}
+    protected JComponent setGameFont(Font font, Color color) {
+    	this.textInputFieldFont = font;
+    	this.textInputFieldColor = color;
+
+    	JPanel panel = new JPanel();
+    	
+//    	id.setFont(font);
+//    	id.setForeground(color);
+//    	
+//    	first.setFont(font);
+//    	first.setForeground(color);
+//    	
+//    	last.setFont(font);
+//    	last.setForeground(color);
+    	
+    	return panel;
+    }
+    protected Font getGameFont() {
+    	return textInputFieldFont;
+    }
+    protected Color getGameFontColor() {
+    	return textInputFieldColor;
+    }
+	/*
+	 * To Test this panel
+	 */
+    public static void main(String args[]) {
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+    SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                //Turn off metal's use of bold fonts
+                UIManager.put("swing.boldMetal", Boolean.FALSE);
+        new TextInputFieldContestant().setVisible(true);
+            }
+        });
+    }
 
 }

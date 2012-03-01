@@ -43,7 +43,7 @@ public class TextInputFields extends JPanel implements ActionListener {
     /**************  Methods ***********************/
     /**
      * The Standard buttons for list input/update area
-     * addBtn: Adds the info to the appropriate registeer
+     * addBtn: Adds the info to the appropriate register
      * deleteBtn: Finds and Deletes the record enitrely from its register
      * updateBtn: Finds the record and allows user to make changes to any field
      * resetBtn: Clears all fields

@@ -43,7 +43,7 @@ public class TextInputFieldsPlayer extends JFrame implements ActionListener {
         // Set up methods for the frame
         this.setSize(WIDTH,HEIGHT);
 		this.setLocationRelativeTo(null);
-		this.setTitle("UWOSurvivorPoolAdmin");
+//		this.setTitle("UWOSurvivorPoolAdmin");
 		this.setVisible(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	} // End of Constructor
@@ -155,24 +155,19 @@ public class TextInputFieldsPlayer extends JFrame implements ActionListener {
     	return textInputFieldColor;
     }
 
-	/**
-	 * Create GUI & Show it. For thread safety, this method should be invoked from the even dispatch thread
-	 * Invokes this table in other classes
+	/*
+	 * To Test this panel
 	 */
-	public void addPlayerCreatorPanel() {
-		JFrame frame = new JFrame("Text Input Fields Player");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(new TextInputFieldsPlayer());
-		frame.pack();
-		frame.setVisible(true);
-	}
-//	public static void main(String[] args) {
-//		SwingUtilities.invokeLater(new Runnable() {
-//			public void run() {
-//				UIManager.put("swing.boldMetal", Boolean.FALSE);
-//				addPlayerCreatorPanel();
-//			}
-//		});
-//	}
+    public static void main(String args[]) {
+        //Schedule a job for the event dispatch thread:
+        //creating and showing this application's GUI.
+    SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                //Turn off metal's use of bold fonts
+                UIManager.put("swing.boldMetal", Boolean.FALSE);
+        new TextInputFieldsPlayer().setVisible(true);
+            }
+        });
+    }
 
 }
