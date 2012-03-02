@@ -537,27 +537,49 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * A Chart and current information
 	 */
 	protected JComponent standingsPanel() {
-		SpringLayout sLayout = new SpringLayout();
-		sPanel = new JPanel(sLayout);
-	    this.setLayout(sLayout);
-	    
-		// Add the list
-		JPanel centerPanel = new JPanel();
-		centerPanel.add(standingsTable.createPlayerList(), BorderLayout.CENTER);
+		sPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
-		getContentPane().add(sPanel);
-	    getContentPane().add(mainMenuButton());
-	    getContentPane().add(centerPanel, BorderLayout.CENTER);
-		getContentPane().add(standingBg); 		// Create the background		
-		
+		JPanel main = new JPanel();
+		main.setLayout(new BoxLayout(main, BoxLayout.PAGE_AXIS));	
+		main.add(standingsTable.createPlayerList());
+		main.setOpaque(false);
 
-		// Create the labels and text areas for this panel
+		// Create a separator
+		main.setBorder(BorderFactory.createEmptyBorder(	GAP/4, //top
+										                0,     //left
+										                GAP/4, //bottom
+										                0));   //right
+		main.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.LINE_START);
+//		main.setPreferredSize(new Dimension(492,580));
+	    
+		sPanel.setOpaque(false);
+		sPanel.add(main);
+		
+		// Assemble the text fields with the background as a large panel
+		SpringLayout sLayout = new SpringLayout();
+		JPanel standingPanel = new JPanel(sLayout);
+	    this.setLayout(sLayout);
+		
+	    getContentPane().add(mainMenuButton());
+		getContentPane().add(sPanel);
+		getContentPane().add(standingBg);
+
+	    sLayout.putConstraint(SpringLayout.WEST, standingBg, 0, SpringLayout.WEST, getContentPane());
+	    sLayout.putConstraint(SpringLayout.NORTH, standingBg, 0, SpringLayout.NORTH, getContentPane());
+
+	    sLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0, SpringLayout.WEST, getContentPane());
+	    sLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
+	    
+	    sLayout.putConstraint(SpringLayout.WEST, sPanel, GAP*2, SpringLayout.WEST, getContentPane());
+	    sLayout.putConstraint(SpringLayout.NORTH, sPanel, 100, SpringLayout.NORTH, getContentPane());
+
+	    // Create the labels and text areas for this panel
 		String poolString = "Total in Pool";
 		
 		JLabel poolLabel, currWkLabel, numContLabel, recElimLabel;  
 //		private JTextArea poolArea, currWkArea, numContArea, recElimArea;
 		
-		return sPanel;
+		return standingPanel;
 	}
     /**
      * The Standard buttons for list input/update area
