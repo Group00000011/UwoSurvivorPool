@@ -22,7 +22,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private static final int WIDTH = 1024;
 	private static final int HEIGHT = 768;
     final static int GAP = 20;
-	
+
 	// Images
 //	private ImageIcon survivorLogoImg = createImageIcon("images/survivorLogo.png");
 	private ImageIcon title, quitImg, mainMenuBtnImg;
@@ -55,6 +55,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	//contestant and player holder
 	private Player[] players;
 	private Contestant[] contestants;
+	private int contCount = 0;
 
 	/******************************** Constructor *************************************/
 	public SurvivorPoolAdminGUI() {	
@@ -794,13 +795,98 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}		
 	}
 	/**
+	* Test if a string contains only letters
+	*
+	* @param input string to test
+	* @return boolean true if contains no invalid characters
+	*/
+	public Boolean checkValidChars(String input) {
+	Boolean validChars = false;
+
+	// check if characters are valid
+	for (int i = 0; i < input.length(); i++) {
+
+	// store character one at a time
+	char character = input.charAt(i);
+
+	if ((character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z')) {
+	validChars = true;
+	}
+	else {
+		validChars = false;
+		break;
+	}
+
+	}
+	return validChars;
+	}
+
+	/**
+	*
+	* @param first
+	* @param last
+	* @return
+	*/
+	public Contestant findContestant(String first, String last){
+	Contestant tempCont = null;
+	for (int i = 0; i < contestants.length; i++){
+	if ((contestants[i].getFirst().equals(first) && (contestants[i].getLast().equals(last))))
+	{
+	tempCont = contestants[i];
+	}
+
+	}
+	return tempCont;
+	}
+	
+	
+	
+	/**
 	 * Handles all Button Actions 
 	 * Each case compares the string cast as an ActionCommand
 	 */
 	public void actionPerformed(ActionEvent e) {	
 		/**  Add Player Handler  **/
 		if(e.getActionCommand().equals("+P")) {
+			String first=textFields_p.getFirstP();
+			String last=textFields_p.getLastP();
+			int firstLen=first.length(),lastLen=last.length();
+			if(firstLen<1 || firstLen>20){
+				JOptionPane.showMessageDialog(this,"The player's first Name must be between 1 and 20 characters");
+				System.out.println(first+"first");
+			}
+			else if(lastLen<1 || lastLen>20){
+				JOptionPane.showMessageDialog(this,"The player's last name must be between 1 and 20 characters");
+			}
+			else{	
+			String IDchars=""+first.charAt(0), ID="";
+			int IDnum=1;
+			boolean isUnique=false;
+			if(last.length()>=6)
+				IDchars=IDchars+last.substring(0,6);
+			else
+				IDchars=IDchars+last;
+			ID=IDchars+IDnum;
+			while(!isUnique){
+				isUnique=true;
+				if(players!=null){
+				for(int i=0;i<players.length && isUnique ;i++){
+					if(players[i].getID().equals(ID)){
+						isUnique=false;
+						break;
+					}	
+				}
+				if(isUnique==false){
+					IDnum++;
+					ID=IDchars+IDnum;
+				}
+				}
+			}
+			this.addPlayer(new Player(first,last,ID));
+			this.writePlayers("players.txt");
 			
+			
+		}
 		}
 		/**  Update Player Handler  **/
 		if(e.getActionCommand().equals("updateP")) {
@@ -812,19 +898,114 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/**  Add Contestant Handler **/
 		if(e.getActionCommand().equals("+C")) {
-			
+			String inputFirst = textFields_c.getFirstC();
+			String inputLast = textFields_c.getLastC();
+			String inputTribe = textFields_c.getTribe();
+
+
+			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputFirst)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+			}
+
+			else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputLast)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+			}
+
+			else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+			}
+
+			else if (!checkValidChars(inputTribe)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
+			}
+
+
+			//Contestant newContestant = new Contestant(inputFirst, inputLast, inputID, inputTribe, inputPic);
+			//contestants[contCount] = newContestant;
+			//contCount++;
 		}
 		/**  Update Contestant Handler  **/
-		if(e.getActionCommand().equals("udpateC")) {
-			
+		if(e.getActionCommand().equals("updateC")) {
+			String inputFirst = textFields_c.getFirstC();
+			String inputLast = textFields_c.getLastC();
+			String inputTribe = textFields_c.getTribe();
+
+
+			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputFirst)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+			}
+
+			else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputLast)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+			}
+
+			else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+			}
+
+			else if (!checkValidChars(inputTribe)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
+			}
 		}
 		/**  Delete Contestant Handler  **/
 		if(e.getActionCommand().equals("deleteC")) {
-			
+			String inputFirst = textFields_c.getFirstC();
+			String inputLast = textFields_c.getLastC();
+			String inputTribe = textFields_c.getTribe();
+
+
+			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputFirst)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+			}
+
+			else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputLast)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+			}
+
+			else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+			}
+
+			else if (!checkValidChars(inputTribe)){
+			JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
+			}
 		}
 		/**  Reset Fields Handler  **/
 		if(e.getActionCommand().equals("reset")) {
-			
+			String firstFieldC = textFields_c.getFirstC();
+			String lastFieldC = textFields_c.getLastC();
+			String tribeField = textFields_c.getTribe();
+
+			String firstFieldP = textFields_p.getTribe();
+			String lastFieldP = textFields_p.getTribe();
+
+			if(firstFieldP != "" || lastFieldP != " ") {
+			textFields_p.setFirstP("");
+			textFields_p.setLastP("");
+			}
+			if(firstFieldC != "" || lastFieldC != " ") {
+			textFields_c.setFirstC("");
+			textFields_c.setLastC("");
+			textFields_c.setTribe("");
+			}
 		}
 		/**  Quit Button Handler **/
 		if(e.getActionCommand().equals("q")) {
@@ -914,4 +1095,5 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	}
 		
 }
+
 	

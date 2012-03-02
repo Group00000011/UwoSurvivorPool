@@ -107,7 +107,10 @@ public class GameSettings extends JPanel implements ActionListener {
 			// *********** TODO Disable player/contestant add/modify buttons
 		}		
 		if(e.getActionCommand().equals("save")) {
-			
+			if (Integer.parseInt(contField.getText()) < 6 || Integer.parseInt(contField.getText()) > 15){
+				contField.setText(""); // resets the field if the number of contestants is outside the range
+				JOptionPane.showMessageDialog(this, "Number of Contestants must be between 6 and 15"); // notifies the user of this requirement
+				}
 		}		
 	}
 	/**

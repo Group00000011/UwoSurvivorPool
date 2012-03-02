@@ -9,6 +9,7 @@
  */
  
 import java.awt.*;
+import java.io.*;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -21,7 +22,8 @@ import javax.swing.text.*;
  */
 public class TextInputFields extends JPanel implements ActionListener {
 	/************   Attributes ***************************/
-    private JTextField firstFieldP, lastFieldP, tribeField, firstFieldC, lastFieldC, tribeFieldC;
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private static JTextField firstFieldP, lastFieldP, tribeField, firstFieldC, lastFieldC;
 	private String firstNameString = "", lastNameString = "", tribeString = "";  // Record Display String
     private JButton uploadBtn, updateBtn, addBtn, deleteBtn, resetBtn;
     private JLabel recordDisplay;
@@ -42,6 +44,48 @@ public class TextInputFields extends JPanel implements ActionListener {
     }
     
     /**************  Methods ***********************/
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public String getFirstP(){
+    	return firstFieldP.getText();
+
+    }
+
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public String getLastP() {
+    	return lastFieldP.getText();
+
+    }
+    
+    public String getFirstC(){
+    	return firstFieldC.getText();
+    	}
+    	public String getLastC(){
+    	return lastFieldC.getText();
+    	}
+    	public String getTribe(){
+    	return tribeField.getText();
+    	}
+
+    	public void setFirstC(String input){
+    	firstFieldC.setText(input);
+    	}
+
+    	public void setLastC(String input){
+    	lastFieldC.setText(input);
+    	}
+    	public void setTribe(String input){
+    	tribeField.setText(input);
+    	}
+
+
+    	public void setFirstP(String input){
+    	firstFieldP.setText(input);
+    	}
+
+    	public void setLastP(String input){
+    	lastFieldP.setText(input);
+    	}
     /**
      * This button allows the user to upload a pic from file and it will fit the image into a special frame
      * depending on the theme.
@@ -108,7 +152,11 @@ public class TextInputFields extends JPanel implements ActionListener {
     	}
     	/**  Upload Button Handler  **/
     	else if(e.getActionCommand().equals("upload")) {
-    		
+    		JFileChooser fileChooser = new JFileChooser();
+    		int returnVal = fileChooser.showOpenDialog(this);
+    		if (returnVal == JFileChooser.APPROVE_OPTION){
+    		File contestantPhoto = fileChooser.getSelectedFile();
+    		}
     	}
     	
     }// End of ActionPerformed Button Handler
