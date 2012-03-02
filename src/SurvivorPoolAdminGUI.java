@@ -62,7 +62,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		//initialize players and contestants array
 		String fileName="players.txt";
 		readPlayers(fileName);
-		contestants=null;
+		contestants=new Contestant[15];
 		
 		textFields_p = new TextInputFields();
 		textFields_c = new TextInputFields();
@@ -902,7 +902,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String inputLast = textFields_c.getLastC();
 			String inputTribe = textFields_c.getTribe();
 
-
 			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
 			JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 			}
@@ -924,11 +923,36 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			else if (!checkValidChars(inputTribe)){
 			JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
 			}
-
-
-			//Contestant newContestant = new Contestant(inputFirst, inputLast, inputID, inputTribe, inputPic);
-			//contestants[contCount] = newContestant;
-			//contCount++;
+			else{
+			char IDchar='a';
+			int IDint=1;
+			String ID=""+IDchar+IDint;
+			boolean isUnique=false;
+			while(!isUnique){
+			isUnique=true;
+			for(int i=0;i<contCount && isUnique;i++){
+				if(contestants[i]==null)
+					;
+				else if(contestants[i].getID().equals(ID)){
+						isUnique=false;
+						break;
+				}
+			}
+			if(isUnique==false){
+				if(IDint==9){
+					IDchar++;
+					IDint=1;
+				}
+				else
+					IDint++;
+				ID=""+IDchar+IDint;
+			}
+			}
+			Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, "");
+			contestants[contCount] = newContestant;
+			contCount++;
+			JOptionPane.showMessageDialog(this, "Contestant added."+ID);
+			}
 		}
 		/**  Update Contestant Handler  **/
 		if(e.getActionCommand().equals("updateC")) {
