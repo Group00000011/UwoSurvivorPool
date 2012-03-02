@@ -86,26 +86,26 @@ public class TextInputFields extends JPanel implements ActionListener {
     	public void setLastP(String input){
     	lastFieldP.setText(input);
     	}
-    /**
-     * This button allows the user to upload a pic from file and it will fit the image into a special frame
-     * depending on the theme.
-     * @return upload button
-     */
-    protected JComponent uploadButton() {
-    	JPanel p = new JPanel();
-    	
-    	uploadedImage = new ImageIcon(getClass().getResource("images/uploadPicFrame_Goldblank.jpg"), "No Contestant Image has been loaded yet.");
-    	
-    	uploadBtn = new JButton("Upload a Picture", uploadedImage);
-    	uploadBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
-    	uploadBtn.setHorizontalTextPosition(AbstractButton.CENTER);
-    	uploadBtn.setActionCommand("upload");
-    	uploadBtn.addActionListener(this);
-    	
-    	p.setOpaque(false);
-    	p.add(uploadBtn);
-    	return p;
-    }
+//    /**
+//     * This button allows the user to upload a pic from file and it will fit the image into a special frame
+//     * depending on the theme.
+//     * @return upload button
+//     */
+//    protected JComponent uploadButton() {
+//    	JPanel p = new JPanel();
+//    	
+//    	uploadedImage = new ImageIcon(getClass().getResource("images/uploadPicFrame_Goldblank.jpg"), "No Contestant Image has been loaded yet.");
+//    	
+//    	uploadBtn = new JButton("Upload a Picture", uploadedImage);
+//    	uploadBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
+//    	uploadBtn.setHorizontalTextPosition(AbstractButton.CENTER);
+//    	uploadBtn.setActionCommand("upload");
+//    	uploadBtn.addActionListener(this);
+//    	
+//    	p.setOpaque(false);
+//    	p.add(uploadBtn);
+//    	return p;
+//    }
     /**
      * Format the image - resize to specifications
      * & uploaded into the image icon frame
@@ -150,15 +150,15 @@ public class TextInputFields extends JPanel implements ActionListener {
         		tribeField.setText("");  
     		}
     	}
-    	/**  Upload Button Handler  **/
-    	else if(e.getActionCommand().equals("upload")) {
-    		JFileChooser fileChooser = new JFileChooser();
-    		int returnVal = fileChooser.showOpenDialog(this);
-    		if (returnVal == JFileChooser.APPROVE_OPTION){
-    		File contestantPhoto = fileChooser.getSelectedFile();
-    		}
-    	}
-    	
+//    	/**  Upload Button Handler  **/
+//    	else if(e.getActionCommand().equals("upload")) {
+//    		JFileChooser fileChooser = new JFileChooser();
+//    		int returnVal = fileChooser.showOpenDialog(this);
+//    		if (returnVal == JFileChooser.APPROVE_OPTION){
+//    		File contestantPhoto = fileChooser.getSelectedFile();
+//    		}
+//    	}
+//    	
     }// End of ActionPerformed Button Handler
     /**
      * Update Record
