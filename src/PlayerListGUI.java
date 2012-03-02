@@ -1,5 +1,5 @@
 /**
- * Sorting table for Contestant and Player lists
+ * Sorting table for Player Standings list
  * Adapted from docs.oracle.com (TableSortDemo.java)
  * @author Hazel R
  * February 25, 2012
@@ -15,26 +15,41 @@ import java.awt.GridLayout;
 public class PlayerListGUI extends JPanel	{
 	private boolean DEBUG = false;
 	private static final int WIDTH = 500;
-	private static final int HEIGHT = 350;
+	private static final int HEIGHT = 600;
 
     private Font textInputFieldFont;
     private Color textInputFieldColor;
     
     private JPanel playerListPanel;
+    
+	private ImageIcon placeHolderImg = new ImageIcon(getClass().getResource("images/uploadPic_small.jpg"));
+	private JLabel placeHolderLbl = new JLabel(placeHolderImg);
 	
+    /*******************************  CONSTRUCTOR  ***********************************/
 	public PlayerListGUI() {
 		super(new GridLayout(1,0));
 		
 		add(createPlayerList());
 
-	}
+	} // End of Constructor
+	
 	public JComponent createPlayerList() {
 		playerListPanel = new JPanel();
 		
 		JTable table = new JTable(new MyTableModel());
-		table.setPreferredScrollableViewportSize(new Dimension(500,200));
+		table.setPreferredScrollableViewportSize(new Dimension(900,400));
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(true);
+		table.setRowHeight(77);
+		
+		table.setFont(new Font("Viner Hand ITC",Font.PLAIN,18));
+		table.setForeground(Color.GREEN);
+		table.setSelectionForeground(Color.RED);
+		table.setOpaque(false);
+//		table.setBackground(new Color(0,0,0,64));
+		table.setSelectionBackground(new Color(0,0,64,0));
+		
+//		placeHolderLbl.
 		
 		//Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -49,12 +64,12 @@ public class PlayerListGUI extends JPanel	{
 		private String[] columnNames =  {"User ID", "First Name", "Last Name", "This Weeks Score", "Total Score", "Contestant Pick"};
 		
 		private Object[][] data = {  /*************** TODO Implement getters  here */
-				{ "mgrabar", "Martin", "Grabarczyk", "* implement *", "* implement *", "[ Contestant Image ]" },
-				{ "hrivera", "Hazel", "Rivera", "* implement *", "* implement *", "[ Contestant Image ]" },
-				{ "mfreema", "Manor", "Freeman", "* implement *", "* implement *", "[ Contestant Image ]" },
-				{ "dhill", "Delerinoa", "Grabarczyk", "* implement *", "* implement *", "[ Contestant Image ]" },
-				{ "jwestaw", "Jeff", "Westaway", "* implement *", "* implement *", "[ Contestant Image ]" },
-				{ "lcorrig", "Liam", "Corrigan", "* implement *", "* implement *", "[ Contestant Image ]" },
+				{ "mgrabar", "Martin", "Grabarczyk", "* implement *", "* implement *", placeHolderImg },
+				{ "hrivera", "Hazel", "Rivera", "* implement *", "* implement *", placeHolderImg },
+				{ "mfreema", "Manor", "Freeman", "* implement *", "* implement *", placeHolderImg },
+				{ "dhill", "Delerina", "Grabarczyk", "* implement *", "* implement *", placeHolderImg },
+				{ "jwestaw", "Jeff", "Westaway", "* implement *", "* implement *", placeHolderImg },
+				{ "lcorrig", "Liam", "Corrigan", "* implement *", "* implement *", placeHolderImg },
 		};
 		public int getColumnCount() {
 			return columnNames.length;
@@ -165,7 +180,7 @@ public class PlayerListGUI extends JPanel	{
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("TableDemo");
+        JFrame frame = new JFrame("Player List Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Create and set up the content pane.
