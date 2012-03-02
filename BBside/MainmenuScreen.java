@@ -1,11 +1,6 @@
 import net.rim.device.api.ui.*;
 import net.rim.device.api.ui.component.*;
 import net.rim.device.api.ui.container.*;
-import net.rim.device.api.system.Bitmap;
-//import com.rim.device.api.ui.container.VerticalButtonFieldSet;
-import net.rim.device.api.system.PersistentObject;
-import net.rim.device.api.system.PersistentStore;
-
 
 public class MainmenuScreen extends MainScreen implements FieldChangeListener {
     private MyButtonField standingsButton;
@@ -17,8 +12,10 @@ public class MainmenuScreen extends MainScreen implements FieldChangeListener {
 
     public MainmenuScreen() {
     	   
-    	add(new LabelField("Your Score: " + " (" + "place)", Field.FIELD_HCENTER));
-    	add(new LabelField("Week: ", Field.FIELD_HCENTER));
+    	add(new LabelField("Week: 14", Field.FIELD_HCENTER));
+    	add(new LabelField("Your Score: 9999" + " (1st " + "place)", Field.FIELD_HCENTER));
+    	add(new LabelField("Current Pick: Jim Bob", Field.FIELD_HCENTER));
+    	add(new LabelField("Winner Pick: Chuck Norris", Field.FIELD_HCENTER));
 
         add(new SeparatorField());
 

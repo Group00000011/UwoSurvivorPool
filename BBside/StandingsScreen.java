@@ -20,25 +20,24 @@ public class StandingsScreen extends MainScreen implements FieldChangeListener {
     	      Bitmap logoBitmap = Bitmap.getBitmapResource("Standings.png");
               logoBitmapField = new BitmapField(logoBitmap, Field.FIELD_HCENTER);
               add(logoBitmapField);
-                         
-              setTitle("Users");
-      
-              add(new SeparatorField());
-              
+                                   
               Manager mainManager = getMainManager();
               
               SimpleList listField = new SimpleList(mainManager);
-      
+ 
               for (int i=0; i < userName.length; i++){
-              listField.add("i | " + userName[i] + ":" + userScore[i]);
+              listField.add(i+1 + " | " + userName[i] + ":" + userScore[i]);
               }
               
               backButton = new ButtonField("Back");
               exitButton = new ButtonField("Quit");
               backButton.setChangeListener(this);
               exitButton.setChangeListener(this);
-              this.add(backButton);
-              this.add(exitButton);
+              
+              HorizontalFieldManager buttonManager = new HorizontalFieldManager(Field.FIELD_RIGHT | Manager.VERTICAL_SCROLL);
+              buttonManager.add(backButton);
+              buttonManager.add(exitButton);
+              add(buttonManager);
        }
        public void fieldChanged(Field field, int context) {
               if (field == backButton) {

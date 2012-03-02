@@ -9,6 +9,7 @@ public class BonusQuestionScreen extends MainScreen implements FieldChangeListen
 	   private BitmapField logoBitmapField;
        private ButtonField backButton;
        private ButtonField exitButton;
+       private ButtonField answerButton;
 	   private String bonusQuestion;
 	   private EditField answerField;
 
@@ -23,8 +24,10 @@ public class BonusQuestionScreen extends MainScreen implements FieldChangeListen
               
               backButton = new ButtonField("Back");
               exitButton = new ButtonField("Quit");
+              answerButton = new ButtonField("Answer");
               backButton.setChangeListener(this);
               exitButton.setChangeListener(this);
+              answerButton.setChangeListener(this);
               
               Font myFont = Font.getDefault().derive(Font.BOLD);
               
@@ -45,6 +48,7 @@ public class BonusQuestionScreen extends MainScreen implements FieldChangeListen
               add(new SeparatorField());
               
               HorizontalFieldManager buttonManager = new HorizontalFieldManager(Field.FIELD_RIGHT);
+              buttonManager.add(answerButton);
               buttonManager.add(backButton);
               buttonManager.add(exitButton);
               add(buttonManager);
@@ -55,6 +59,9 @@ public class BonusQuestionScreen extends MainScreen implements FieldChangeListen
               }
               if (field == exitButton){
             	  System.exit(0);
+              }
+              if (field == answerButton){
+                  UiApplication.getUiApplication().popScreen(UiApplication.getUiApplication().getActiveScreen());
               }
        }
 } 
