@@ -25,19 +25,17 @@ public class Player {
 	 *            Player's Last name
 	 * @param userID
 	 *            Player's user ID
-	 * @param numRounds
-	 *            Number of rounds in the game
-	 */
-	public Player(String firstName, String lastName, String userID,
-			int numRounds) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.userID = userID;
-		this.finalPick = null;
-		this.roundOfFinalPick = 0;
+	 **/
+	public Player(String firstName, String lastName, String userID){
+		this.firstName=firstName;
+		this.lastName=lastName;
+		this.userID=userID;
+		this.finalPick=null;
+		this.roundOfFinalPick= 0;
 		this.score = 0;
-		this.weeklyPicks = new RoundPick[numRounds];
+		this.weeklyPicks=null;
 	}
+	
 
 	// Accessor methods
 
@@ -100,11 +98,15 @@ public class Player {
 	 * 
 	 * @param roundNum
 	 *            The round of the RoundPick
-	 * @return the RoundPick for the specified round
+	 * @return the RoundPick for the specified round if it has been made, else return null 
 	 */
 	public RoundPick getWeekPick(int roundNum) {
-		return this.weeklyPicks[roundNum - 1];
+		if(this.weeklyPicks.length >= roundNum)
+			return this.weeklyPicks[roundNum - 1];
+		else
+			return null;
 	}
+
 
 	// Mutator methods
 
@@ -149,7 +151,21 @@ public class Player {
 	 *            the contestant to be eliminated on the specified round
 	 */
 	public void makeRoundPick(int roundNum, Contestant cont) {
-		this.weeklyPicks[roundNum - 1] = new RoundPick(roundNum, cont);
+		if(this.weeklyPicks==null){
+			this.weeklyPicks=new RoundPick[roundNum];
+			this.weeklyPicks[roundNum - 1] = new RoundPick(roundNum, cont);
+		}
+		else if(this.weeklyPicks.length >= roundNum)
+			this.weeklyPicks[roundNum - 1] = new RoundPick(roundNum, cont);
+		else{
+			RoundPick[] newWeekPicks=new RoundPick[roundNum];
+			for(int i=0;i<this.weeklyPicks.length; i++){
+				newWeekPicks[i]=this.weeklyPicks[i];
+			}
+			newWeekPicks[roundNum-1] = new RoundPick(roundNum, cont);
+			this.weeklyPicks=newWeekPicks;
+		}
+		
 	}
 
 	/**
@@ -165,7 +181,7 @@ public class Player {
 	public void chooseWinner(Contestant cont, int currRound, int numRounds) {
 		this.finalPick = new RoundPick(numRounds, cont);
 		this.roundOfFinalPick = currRound;
-		this.weeklyPicks[numRounds - 1] = this.finalPick;
+		this.makeRoundPick(numRounds - 1,cont);
 	}
 
 }
