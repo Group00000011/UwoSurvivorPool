@@ -27,6 +27,10 @@ public class GameSettings extends JPanel implements ActionListener {
 	// Area that shows the number of players currently on record 
 	private JTextArea playArea;
 	
+	// Stores the number of contestants and total number of rounds
+	private int numConts;
+	private int numRounds;
+	
 	public GameSettings() {
         super(new BorderLayout());
         
@@ -110,7 +114,13 @@ public class GameSettings extends JPanel implements ActionListener {
 			if (Integer.parseInt(contField.getText()) < 6 || Integer.parseInt(contField.getText()) > 15){
 				contField.setText(""); // resets the field if the number of contestants is outside the range
 				JOptionPane.showMessageDialog(this, "Number of Contestants must be between 6 and 15"); // notifies the user of this requirement
+				
 				}
+			else{
+				numConts = Integer.parseInt(contField.getText());
+				numRounds = numConts - 2;
+				JOptionPane.showMessageDialog(this, "The total number of rounds will be: " + numRounds);
+			}
 		}		
 	}
 	/**
@@ -118,7 +128,7 @@ public class GameSettings extends JPanel implements ActionListener {
 	 */
 	public void gameSettingsWindow() {
 		JFrame frame = new JFrame("Game Settings");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.add(new GameSettings());
 		frame.pack();
 		frame.setVisible(true);

@@ -44,49 +44,69 @@ public class TextInputFields extends JPanel implements ActionListener {
     }
     
     /**************  Methods ***********************/
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String getFirstP(){
-    	return firstFieldP.getText();
+   
+    /**
+     * Gets the first name of the player
+     * @return first name
+     */
+	public String getFirstP() {
+		return firstFieldP.getText();
+	}
 
-    }
+	/**
+	 *  Gets the last name of the player
+	 * @return last name
+	 */
+	public String getLastP() {
+		return lastFieldP.getText();
+	}
+	
 
-    
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String getLastP() {
-    	return lastFieldP.getText();
+	/**
+	 * Gets the first name of the contestant
+	 * @return first name
+	 */
+	public String getFirstC() {
+		return firstFieldC.getText();
+	}
 
-    }
-    
-    public String getFirstC(){
-    	return firstFieldC.getText();
-    	}
-    	public String getLastC(){
-    	return lastFieldC.getText();
-    	}
-    	public String getTribe(){
-    	return tribeField.getText();
-    	}
+	/**
+	 * Gets the last name of the contestant
+	 * @return last name
+	 */
+	public String getLastC() {
+		return lastFieldC.getText();
+	}
 
-    	public void setFirstC(String input){
-    	firstFieldC.setText(input);
-    	}
+	/**
+	 * Gets the tribe name
+	 * @return tribe name
+	 */
+	public String getTribe() {
+		return tribeField.getText();
+	}
 
-    	public void setLastC(String input){
-    	lastFieldC.setText(input);
-    	}
-    	public void setTribe(String input){
-    	tribeField.setText(input);
-    	}
+	public void setFirstC(String input) {
+		firstFieldC.setText(input);
+	}
 
+	public void setLastC(String input) {
+		lastFieldC.setText(input);
+	}
 
-    	public void setFirstP(String input){
-    	firstFieldP.setText(input);
-    	}
+	public void setTribe(String input) {
+		tribeField.setText(input);
+	}
 
-    	public void setLastP(String input){
-    	lastFieldP.setText(input);
-    	}
-//    /**
+	public void setFirstP(String input) {
+		firstFieldP.setText(input);
+	}
+
+	public void setLastP(String input) {
+		lastFieldP.setText(input);
+	}
+
+	//    /**
 //     * This button allows the user to upload a pic from file and it will fit the image into a special frame
 //     * depending on the theme.
 //     * @return upload button

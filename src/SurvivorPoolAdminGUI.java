@@ -54,7 +54,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	private Font gFont, jFont;
 
-	private File contestantPhoto;
+	private String imagePath = null;
 
 	//contestant and player holder
 	private Player[] players;
@@ -624,6 +624,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		return panel;
 	}
+	
+	/**
+	 * 
+	 * @param op
+	 * @return
+	 */
 	protected JComponent addUpdateDeleteButtonsC(String op) {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
@@ -871,10 +877,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	}
 
 	/**
-	 *
-	 * @param first
-	 * @param last
-	 * @return
+	 * Searches for contestant
+	 * @param first name
+	 * @param last name
+	 * @return contestant object if found, null if not
 	 */
 	public Contestant findContestant(String first, String last){
 		Contestant tempCont = null;
@@ -997,10 +1003,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						ID=""+IDchar+IDint;
 					}
 				}
-				Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, "");
+				Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, imagePath);
 				contestants[contCount] = newContestant;
 				contCount++;
-				JOptionPane.showMessageDialog(this, "Contestant added."+ID);
+				if (imagePath == null){
+				JOptionPane.showMessageDialog(this, "Contestant added, but you didn't add a picture!" );
+				}
+				else{
+				JOptionPane.showMessageDialog(this, "Contestant added" );
+				}
 			}
 		}
 		/**  Update Contestant Handler  **/
@@ -1167,7 +1178,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/**  Upload Button Handler  **/
 		else if(e.getActionCommand().equals("upload")) {
-			String imagePath;
 			imagePath = JOptionPane.showInputDialog(null, "Enter the photo's path : ");
 			ImageIcon contestantImage = createImageIcon(imagePath);
 			contestantPicFrame.setIcon(contestantImage);
