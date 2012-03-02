@@ -9,6 +9,7 @@ import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,10 +30,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"), jungleBackground;
 	private ImageIcon newGame, playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg;
 	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg, standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
+	private ImageIcon uploadedImage;
 	
 	// Buttons
 	private JButton quitBtn, mainMenuBtn, createNewGameBtn, playersBtn, contestantsBtn, standingsBtn, bonusQBtn, themeSelectBtn;	
-	private JButton addBtn, updateBtn, deleteBtn, resetBtn;
+	private JButton addBtn, updateBtn, deleteBtn, resetBtn, uploadBtn;
 	
 	// JLabels
 	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, standingBg, bqBg, titleBanner, contestantPicFrame;
@@ -415,7 +417,27 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		
 		return mainButtonsPanel;
 	}
-	/**
+    /**
+     * This button allows the user to upload a pic from file and it will fit the image into a special frame
+     * depending on the theme.
+     * @return upload button
+     */
+    protected JComponent uploadButton() {
+    	JPanel p = new JPanel();
+    	
+    	uploadedImage = createImageIcon("images/uploadPicFrame_Goldblank.jpg");
+    	
+    	uploadBtn = new JButton("Upload a Picture", uploadedImage);
+    	uploadBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
+    	uploadBtn.setHorizontalTextPosition(AbstractButton.CENTER);
+    	uploadBtn.setActionCommand("upload");
+    	uploadBtn.addActionListener(this);
+    	
+    	p.setOpaque(false);
+    	p.add(uploadBtn);
+    	return p;
+    }
+    /**
 	 * The Title Banner
 	 */
 	protected JComponent titleComponent() {
@@ -513,16 +535,19 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * A Chart and current information
 	 */
 	protected JComponent standingsPanel() {
-		sPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		SpringLayout sLayout = new SpringLayout();
+		sPanel = new JPanel(sLayout);
+	    this.setLayout(sLayout);
+	    
+		// Add the list
+		JPanel centerPanel = new JPanel();
+		centerPanel.add(standingsTable.createPlayerList(), BorderLayout.CENTER);
 		
 		getContentPane().add(sPanel);
 	    getContentPane().add(mainMenuButton());
-	    getContentPane().add(standingsTable.createPlayerList(), BorderLayout.CENTER);
+	    getContentPane().add(centerPanel, BorderLayout.CENTER);
 		getContentPane().add(standingBg); 		// Create the background		
 		
-		// Add the list
-//		JPanel centerPanel = new JPanel();
-//		centerPanel.add(standingsTable.createPlayerList(), BorderLayout.CENTER);
 
 		// Create the labels and text areas for this panel
 		String poolString = "Total in Pool";
@@ -664,7 +689,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		leftHalf_c.setOpaque(false);
 		leftHalf_c.add(textFields_c.createFieldsCont());
 //	    leftHalf_c.add(textFields_c.createTribeField());
-	    leftHalf_c.add(textFields_c.uploadButton());
+	    leftHalf_c.add(uploadButton());
 		leftHalf_c.add(addUpdateDeleteButtonsC("Contestant"));
 		
 		// Create a seperator
@@ -1092,6 +1117,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		else if(e.getActionCommand().equals("new")) {
 			
 		}
+    	/**  Upload Button Handler  **/
+    	else if(e.getActionCommand().equals("upload")) {
+    		JFileChooser fileChooser = new JFileChooser();
+    		int returnVal = fileChooser.showOpenDialog(this);
+    		if (returnVal == JFileChooser.APPROVE_OPTION){
+    		File contestantPhoto = fileChooser.getSelectedFile();
+    		}
+    	}
+    	
 	}
 		
 }
