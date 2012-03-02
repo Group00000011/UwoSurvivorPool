@@ -54,6 +54,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	
 	private Font gFont, jFont;
 	
+	private File contestantPhoto;
+	
 	//contestant and player holder
 	private Player[] players;
 	private Contestant[] contestants;
@@ -1122,7 +1124,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
     		JFileChooser fileChooser = new JFileChooser();
     		int returnVal = fileChooser.showOpenDialog(this);
     		if (returnVal == JFileChooser.APPROVE_OPTION){
-    		File contestantPhoto = fileChooser.getSelectedFile();
+    		contestantPhoto = fileChooser.getSelectedFile();
     		}
     	}
     	
