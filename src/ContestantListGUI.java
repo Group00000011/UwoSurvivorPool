@@ -1,8 +1,11 @@
 /**
- * Sorting table for Contestant list
+ * ContestantListGUI -- Sort table for Contestant list, 
+ * sorts table in column choice, is editable, displays the contestant image 
  * Adapted from docs.oracle.com (TableSortDemo.java)
- * @author Hazel R
- * March 1, 2012
+ * 
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill
+ * V 1.0 March 1, 2012
  */
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -11,55 +14,64 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-public class ContestantListGUI extends JPanel implements MouseListener	{
+public class ContestantListGUI extends JPanel	{
+	//Attributes
+	private static final long serialVersionUID = 1L;
+
 	private boolean DEBUG = false;
-	private static final int WIDTH = 500;
-	private static final int HEIGHT = 350;
+	private static final int WIDTH = 850;
+	private static final int HEIGHT = 400;
 
     private Font textInputFieldFont;
     private Color textInputFieldColor;
     
     private JPanel contListPanel;
     
-    private JLabel imgPlaceHolder;    
+	private ImageIcon placeHolderImg = new ImageIcon(getClass().getResource("images/uploadPic_small.jpg"));
+//    private JLabel imgPlaceHolder;    
 	
     /*******************************  CONSTRUCTOR  ***********************************/
+	/**
+	 * Calls the contestant list interface
+	 */
 	public ContestantListGUI() {
 		super(new GridLayout(1,0));
 		
 		add(createContList());
-
 	}
+	/**
+	 * Creates the contestant list sorted table 
+	 * @return contestant custom table
+	 */
 	public JComponent createContList() {
 		contListPanel = new JPanel();
 		
 		JTable table = new JTable(new MyTableModel());
-		table.setPreferredScrollableViewportSize(new Dimension(900,400));
+		table.setPreferredScrollableViewportSize(new Dimension(WIDTH,HEIGHT));
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(true);
 		table.setRowHeight(77);
 		
 		table.setFont(new Font("Viner Hand ITC",Font.PLAIN,18));
-		table.setForeground(Color.GREEN);
+		table.setForeground(Color.BLUE);
 		table.setSelectionForeground(Color.RED);
-		table.setOpaque(false);
+//		table.setOpaque(false);
 //		table.setBackground(new Color(0,0,0,64));
-//		table.setSelectionBackground(new Color(0,0,64,0));
+		table.setSelectionBackground(new Color(0,0,0,64)); // When a cell is selected, this entire row is highlighted.
 		
 		//Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(table);
-		
-		//Add the scroll pane to this panel.
 		contListPanel.add(scrollPane);	
 		
 		return contListPanel;
 	} // End of Constructor
 	
+	/** 
+	 * Creates a custom sort table of contestant information
+	 * This class gets called by the main panel
+	 */
 	class MyTableModel extends AbstractTableModel {
-		private ImageIcon placeHolderImg = new ImageIcon(getClass().getResource("images/uploadPic_small.jpg"));
 		private String[] columnNames =  {"User ID", "First Name", "Last Name", "Tribe", "Picture", "Eliminated"};
 		
 		private Object[][] data = {  /*************** TODO Implement getters  here */
@@ -70,6 +82,10 @@ public class ContestantListGUI extends JPanel implements MouseListener	{
 				{ "JW", "Jeff", "Westaway", "* implement *", placeHolderImg, new Boolean(false) },
 				{ "LC", "Liam", "Corrigan", "* implement *", placeHolderImg, new Boolean(false) },
 		};
+		/* 
+		 * (non-Javadoc)
+		 * @see javax.swing.table.TableModel#getColumnCount()
+		 */
 		public int getColumnCount() {
 			return columnNames.length;
 		}
@@ -99,48 +115,48 @@ public class ContestantListGUI extends JPanel implements MouseListener	{
 				return true;			
 			}
 		}
-		 /*
-         * Don't need to implement this method unless your table's
-         * data can change.
-         */
-        public void setValueAt(Object value, int row, int col) {
-            if (DEBUG) {
-                System.out.println("Setting value at " + row + "," + col
-                                   + " to " + value
-                                   + " (an instance of "
-                                   + value.getClass() + ")");
-            }
- 
-            data[row][col] = value;
-            // Normally, one should call fireTableCellUpdated() when
-            // a value is changed.  However, doing so in this demo
-            // causes a problem with TableSorter.  The tableChanged()
-            // call on TableSorter that results from calling
-            // fireTableCellUpdated() causes the indices to be regenerated
-            // when they shouldn't be.  Ideally, TableSorter should be
-            // given a more intelligent tableChanged() implementation,
-            // and then the following line can be uncommented.
-            // fireTableCellUpdated(row, col);
- 
-            if (DEBUG) {
-                System.out.println("New value of data:");
-                printDebugData();
-            }
-        }
- 
-        private void printDebugData() {
-            int numRows = getRowCount();
-            int numCols = getColumnCount();
- 
-            for (int i=0; i < numRows; i++) {
-                System.out.print("    row " + i + ":");
-                for (int j=0; j < numCols; j++) {
-                    System.out.print("  " + data[i][j]);
-                }
-                System.out.println();
-            }
-            System.out.println("--------------------------");
-        }
+//		 /*
+//         * Don't need to implement this method unless your table's
+//         * data can change.
+//         */
+//        public void setValueAt(Object value, int row, int col) {
+//            if (DEBUG) {
+//                System.out.println("Setting value at " + row + "," + col
+//                                   + " to " + value
+//                                   + " (an instance of "
+//                                   + value.getClass() + ")");
+//            }
+// 
+//            data[row][col] = value;
+//            // Normally, one should call fireTableCellUpdated() when
+//            // a value is changed.  However, doing so in this demo
+//            // causes a problem with TableSorter.  The tableChanged()
+//            // call on TableSorter that results from calling
+//            // fireTableCellUpdated() causes the indices to be regenerated
+//            // when they shouldn't be.  Ideally, TableSorter should be
+//            // given a more intelligent tableChanged() implementation,
+//            // and then the following line can be uncommented.
+//            // fireTableCellUpdated(row, col);
+// 
+//            if (DEBUG) {
+//                System.out.println("New value of data:");
+//                printDebugData();
+//            }
+//        }
+// 
+//        private void printDebugData() {
+//            int numRows = getRowCount();
+//            int numCols = getColumnCount();
+// 
+//            for (int i=0; i < numRows; i++) {
+//                System.out.print("    row " + i + ":");
+//                for (int j=0; j < numCols; j++) {
+//                    System.out.print("  " + data[i][j]);
+//                }
+//                System.out.println();
+//            }
+//            System.out.println("--------------------------");
+//        }
     }
 	/**
 	 * To Format the fields and labels
@@ -171,29 +187,7 @@ public class ContestantListGUI extends JPanel implements MouseListener	{
     protected Color getGameFontColor() {
     	return textInputFieldColor;
     }
-    /**
-     * Mouse Listeners for the Contenstant Image
-     */
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the

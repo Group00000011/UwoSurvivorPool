@@ -1,14 +1,19 @@
 /**
- * The Game Settings Dialog Box
+ * GameSettings -- Dialog Box to set up and start a new game 
  * The Administrator can add & change the values until the game starts
- * @author Hazel R
- * February 26, 2012
+ * TextFields takes in the number of contestants, and the amount wagered
+ * TextArea displays the number of players entered in the pool
+ * When the game starts, TextFields will convert to TextAreas that display settings panel TODO
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill
+ *  V 1.0 03/01/12
  */
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class GameSettings extends JPanel implements ActionListener {
+	//Attributes
 	private final int COLUMNS = 10; // the size of the text fields/area
 	// The Buttons
 	private JButton resetGameBtn, startGameBtn, saveSettingBtn;
@@ -31,6 +36,10 @@ public class GameSettings extends JPanel implements ActionListener {
 	private int numConts;
 	private int numRounds;
 	
+	/**
+	 * Sets up the game setting panel as a custom JOptionPane Dialog
+	 * Administator can enter numContestants, 
+	 */
 	public GameSettings() {
         super(new BorderLayout());
         
@@ -94,12 +103,17 @@ public class GameSettings extends JPanel implements ActionListener {
 	} // End of constructor
 	
 	public void actionPerformed(ActionEvent e) {
+		/**  Reset Game button handler  **/
 		if(e.getActionCommand().equals("reset")) {
-			
+			//TODO
 		}
-		/**	 Before the game starts, a dialog box will appear to confirm settings	 **/
+		/**	 Start Game Button Handler  
+		 *  When the game starts, TextFields will convert to TextAreas that display settings panel TODO
+		 **/
 		if(e.getActionCommand().equals("start")) {
 			Object[] options = {"OK, Start Game", "No, not yet"};
+			
+			// Before the game starts, a dialog box will appear to confirm settings
 			JOptionPane.showOptionDialog(this, "Are you sure you are ready to start the game?\n"
 												+ "You cannot add/delete players or contestants once the game has started.", "Start Game", 
 												JOptionPane.YES_NO_OPTION,
@@ -110,6 +124,7 @@ public class GameSettings extends JPanel implements ActionListener {
 			
 			// *********** TODO Disable player/contestant add/modify buttons
 		}		
+		/**  Saves the inputted settings before game starts Button Handler   **/
 		if(e.getActionCommand().equals("save")) {
 			if (Integer.parseInt(contField.getText()) < 6 || Integer.parseInt(contField.getText()) > 15){
 				contField.setText(""); // resets the field if the number of contestants is outside the range
@@ -124,7 +139,7 @@ public class GameSettings extends JPanel implements ActionListener {
 		}		
 	}
 	/**
-	 * Create GUI & Show it. For thread safety, this method should be invoked from the even dispatch thread
+	 * Create GUI & Show it. 
 	 */
 	public void gameSettingsWindow() {
 		JFrame frame = new JFrame("Game Settings");
@@ -133,12 +148,23 @@ public class GameSettings extends JPanel implements ActionListener {
 		frame.pack();
 		frame.setVisible(true);
 	}
-//	public static void main(String[] args) {
-//		SwingUtilities.invokeLater(new Runnable() {
-//			public void run() {
-//				UIManager.put("swing.boldMetal", Boolean.FALSE);
-//				gameSettingsWindow();
-//			}
-//		});
-//	}
+	/**
+	 * Create GUI & Show it. For thread safety, this method should be invoked from the even dispatch thread
+	 * Shows the gui in this class -- used for testing
+	 */
+	public static void createAndShowGUI() {
+		JFrame frame = new JFrame("Game Settings");
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.add(new GameSettings());
+		frame.pack();
+		frame.setVisible(true);
+	}
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				UIManager.put("swing.boldMetal", Boolean.FALSE);
+				createAndShowGUI();
+			}
+		});
+	}
 }

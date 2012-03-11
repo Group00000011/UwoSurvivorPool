@@ -1,8 +1,9 @@
 /**
  * Sorting table for Player Standings list
  * Adapted from docs.oracle.com (TableSortDemo.java)
- * @author Hazel R
- * February 25, 2012
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill
+ *  V 1.0 03/01/12
  */
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -26,6 +27,9 @@ public class PlayerListGUI extends JPanel	{
 	private JLabel placeHolderLbl = new JLabel(placeHolderImg);
 	
     /*******************************  CONSTRUCTOR  ***********************************/
+	/**
+	 * Calls the player list interface
+	 */
 	public PlayerListGUI() {
 		super(new GridLayout(1,0));
 		
@@ -43,14 +47,12 @@ public class PlayerListGUI extends JPanel	{
 		table.setRowHeight(77);
 		
 		table.setFont(new Font("Viner Hand ITC",Font.PLAIN,18));
-		table.setForeground(Color.GREEN);
+		table.setForeground(Color.BLUE);
 		table.setSelectionForeground(Color.RED);
 		table.setOpaque(false);
 //		table.setBackground(new Color(0,0,0,64));
 		table.setSelectionBackground(new Color(0,0,64,0));
-		
-//		placeHolderLbl.
-		
+				
 		//Create the scroll pane and add the table to it.
 		JScrollPane scrollPane = new JScrollPane(table);
 		

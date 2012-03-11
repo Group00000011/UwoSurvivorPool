@@ -3,9 +3,10 @@
  *  Various Combo Boxes store values that have been inputted
  *  Includes a photo uploader
  * Buttons to Add/Update/Delete Profiles
- * @author hrivera
- * V 1.0 feb.19, 2012
- *
+ * 
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill
+ *  V 1.0 03/01/12
  */
  
 import java.awt.*;

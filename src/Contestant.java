@@ -1,9 +1,9 @@
 /**
- * Contestant class creates a contestant in the Survivor Pool
+ * Contestant -- class creates a contestant in the Survivor Pool
  * 
  * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
  *         Westaway, Delerina Hill
- * 
+ *  V 1.0 02/18/12 
  */
 public class Contestant {
 	// Attributes

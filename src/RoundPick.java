@@ -2,9 +2,9 @@
  * RoundPick class creates round pick objects that hold which contestant a
  * player thinks will be eliminated for a specified round
  * 
- * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+  * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
  *         Westaway, Delerina Hill
- * 
+ *  V 1.0 03/01/12
  */
 public class RoundPick {
 	// Attributes
