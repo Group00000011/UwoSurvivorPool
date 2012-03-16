@@ -84,7 +84,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	
 	//Variables for setters & getters
 	private boolean startGame=false;
-	private double wager;
+	private int wager;
 	
 
 	/******************************** Constructor *************************************/
@@ -615,7 +615,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		String stringAmount = wagerField.getText();
 		if(stringAmount==null || stringAmount.equals(""))
 			return 0;
-		wager = Double.valueOf(stringAmount.trim()).doubleValue();
+		wager = Integer.getInteger(stringAmount);
 		return wager;
 	}
 	/**
