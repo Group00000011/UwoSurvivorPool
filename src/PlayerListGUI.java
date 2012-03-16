@@ -66,12 +66,12 @@ public class PlayerListGUI extends JPanel	{
 		private String[] columnNames =  {"User ID", "First Name", "Last Name", "This Weeks Score", "Total Score", "Contestant Pick"};
 		
 		private Object[][] data = {  /*************** TODO Implement getters  here */
-				{ "mgrabar", "Martin", "Grabarczyk", "* implement *", "* implement *", placeHolderImg },
-				{ "hrivera", "Hazel", "Rivera", "* implement *", "* implement *", placeHolderImg },
-				{ "mfreema", "Manor", "Freeman", "* implement *", "* implement *", placeHolderImg },
-				{ "dhill", "Delerina", "Grabarczyk", "* implement *", "* implement *", placeHolderImg },
-				{ "jwestaw", "Jeff", "Westaway", "* implement *", "* implement *", placeHolderImg },
-				{ "lcorrig", "Liam", "Corrigan", "* implement *", "* implement *", placeHolderImg },
+				{ "mgrabar", "Martin", "Grabarczyk", "7", "14", placeHolderImg },
+				{ "hrivera", "Hazel", "Rivera", "3", "17", placeHolderImg },
+				{ "mfreema", "Manor", "Freeman", "2", "15", placeHolderImg },
+				{ "dhill", "Delerina", "Grabarczyk", "3", "20", placeHolderImg },
+				{ "jwestaw", "Jeff", "Westaway", "1", "13", placeHolderImg },
+				{ "lcorrig", "Liam", "Corrigan", "5", "19", placeHolderImg },
 		};
 		public int getColumnCount() {
 			return columnNames.length;
