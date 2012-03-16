@@ -106,7 +106,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		textFields_p = new TextInputFields();
 		textFields_c = new TextInputFields();
 		standingsTable = new PlayerListGUI();
-		contLiTable = new ContestantListGUI();
+		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
 
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero",Font.PLAIN,18);
@@ -227,7 +227,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			bWr.close();
 		}
 		catch(IOException e){}//unharmful
-
 	}
 
 	/**

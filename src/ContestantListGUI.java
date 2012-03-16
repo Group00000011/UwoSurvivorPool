@@ -18,11 +18,12 @@ import java.awt.GridLayout;
 public class ContestantListGUI extends JPanel	{
 	//Attributes
 	private static final long serialVersionUID = 1L;
-
+	
 	private boolean DEBUG = false;
 	private static final int WIDTH = 850;
 	private static final int HEIGHT = 400;
-
+	private int numConts=0;
+	private Contestant[] contestants;
     private Font textInputFieldFont;
     private Color textInputFieldColor;
     
@@ -35,9 +36,10 @@ public class ContestantListGUI extends JPanel	{
 	/**
 	 * Calls the contestant list interface
 	 */
-	public ContestantListGUI() {
+	public ContestantListGUI(int numConts, Contestant[] conts) {
 		super(new GridLayout(1,0));
-		
+		this.numConts=numConts;
+		this.contestants=conts;
 		add(createContList());
 	}
 	/**
@@ -47,7 +49,10 @@ public class ContestantListGUI extends JPanel	{
 	public JComponent createContList() {
 		contListPanel = new JPanel();
 		
-		JTable table = new JTable(new MyTableModel());
+		MyTableModel contTable=new MyTableModel();
+
+		JTable table = new JTable(contTable);
+		
 		table.setPreferredScrollableViewportSize(new Dimension(WIDTH,HEIGHT));
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(true);
@@ -73,14 +78,26 @@ public class ContestantListGUI extends JPanel	{
 	 */
 	class MyTableModel extends AbstractTableModel {
 		private String[] columnNames =  {"User ID", "First Name", "Last Name", "Tribe", "Picture", "Eliminated"};
-		
+//		public MyTableModel() {
+//			super();
+//			data = new Object[numConts][6];
+//			for(int i=0;i<numConts;i++){
+//				data[i][0]=contestants[i].getID();
+//				data[i][1]=contestants[i].getFirst();
+//				data[i][2]=contestants[i].getLast();
+//				data[i][3]=contestants[i].getTribe();
+//				data[i][4]=new ImageIcon(getClass().getResource(contestants[i].getPicture()));
+//				data[i][5]=(contestants[i].getElimRound()!=null);
+//			}
+//			
+//		}
 		private Object[][] data = {  /*************** TODO Implement getters  here */
-				{ "MG", "Martin", "Grabarczyk", "* implement *", placeHolderImg, new Boolean(false) },
-				{ "HR", "Hazel", "Rivera", "* implement *", placeHolderImg, new Boolean(false) },
-				{ "MF", "Manor", "Freeman", "* implement *",placeHolderImg, new Boolean(false) },
-				{ "DH", "Delerina", "Grabarczyk", "* implement *", placeHolderImg, new Boolean(false) },
-				{ "JW", "Jeff", "Westaway", "* implement *", placeHolderImg, new Boolean(false) },
-				{ "LC", "Liam", "Corrigan", "* implement *", placeHolderImg, new Boolean(false) },
+				{ "MG", "Martin", "Grabarczyk", "Dental Tribe", placeHolderImg, "Round 1" },
+				{ "HR", "Hazel", "Rivera", "Cavity Tribe", placeHolderImg, "Round 2" },
+				{ "MF", "Manor", "Freeman", "Dental Tribe",placeHolderImg, "Round 3" },
+				{ "DH", "Delerina", "Grabarczyk", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
+				{ "JW", "Jeff", "Westaway", "Dental Tribe", placeHolderImg, "Not Eliminated" },
+				{ "LC", "Liam", "Corrigan", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
 		};
 		/* 
 		 * (non-Javadoc)
@@ -115,6 +132,8 @@ public class ContestantListGUI extends JPanel	{
 				return true;			
 			}
 		}
+	}
+		
 //		 /*
 //         * Don't need to implement this method unless your table's
 //         * data can change.
@@ -157,7 +176,6 @@ public class ContestantListGUI extends JPanel	{
 //            }
 //            System.out.println("--------------------------");
 //        }
-    }
 	/**
 	 * To Format the fields and labels
 	 * @param font
@@ -188,34 +206,34 @@ public class ContestantListGUI extends JPanel	{
     	return textInputFieldColor;
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
-    private static void createAndShowGUI() {
-        //Create and set up the window.
-        JFrame frame = new JFrame("Contestant List Test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
-        //Create and set up the content pane.
-        ContestantListGUI newContentPane = new ContestantListGUI();
-        newContentPane.setOpaque(true); //content panes must be opaque
-        frame.setContentPane(newContentPane);
- 
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
- 
-    public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
+//    /**
+//     * Create the GUI and show it.  For thread safety,
+//     * this method should be invoked from the
+//     * event-dispatching thread.
+//     */
+//    private static void createAndShowGUI() {
+//        //Create and set up the window.
+//        JFrame frame = new JFrame("Contestant List Test");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+// 
+//        //Create and set up the content pane.
+//        ContestantListGUI newContentPane = new ContestantListGUI();
+//        newContentPane.setOpaque(true); //content panes must be opaque
+//        frame.setContentPane(newContentPane);
+// 
+//        //Display the window.
+//        frame.pack();
+//        frame.setVisible(true);
+//    }
+// 
+//    public static void main(String[] args) {
+//        //Schedule a job for the event-dispatching thread:
+//        //creating and showing this application's GUI.
+//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                createAndShowGUI();
+//            }
+//        });
+//    }
 
 }// End of this Class
