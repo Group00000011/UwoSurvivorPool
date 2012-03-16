@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Random;
 
 import javax.swing.*;
 
@@ -84,7 +85,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	
 	//Variables for setters & getters
 	private boolean startGame=false;
-	private int wager;
+	private int wager,roundNum;
 	
 
 	/******************************** Constructor *************************************/
@@ -102,7 +103,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		String fileName="players.txt";
 		readPlayers(fileName);
 		contestantsArray=new Contestant[15];
-
+		roundNum=1;
+		
 		textFields_p = new TextInputFields();
 		textFields_c = new TextInputFields();
 		standingsTable = new PlayerListGUI();
@@ -155,8 +157,49 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	/******************************  Methods  *********************************/
 
+	public String assignRandomCont(int index, int roundNum){
+		if(index>=this.playersArray.length)
+			return null;
+		else{
+			Random numGenerator=new Random();
+			
+			int contIndex=numGenerator.nextInt(this.contCount);
+			System.out.println(contestantsArray[contIndex].getFirst());
+			this.playersArray[index].makeRoundPick(roundNum, contestantsArray[contIndex]);
+			String s=""+this.playersArray[index].getFirst()+" "+this.playersArray[index].getLast()+": "+contestantsArray[contIndex].getFirst()+" "+contestantsArray[contIndex].getLast();
+			return s;
+		}
+		
+	}
+	
+	public String assignRandomPicks(int roundNum){
+		String s="";
+		for(int i=0; i<this.playersArray.length && this.playersArray[i]!=null;i++){
+			if(playersArray[i].getWeekPick(roundNum)==null)
+				s=s+assignRandomCont(i, roundNum)+"\n";
+		}
+		if(s.equals(""))
+			return null;
+		else
+			return s;
+	}
+	
+	public void nextRound() {
+		if(contCount==0 || playersArray==null)
+			JOptionPane.showMessageDialog(this, "Please add players and contestants before changing to the next round");
+		else {
+		String s=assignRandomPicks(this.roundNum);
+		roundNum++;
+		if(s==null)
+		JOptionPane.showMessageDialog(this, "It is now round "+this.roundNum);
+		else{
+			JOptionPane.showMessageDialog(this, "It is now round "+this.roundNum+"\n The following players were assigned random contestant choices: \n\n"+s);
+			writePlayers("players.txt");
+		}
+		}
+	}
 	/**
-	 * Persistence data for player fields - reads the player name and ID
+	 * Persistence for player fields - reads the player name and ID
 	 * from the file where all player records are stored.
 	 * 
 	 * @param fileName -- the pathname of the file that player records are stored to
@@ -165,47 +208,150 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		try{
 			DataInputStream input = new DataInputStream(new FileInputStream(fileName));
 			BufferedReader in = new BufferedReader(new InputStreamReader(input));
-			String currPlayer = in.readLine(), firstName="", lastName="", userID="";
+			String currPlayer = in.readLine(), pFirst="", pLast="", pID="",rndStr="", finRndStr="", pScrStr="", cFirst="",cLast="",cID="",cTrb="",cPic="";
 			Player currPlayerObj;
-			Boolean first, last, ID;
-			first=last=ID=false;
+			Contestant contElim;
+			int pScr, rnd, finRnd;
 			while(currPlayer!=null){
-				for(int i=0; i<currPlayer.length(); i++){
-					char ch=currPlayer.charAt(i);
-					System.out.print(ch);
-					if(!first){
-						if(ch=='+')
-							first=true;
-						else
-							firstName=firstName+ch;
+				int i=0;
+				pFirst=pLast=pID=rndStr=finRndStr=pScrStr=cFirst=cLast=cID=cTrb=cPic="";
+				pScr=rnd=finRnd=0;
+				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+							pFirst=pFirst+currPlayer.charAt(i);
+							i++;
 					}//end of first name field
-					else if(!last && first){
-						if(ch=='+')
-							last=true;
-						else
-							lastName=lastName+ch;
+				 i++;
+				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+							pLast=pLast+currPlayer.charAt(i);
+							i++;
 					}//end of  last name field
-					else if(!ID && last){
-						if(ch=='+')
-							ID=true;
-						else
-							userID=userID+ch;
+				 i++;
+				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+							pID=pID+currPlayer.charAt(i);
+							i++;
 					}//end of first last name field
-					if(ID && (last && first)){
-						currPlayerObj=new Player(firstName, lastName, userID);
-						addPlayer(currPlayerObj);
-						break;
-					}
-				}//end of scanning through currplayer
-				first=last=ID=false;
-				firstName=lastName=userID="";
-				currPlayer=in.readLine();
-			}//end of currplayer
+				 i++;
+				 currPlayerObj=new Player(pFirst, pLast, pID);
+				 for(;i<currPlayer.length();i++){
+					 if(currPlayer.charAt(i)=='+'){
+						 pScr=Integer.valueOf(pScrStr);
+						 break;
+					 }
+					 else{
+						 pScrStr=pScrStr+currPlayer.charAt(i);
+					 }
+				 }
+				 i++;
+				 currPlayerObj.setScore(pScr);
+				 if(currPlayer.charAt(i)=='_')
+					 i++;
+				 else{
+					 for(;i<currPlayer.length();i++){
+						 if(currPlayer.charAt(i)=='{'){
+							 finRnd=Integer.valueOf(finRndStr);
+							 break;
+						 }
+						 else{
+							 finRndStr=finRndStr+currPlayer.charAt(i);
+						 }
+					 }
+					 i++;
+					 for(;i<currPlayer.length();i++){
+						 if(currPlayer.charAt(i)=='{'){
+							 rnd=Integer.valueOf(rndStr);
+							 break;
+						 }
+						 else{
+							 rndStr=rndStr+currPlayer.charAt(i);
+						 }
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cFirst=cFirst+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cLast=cLast+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cID=cID+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cPic=cPic+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cTrb=cTrb+currPlayer.charAt(i);
+						 i++;
+					 }
+					 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+					 currPlayerObj.chooseWinner(contElim, finRnd, rnd+2);
+				 }
+				 i++;
+					 cFirst=cLast=cID=cTrb=cPic=rndStr="";
+					 finRnd=rnd=0;
+					 for(;i<currPlayer.length();){
+						 if(currPlayer.charAt(i)=='_' || currPlayer.charAt(i)=='{')
+							 i++;
+						 else{
+							 cFirst=cLast=cID=cTrb=cPic=rndStr="";
+							 rnd=0; 
+							 for(;i<currPlayer.length();i++){
+								 if(currPlayer.charAt(i)=='{'){
+									 System.out.println(rndStr);
+									 rnd=Integer.valueOf(rndStr);
+									 
+									 break;
+								 }
+								 else{
+									 rndStr=rndStr+currPlayer.charAt(i);
+								 }
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cFirst=cFirst+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cLast=cLast+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cID=cID+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cPic=cPic+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cTrb=cTrb+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+							 currPlayerObj.makeRoundPick(rnd, contElim);
+						 }
+					 }
+					 addPlayer(currPlayerObj);
+					 currPlayer=in.readLine();
+
+		}
 		}
 		catch(IOException e){}//unharmful
 	}
 	/**
-	 * Persistence data for player fields -- writes player fields data to file
+	 * Persistence for player fields -- writes player fields data to file
 	 * 
 	 * @param fileName -- the pathname of the file where player records are stored.
 	 */
@@ -219,7 +365,42 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				currString=currString+this.playersArray[i].getFirst()+"+";
 				currString=currString+this.playersArray[i].getLast()+"+";
 				currString=currString+this.playersArray[i].getID()+"+";
+				currString=currString+this.playersArray[i].getScore()+"+";
+				if(this.playersArray[i].getFinal()==null)
+					currString=currString+"_{";
+				else {
+					currString=currString+this.playersArray[i].getRoundOfFinal()+"{";
+					currString=currString+this.playersArray[i].getFinal().getRound()+"{";
+					currString=currString+this.playersArray[i].getFinal().getContestant().getFirst()+"{";
+					currString=currString+this.playersArray[i].getFinal().getContestant().getLast()+"{";
+					currString=currString+this.playersArray[i].getFinal().getContestant().getID()+"{";
+					currString=currString+this.playersArray[i].getFinal().getContestant().getPicture()+"{";
+					currString=currString+this.playersArray[i].getFinal().getContestant().getTribe()+"{";
+				}
+				if(this.playersArray[i].getAllWeekPicks()==null){
+					;
+				}
+				else {
+					RoundPick[] weekPicks=this.playersArray[i].getAllWeekPicks();
+					int max=weekPicks.length;
+					if(this.playersArray[i].getFinal()!=null) 
+						max=max-1;
+					
+					for(int j=0;j<max;j++){
+						if(weekPicks[j]==null)
+							;
+						else{
+							currString=currString+weekPicks[j].getRound()+"{";
+							currString=currString+weekPicks[j].getContestant().getFirst()+"{";
+							currString=currString+weekPicks[j].getContestant().getLast()+"{";
+							currString=currString+weekPicks[j].getContestant().getID()+"{";
+							currString=currString+weekPicks[j].getContestant().getPicture()+"{";
+							currString=currString+weekPicks[j].getContestant().getTribe()+"{";
+						}
+					}
+				}
 				currString=currString+"\n";
+				
 			}
 			//Start writing to the output stream
 			bWr.write(currString);
@@ -227,6 +408,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			bWr.close();
 		}
 		catch(IOException e){}//unharmful
+
 	}
 
 	/**
@@ -262,7 +444,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JMenuBar menuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu, editMenu, windowMenu;
-		JMenuItem startGameItem, newItem, mainItem, quitItem, bonusQItem, playerItem, contestantItem, themeItem, statsItem, creditsItem;
+		JMenuItem startGameItem, newItem, mainItem, quitItem, bonusQItem, playerItem, contestantItem, themeItem, statsItem, creditsItem, nextRoundItem;
 
 		fileMenu = new JMenu("File");
 		editMenu = new JMenu("Edit");
@@ -276,6 +458,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		newItem.setActionCommand("new");
 		newItem.addActionListener(this);
 
+		nextRoundItem=new JMenuItem("Next Round");
+		nextRoundItem.setActionCommand("next");
+		nextRoundItem.addActionListener(this);
 		mainItem = new JMenuItem("Main Menu");
 		mainItem.setActionCommand("main");
 		mainItem.addActionListener(this);
@@ -308,6 +493,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		fileMenu.add(newItem);
 		fileMenu.add(mainItem);
 		fileMenu.add(startGameItem);
+		fileMenu.add(nextRoundItem);
 		fileMenu.add(quitItem);		
 
 		editMenu.add(bonusQItem);
@@ -1237,7 +1423,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 					this.addPlayer(new Player(first,last,ID));
-					this.writePlayers("playersArray.txt");
+					this.writePlayers("players.txt");
 				}
 			}
 		}
@@ -1245,6 +1431,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		if(e.getActionCommand().equals("updateP")) {
 
 		}
+		if(e.getActionCommand().equals("next")){
+			nextRound();
+		}
+
 		/**  Delete Player Handler  **/
 		if(e.getActionCommand().equals("deleteP")) { // TODO
 			if(getStartGame()==true) {

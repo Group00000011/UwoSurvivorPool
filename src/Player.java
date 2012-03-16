@@ -101,13 +101,16 @@ public class Player {
 	 * @return the RoundPick for the specified round if it has been made, else return null 
 	 */
 	public RoundPick getWeekPick(int roundNum) {
-		if(this.weeklyPicks.length >= roundNum)
+		if(this.weeklyPicks!=null && this.weeklyPicks.length >= roundNum)
 			return this.weeklyPicks[roundNum - 1];
 		else
 			return null;
 	}
 
-
+	public RoundPick[] getAllWeekPicks() {
+		
+		return this.weeklyPicks;
+	}
 	// Mutator methods
 
 	/**
