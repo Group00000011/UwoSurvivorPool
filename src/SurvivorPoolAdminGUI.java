@@ -35,9 +35,26 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg, standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
 	private ImageIcon uploadedImage;
 
+	/////////// Attributes for the startGame Dialog box
+	// The Buttons
+	private JButton resetGameBtn, startGameBtn, saveSettingBtn;
+	// Labels to ID fields
+	private JLabel contLabel, playLabel, wagerLabel;
+	// Strings for labels
+	private String contString = "Number of Contestants: ";
+	private String playString = "Number of Players: ";
+	private String wagerString = "Amount Wagered: " ;
+	// Fields for data entry
+	private JTextField contField, wagerField;	
+	// Area that shows the number of players currently on record 
+	private JTextArea playArea;	
+	// Stores the number of contestants and total number of rounds
+	private int numConts;
+	private int numRounds;
+	
 	// Buttons
 	private JButton quitBtn, mainMenuBtn, createGameSetBtn, playersBtn, contestantsBtn, standingsBtn, bonusQBtn, themeSelectBtn;	
-	private JButton addBtn, updateBtn, deleteBtn, resetBtn, uploadBtn, contOptionsBtn, contListBtn;
+	private JButton addPlayerBtn, addContBtn, updateBtn, deletePlayerBtn, deleteContBtn, resetBtn, uploadBtn, contOptionsBtn, contListBtn;
 
 	// JLabels
 	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, standingBg, bqBg, titleBanner, contestantPicFrame;
@@ -64,18 +81,23 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private Player[] playersArray;
 	private Contestant[] contestantsArray;
 	private int contCount = 0;
+	
+	//Variables for setters & getters
+	private boolean startGame=false;
+	private double wager;
+	
 
 	/******************************** Constructor *************************************/
 	/**  Initializes the Administrative GUI  */
 	public SurvivorPoolAdminGUI() {	
 		
-		startGame();
+		createGame();
 	}
 	/**
 	 * Initializes default theme components, images, font type & panels, & sets them to the main frame
 	 * As well as setting the main frame
 	 */
-	private void startGame() {
+	private void createGame() {
 		//initialize players and contestants array
 		String fileName="players.txt";
 		readPlayers(fileName);
@@ -134,7 +156,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	/******************************  Methods  *********************************/
 
 	/**
-	 * Persistence for player fields - reads the player name and ID
+	 * Persistence data for player fields - reads the player name and ID
 	 * from the file where all player records are stored.
 	 * 
 	 * @param fileName -- the pathname of the file that player records are stored to
@@ -183,7 +205,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		catch(IOException e){}//unharmful
 	}
 	/**
-	 * Persistence for player fields -- writes player fields data to file
+	 * Persistence data for player fields -- writes player fields data to file
 	 * 
 	 * @param fileName -- the pathname of the file where player records are stored.
 	 */
@@ -278,7 +300,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		themeItem = new JMenuItem("Change Theme");
 		themeItem.setToolTipText("Jungle Theme or Golden Ruins Theme");
 		themeItem.setActionCommand("theme");
-		themeItem.addActionListener(this);
+		themeItem.addActionListener(new ChangeThemeHandler());
 
 		statsItem = new JMenuItem("See Player Stats");
 		creditsItem = new JMenuItem("Credits");
@@ -336,7 +358,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return a panel with the 6 main buttons
 	 */
-	protected JComponent mainButtons() {
+	private JComponent mainButtons() {
 		mainButtonsPanel = new JPanel(new GridLayout(2,3,60,30));
 
 		// Game Settings Button -- To Create New & to Start the Game
@@ -445,7 +467,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		themeSelectBtn.setMnemonic(KeyEvent.VK_T);
 		themeSelectBtn.setToolTipText("Golden Ruins Theme or Jungle Theme");
 		themeSelectBtn.setActionCommand("theme");
-		themeSelectBtn.addActionListener(this);
+		themeSelectBtn.addActionListener(new ChangeThemeHandler());
 
 		mainButtonsPanel.setOpaque(false);
 
@@ -462,38 +484,50 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * The Standard buttons for list input/update area
 	 * addBtn: Adds the info to the appropriate register
 	 * deleteBtn: Finds and Deletes the record enitrely from its register
+	 * 
+	 * @return 2 buttons floating right to left Add/Update
+	 */
+	private JComponent addDeletePlayerButtons() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+
+		addPlayerBtn = new JButton("Add Player");
+		addPlayerBtn.setActionCommand("+P");
+		addPlayerBtn.addActionListener(this);
+
+		deletePlayerBtn = new JButton("Delete Player");
+		deletePlayerBtn.setActionCommand("deleteP");
+		deletePlayerBtn.addActionListener(this);
+
+		panel.add(addPlayerBtn);
+		panel.add(deletePlayerBtn);
+		panel.setOpaque(false);
+		
+		return panel;
+	}
+	/**
+	 * The Standard buttons for list input/update area
 	 * updateBtn: Finds the record and allows user to make changes to any field
 	 * resetBtn: Clears all fields
 	 * 
 	 * @param op
 	 * @return 4 buttons floating right to left Add/Update/Remove/Reset
 	 */
-	protected JComponent addUpdateDeleteButtons(String op) {
+	private JComponent modifyPlayerButtons() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
-		addBtn = new JButton("Add " + op);
-		addBtn.setActionCommand("+P");
-		addBtn.addActionListener(this);
-
-		panel.add(addBtn);
-
-		deleteBtn = new JButton("Delete " + op);
-		deleteBtn.setActionCommand("deleteP");
-		deleteBtn.addActionListener(this);
-
-		panel.add(deleteBtn);
-
-		updateBtn = new JButton("Update " + op);
+		updateBtn = new JButton("Update Player");
 		updateBtn.setActionCommand("updateP");
 		updateBtn.addActionListener(this);
-
-		panel.add(updateBtn);
-
+		
 		resetBtn = new JButton("Reset");
 		resetBtn.setActionCommand("reset");
 		resetBtn.addActionListener(this);
 
 		panel.setOpaque(false);
+		
+		//Add the buttons to the panel
+		panel.add(addDeletePlayerButtons());
+		panel.add(updateBtn);
 		panel.add(resetBtn);
 
 		//Match the SpringLayout's gap, subtracting 5 to make
@@ -503,44 +537,86 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		return panel;
 	}
 	/**
-	 * Add Update Delete Buttons for the modify player/contestant panels 
+	 * Add/Delete Buttons for the modify contestant panel 
 	 * 
-	 * @param a String that appears in the button name
-	 * @return 4 buttons on a panel
+	 * @return 2 buttons on a panel
 	 */
-	protected JComponent addUpdateDeleteButtonsC(String op) {
+	private JComponent addDeleteContButtons() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
 
-		addBtn = new JButton("Add " + op);
-		addBtn.setActionCommand("+C");
-		addBtn.addActionListener(this);
+		addContBtn = new JButton("Add Contestant");
+		addContBtn.setActionCommand("+C");
+		addContBtn.addActionListener(this);
 
-		panel.add(addBtn);
 
-		deleteBtn = new JButton("Delete " + op);
-		deleteBtn.setActionCommand("deleteC");
-		deleteBtn.addActionListener(this);
+		deleteContBtn = new JButton("Delete Contestant");
+		deleteContBtn.setActionCommand("deleteC");
+		deleteContBtn.addActionListener(this);
 
-		panel.add(deleteBtn);
-
-		updateBtn = new JButton("Update " + op);
+		panel.setOpaque(false);
+		panel.add(addContBtn);
+		panel.add(deleteContBtn);
+		
+		return panel;
+	}
+	/**
+	 * Update to modify player/contestant panels 
+	 * 
+	 * @return 2 buttons on a panel
+	 */
+	private JComponent modifyContButtons() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		
+		updateBtn = new JButton("Update Contestant");
 		updateBtn.setActionCommand("updateC");
 		updateBtn.addActionListener(this);
-
-		panel.add(updateBtn);
 
 		resetBtn = new JButton("Reset");
 		resetBtn.setActionCommand("reset");
 		resetBtn.addActionListener(this);
 
-		panel.setOpaque(false);
+		panel.add(updateBtn);
 		panel.add(resetBtn);
+		panel.setOpaque(false);
+		
+//		// add the buttons if the game has not started yet
+//		if(getStartGame()==true) {
+			panel.add(addDeleteContButtons());
+//			repaint();
+//			validate();
+//		}
 
 		//Match the SpringLayout's gap, subtracting 5 to make
 		//up for the default gap FlowLayout provides.
 		panel.setBorder(BorderFactory.createEmptyBorder(0,0,GAP-5,GAP-5));
 
+		
 		return panel;
+	}
+	/**
+	 * Once the game has started, admin cannot add/delete players & contestants
+	 * @param boolean button value
+	 * @return the button setting on/off 
+	 */
+	public void setStartButtons() {
+		addDeletePlayerButtons().setEnabled(false);
+		addDeleteContButtons().setEnabled(false);
+		repaint();
+		validate();
+	}
+	public boolean setStartGame(boolean start) {
+		startGame=start;
+		return startGame;
+	}
+	public boolean getStartGame() {
+		return startGame;
+	}
+	public double getWager() {
+		String stringAmount = wagerField.getText();
+		if(stringAmount==null || stringAmount.equals(""))
+			return 0;
+		wager = Double.valueOf(stringAmount.trim()).doubleValue();
+		return wager;
 	}
 	/**
 	 * This button allows the user to upload a pic from file and it will fit the image into a special frame
@@ -548,7 +624,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return upload button
 	 */
-	protected JComponent uploadButton() {
+	private JComponent uploadButton() {
 		JPanel p = new JPanel();
 
 		uploadedImage = createImageIcon("images/uploadPicFrame_Goldblank.jpg");
@@ -568,7 +644,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return title panel
 	 */
-	protected JComponent titleComponent() {
+	private JComponent titleComponent() {
 		titlePanel = new JPanel();
 		title = createImageIcon("images/title.png");
 		titleBanner = new JLabel(title);
@@ -584,7 +660,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return a panel with a main menu button on it that changes dynamically depending on the theme
 	 */
-	protected JComponent mainMenuButton() {
+	private JComponent mainMenuButton() {
 		mMenuBtnPanel = new JPanel();
 		mainMenuBtnImg = createImageIcon("images/mainMenuButton.png");
 		mainMenuBtn = new JButton(mainMenuBtnImg);
@@ -612,7 +688,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return an image with the quit button
 	 */
-	protected JComponent quitButton() {
+	private JComponent quitButton() {
 		quitPanel = new JPanel();
 
 		// Quit Button
@@ -643,10 +719,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	//	/**
 	//	 * Current Week Panel
 	//	 */
-	//	protected JComponent currentWkPane() {
+	//	private JComponent currentWkPane() {
 	//		TODO
 	//	}
-
 	/**
 	 * Bonus Question Panel
 	 * A Bonus Q&A Input Area
@@ -669,7 +744,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return a panel with the player list table sort
 	 */
-	protected JComponent standingsPanel() {
+	private JComponent standingsPanel() {
 		sPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
 		JPanel main = new JPanel();
@@ -719,13 +794,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return a panel to add/delete/modify players
 	 */
-	protected JComponent playersPanel() {
+	private JComponent playersPanel() {
 		pPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
 		JPanel leftHalf_p = new JPanel();
 		leftHalf_p.setLayout(new BoxLayout(leftHalf_p, BoxLayout.PAGE_AXIS));	
 		leftHalf_p.add(textFields_p.createFieldsPlayer());
-		leftHalf_p.add(addUpdateDeleteButtons("Player"));
+		leftHalf_p.add(modifyPlayerButtons());
 		leftHalf_p.setOpaque(false);
 
 		// Create a separator
@@ -767,13 +842,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * @return a panel that displays the contestant list & a button that will show a panel to add/delete/modify contestants
 
 	 */
-	protected JComponent contListPanel() {
-		cLPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		
-		cLPanel.setLayout(new BoxLayout(cLPanel, BoxLayout.PAGE_AXIS));	
-		cLPanel.add(contLiTable.createContList());
-		cLPanel.setOpaque(false);
-		
+	private JComponent contListPanel() {
 		//Create a Add/Modify Contestant List Button
 		contOptionsBtn = new JButton("Contestant List Options");
 
@@ -782,6 +851,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		contOptionsBtn.setToolTipText("Add, Modify, Delete Contestants  Alt+I");
 		contOptionsBtn.setActionCommand("contMod");
 		contOptionsBtn.addActionListener(this);
+		
+		cLPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		
+		cLPanel.setLayout(new BoxLayout(cLPanel, BoxLayout.PAGE_AXIS));	
+		cLPanel.add(contLiTable.createContList());
+		cLPanel.setOpaque(false);
 
 		// Assemble the text fields with the background as a large panel
 		SpringLayout clLayout = new SpringLayout();
@@ -812,7 +887,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * 
 	 * @return a panel to add/delete/modify contestants & a button that will show a panel that displays the contestant list  
 	 */
-	protected JComponent contestantPanel() {
+	private JComponent contestantPanel() {
 		cPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
 		JPanel leftHalf_c = new JPanel();
@@ -821,7 +896,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		leftHalf_c.add(textFields_c.createFieldsCont());
 		//	    leftHalf_c.add(textFields_c.createTribeField());
 		leftHalf_c.add(uploadButton());
-		leftHalf_c.add(addUpdateDeleteButtonsC("Contestant"));
+		leftHalf_c.add(modifyContButtons());
 
 		// Create a seperator
 		leftHalf_c.setBorder(BorderFactory.createEmptyBorder(
@@ -876,79 +951,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		return contestantPanel;
 	}	
 	/**
-	 * The Golden Ruins Theme
-	 * Modifications of components to the theme
-	 */
-	protected void goldenRuinsTheme() {		
-		//Switch the images
-		playerBg.setIcon(playerGBg);
-		contestantBg.setIcon(contestantGBg);
-		standingBg.setIcon(standingGBg);
-		bqBg.setIcon(bqGBg);
-		textFields_p.setGameFontP(gFont, Color.YELLOW);
-		textFields_c.setGameFontC(gFont, Color.YELLOW);
-
-		themeMaker.setIcon(goldBackground);
-		//		mainMenuBtn.setIcon(mainMenuImgG);
-
-		playerBtnImg = playersGoldImg;
-		contestantPicFrame.setIcon(blankGFrame);
-		playersBtn.setIcon(playersGoldImg);
-
-		createGameSetBtn.setFont(gFont);
-		createGameSetBtn.setForeground(Color.YELLOW);
-		playersBtn.setFont(gFont);
-		playersBtn.setForeground(Color.YELLOW);		
-		contestantsBtn.setFont(gFont);
-		contestantsBtn.setForeground(Color.YELLOW);
-		bonusQBtn.setFont(gFont);
-		bonusQBtn.setForeground(Color.YELLOW);
-		standingsBtn.setFont(gFont);
-		standingsBtn.setForeground(Color.YELLOW);
-		themeSelectBtn.setFont(gFont);
-		themeSelectBtn.setForeground(Color.YELLOW);
-	}
-	/**
-	 * The Jungle Theme
-	 * Modifications of components to the theme
-	 */
-	protected void jungleTheme() {		
-		playersJungleImg = createImageIcon("images/bbJ.png");
-		jungleBackground = createImageIcon("images/jungle1.jpg");
-		playerJBg = createImageIcon("images/jungle10.jpg");
-		contestantJBg = createImageIcon("images/tiger-jungle.jpg");
-		blankJFrame = createImageIcon("images/uploadPicFrame_jungleFrame.png");
-		standingJBg = createImageIcon("images/standingsJungle.jpg");
-		bqJBg = createImageIcon("images/bqJungle.jpg");
-
-		//Switch the images
-		contestantPicFrame.setIcon(blankJFrame);
-		playerBtnImg = playersJungleImg;
-		playersBtn.setIcon(playersJungleImg);
-		themeMaker.setIcon(jungleBackground);
-
-		playerBg.setIcon(playerJBg);
-		contestantBg.setIcon(contestantJBg);
-		standingBg.setIcon(standingJBg);
-		bqBg.setIcon(bqJBg);
-
-		textFields_p.setGameFontP(jFont, Color.WHITE);
-		textFields_c.setGameFontC(jFont, Color.WHITE);
-
-		createGameSetBtn.setFont(jFont);
-		createGameSetBtn.setForeground(Color.WHITE);
-		playersBtn.setFont(jFont);
-		playersBtn.setForeground(Color.WHITE);		
-		contestantsBtn.setFont(jFont);
-		contestantsBtn.setForeground(Color.WHITE);
-		bonusQBtn.setFont(jFont);
-		bonusQBtn.setForeground(Color.WHITE);
-		standingsBtn.setFont(jFont);
-		standingsBtn.setForeground(Color.WHITE);
-		themeSelectBtn.setFont(jFont);
-		themeSelectBtn.setForeground(Color.WHITE);	
-	}
-	/**
 	 * Creates an image icon of a requested image, prints a error message is request path not found
 	 * 
 	 * @param path to the requested file
@@ -989,7 +991,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		return validChars;
 	}
-
 	/**
 	 * Searches for contestant
 	 * 
@@ -1008,52 +1009,237 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		return tempCont;
 	}
-	/**
+				
+		/**
+		 * Sets up the game setting panel as a custom JOptionPane Dialog
+		 * Admin can enter numContestants, 
+		 */
+		private JComponent gameSettingsPanel() {
+			JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+			
+	        // Create Labels
+	        contLabel = new JLabel(contString);
+	        playLabel = new JLabel(playString);
+	        wagerLabel = new JLabel(wagerString);
+	        
+	        // Create the text fields/areas & set them up
+	        contField = new JTextField();
+	        contField.setColumns(10);
+	        wagerField = new JTextField();
+	        wagerField.setColumns(10);
+	        
+	        playArea = new JTextArea();
+//	        playArea.setText(getNumPlayers())  ************ TODO ***************
+	        playArea.setEditable(false);
+	        playArea.setColumns(10);
+	        
+	        // Tell accessibility tools about label/textfield & area pairs
+	        contLabel.setLabelFor(contField);
+	        playLabel.setLabelFor(playArea);
+	        wagerLabel.setLabelFor(wagerField);
+	        
+	        // Layout the labels in a panel
+	        JPanel labelPane = new JPanel(new GridLayout(0,1));
+	        labelPane.add(contLabel);
+	        labelPane.add(playLabel);
+	        labelPane.add(wagerLabel);
+	        
+	        // Layout the text fields/area in a panel
+	        JPanel fieldPane = new JPanel(new GridLayout(0,1));
+	        fieldPane.add(contField);
+	        fieldPane.add(playArea);
+	        fieldPane.add(wagerField);
+	        
+	        // Create the buttons
+	        resetGameBtn = new JButton("Reset Game");
+	        resetGameBtn.addActionListener(this);
+	        resetGameBtn.setActionCommand("resetGame");
+	        
+	        startGameBtn = new JButton ("Start Game");
+	        startGameBtn.addActionListener(this);
+	        startGameBtn.setActionCommand("startGame");
+	        
+	        saveSettingBtn = new JButton("Save Settings");
+	        saveSettingBtn.addActionListener(this);
+	        saveSettingBtn.setActionCommand("saveSettings");
+	        
+	        // Layout the buttons in a panel
+	        JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	        buttonPane.add(resetGameBtn);
+	        buttonPane.add(startGameBtn);
+	        buttonPane.add(saveSettingBtn);
+	        
+	        // Put the panels together, labels on the left, text fields/area on the right, buttons on the bottom
+	        panel.add(labelPane);
+	        panel.add(fieldPane);
+	        panel.add(buttonPane);    
+	        
+			// Assemble the text fields with the background as a large panel
+			SpringLayout settingLayout = new SpringLayout();
+			JPanel settingPanel = new JPanel(settingLayout);
+		    this.setLayout(settingLayout);
+			
+		    getContentPane().add(mainMenuButton());
+			getContentPane().add(panel);
+			getContentPane().add(themeMaker);
 
+			settingLayout.putConstraint(SpringLayout.WEST, themeMaker, 0, SpringLayout.WEST, getContentPane());
+			settingLayout.putConstraint(SpringLayout.NORTH, themeMaker, 0, SpringLayout.NORTH, getContentPane());
+
+			settingLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0, SpringLayout.WEST, getContentPane());
+			settingLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
+
+			settingLayout.putConstraint(SpringLayout.WEST, panel, 77, SpringLayout.WEST, getContentPane());
+			settingLayout.putConstraint(SpringLayout.NORTH, panel, 100, SpringLayout.NORTH, getContentPane());
+			
+			return settingPanel; 
+		} 
+	    private class SettingsHandler implements ActionListener  {
+            public void actionPerformed(ActionEvent e)  {
+
+            }
+			
+		}
+	/**
+	 * The Golden Ruins Theme
+	 * Modifications of components to the theme
+	 */
+	private void goldenRuinsTheme() {		
+		//Switch the images
+		playerBg.setIcon(playerGBg);
+		contestantBg.setIcon(contestantGBg);
+		standingBg.setIcon(standingGBg);
+		bqBg.setIcon(bqGBg);
+		textFields_p.setGameFontP(gFont, Color.YELLOW);
+		textFields_c.setGameFontC(gFont, Color.YELLOW);
+
+		themeMaker.setIcon(goldBackground);
+		//		mainMenuBtn.setIcon(mainMenuImgG);
+
+		playerBtnImg = playersGoldImg;
+		contestantPicFrame.setIcon(blankGFrame);
+		playersBtn.setIcon(playersGoldImg);
+
+		createGameSetBtn.setFont(gFont);
+		createGameSetBtn.setForeground(Color.YELLOW);
+		playersBtn.setFont(gFont);
+		playersBtn.setForeground(Color.YELLOW);		
+		contestantsBtn.setFont(gFont);
+		contestantsBtn.setForeground(Color.YELLOW);
+		bonusQBtn.setFont(gFont);
+		bonusQBtn.setForeground(Color.YELLOW);
+		standingsBtn.setFont(gFont);
+		standingsBtn.setForeground(Color.YELLOW);
+		themeSelectBtn.setFont(gFont);
+		themeSelectBtn.setForeground(Color.YELLOW);
+	}
+	/**
+	 * The Jungle Theme
+	 * Modifications of components to the theme
+	 */
+	private void jungleTheme() {		
+		playersJungleImg = createImageIcon("images/bbJ.png");
+		jungleBackground = createImageIcon("images/jungle1.jpg");
+		playerJBg = createImageIcon("images/jungle10.jpg");
+		contestantJBg = createImageIcon("images/tiger-jungle.jpg");
+		blankJFrame = createImageIcon("images/uploadPicFrame_jungleFrame.png");
+		standingJBg = createImageIcon("images/standingsJungle.jpg");
+		bqJBg = createImageIcon("images/bqJungle.jpg");
+
+		//Switch the images
+		contestantPicFrame.setIcon(blankJFrame);
+		playerBtnImg = playersJungleImg;
+		playersBtn.setIcon(playersJungleImg);
+		themeMaker.setIcon(jungleBackground);
+
+		playerBg.setIcon(playerJBg);
+		contestantBg.setIcon(contestantJBg);
+		standingBg.setIcon(standingJBg);
+		bqBg.setIcon(bqJBg);
+
+		textFields_p.setGameFontP(jFont, Color.WHITE);
+		textFields_c.setGameFontC(jFont, Color.WHITE);
+
+		createGameSetBtn.setFont(jFont);
+		createGameSetBtn.setForeground(Color.WHITE);
+		playersBtn.setFont(jFont);
+		playersBtn.setForeground(Color.WHITE);		
+		contestantsBtn.setFont(jFont);
+		contestantsBtn.setForeground(Color.WHITE);
+		bonusQBtn.setFont(jFont);
+		bonusQBtn.setForeground(Color.WHITE);
+		standingsBtn.setFont(jFont);
+		standingsBtn.setForeground(Color.WHITE);
+		themeSelectBtn.setFont(jFont);
+		themeSelectBtn.setForeground(Color.WHITE);	
+	}
+	
+    private class ChangeThemeHandler implements ActionListener  {
+            public void actionPerformed(ActionEvent e)
+            {
+        		/**  Theme Selector Button Handler **/
+        		if(e.getActionCommand().equals("theme")) {		
+        			// Sets the jungle theme
+        			if(themeMaker.getIcon().equals(goldBackground)) 
+        				jungleTheme();
+
+        			// Sets the Golden Ruins Theme
+        			else 
+        				goldenRuinsTheme();
+        		}
+            }
+    }
+	/**
 	 * Handles all Button Actions 
 	 * Each case compares the string cast as an ActionCommand
+	 * 
+	 * @param ActionEvent string of the button being pressed
 	 */
 	public void actionPerformed(ActionEvent e) {	
 		/**  Add Player Handler  **/
 		if(e.getActionCommand().equals("+P")) {
-			String first=textFields_p.getFirstP();
-			String last=textFields_p.getLastP();
-			int firstLen=first.length(),lastLen=last.length();
-			if(firstLen<1 || firstLen>20){
-				JOptionPane.showMessageDialog(this,"The player's first Name must be between 1 and 20 characters");
-				System.out.println(first+"first");
+			//Show a message that disables add/delete players if the game as already started
+			if(getStartGame()==true) {
+				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 			}
-			else if(lastLen<1 || lastLen>20){
-				JOptionPane.showMessageDialog(this,"The player's last name must be between 1 and 20 characters");
-			}
-			else{	
-				String IDchars=""+first.charAt(0), ID="";
-				int IDnum=1;
-				boolean isUnique=false;
-				if(last.length()>=6)
-					IDchars=IDchars+last.substring(0,6);
-				else
-					IDchars=IDchars+last;
-				ID=IDchars+IDnum;
-				while(!isUnique){
-					isUnique=true;
-					if(playersArray!=null){
-						for(int i=0;i<playersArray.length && isUnique ;i++){
-							if(playersArray[i].getID().equals(ID)){
-								isUnique=false;
-								break;
-							}	
-						}
-						if(isUnique==false){
-							IDnum++;
-							ID=IDchars+IDnum;
+			else{
+				String first=textFields_p.getFirstP();
+				String last=textFields_p.getLastP();
+				int firstLen=first.length(),lastLen=last.length();
+				if(firstLen<1 || firstLen>20){
+					JOptionPane.showMessageDialog(this,"The player's first Name must be between 1 and 20 characters");
+					System.out.println(first+"first");
+				}
+				else if(lastLen<1 || lastLen>20){
+					JOptionPane.showMessageDialog(this,"The player's last name must be between 1 and 20 characters");
+				}
+				else{	
+					String IDchars=""+first.charAt(0), ID="";
+					int IDnum=1;
+					boolean isUnique=false;
+					if(last.length()>=6)
+						IDchars=IDchars+last.substring(0,6);
+					else
+						IDchars=IDchars+last;
+					ID=IDchars+IDnum;
+					while(!isUnique){
+						isUnique=true;
+						if(playersArray!=null){
+							for(int i=0;i<playersArray.length && isUnique ;i++){
+								if(playersArray[i].getID().equals(ID)){
+									isUnique=false;
+									break;
+								}	
+							}
+							if(isUnique==false){
+								IDnum++;
+								ID=IDchars+IDnum;
+							}
 						}
 					}
+					this.addPlayer(new Player(first,last,ID));
+					this.writePlayers("playersArray.txt");
 				}
-				this.addPlayer(new Player(first,last,ID));
-				this.writePlayers("playersArray.txt");
-
-
 			}
 		}
 		/**  Update Player Handler  **/
@@ -1061,8 +1247,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		}
 		/**  Delete Player Handler  **/
-		if(e.getActionCommand().equals("deleteP")) {
-
+		if(e.getActionCommand().equals("deleteP")) { // TODO
+			if(getStartGame()==true) {
+				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
+			}
+			else{
+				
+			}
+			
 		}
 		/**  Add Contestant Handler **/
 		if(e.getActionCommand().equals("+C")) {
@@ -1070,60 +1262,65 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String inputLast = textFields_c.getLastC();
 			String inputTribe = textFields_c.getTribe();
 
-			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
-			}
-			else if (!checkValidChars(inputFirst)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
-			}
-
-			else if ((inputLast.length() < 1) || (inputLast.length() >20)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
-			}
-			else if (!checkValidChars(inputLast)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
-			}
-
-			else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
-			}
-
-			else if (!checkValidChars(inputTribe)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
+			if(getStartGame()==true) {
+				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 			}
 			else{
-				char IDchar='a';
-				int IDint=1;
-				String ID=""+IDchar+IDint;
-				boolean isUnique=false;
-				while(!isUnique){
-					isUnique=true;
-					for(int i=0;i<contCount && isUnique;i++){
-						if(contestantsArray[i]==null)
-							;
-						else if(contestantsArray[i].getID().equals(ID)){
-							isUnique=false;
-							break;
-						}
-					}
-					if(isUnique==false){
-						if(IDint==9){
-							IDchar++;
-							IDint=1;
-						}
-						else
-							IDint++;
-						ID=""+IDchar+IDint;
-					}
+				if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 				}
-				Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, imagePath);
-				contestantsArray[contCount] = newContestant;
-				contCount++;
-				if (imagePath == null){
-				JOptionPane.showMessageDialog(this, "Contestant added, but you didn't add a picture!" );
+				else if (!checkValidChars(inputFirst)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+				}
+	
+				else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+				}
+				else if (!checkValidChars(inputLast)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+				}
+	
+				else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+				}
+	
+				else if (!checkValidChars(inputTribe)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
 				}
 				else{
-				JOptionPane.showMessageDialog(this, "Contestant added" );
+					char IDchar='a';
+					int IDint=1;
+					String ID=""+IDchar+IDint;
+					boolean isUnique=false;
+					while(!isUnique){
+						isUnique=true;
+						for(int i=0;i<contCount && isUnique;i++){
+							if(contestantsArray[i]==null)
+								;
+							else if(contestantsArray[i].getID().equals(ID)){
+								isUnique=false;
+								break;
+							}
+						}
+						if(isUnique==false){
+							if(IDint==9){
+								IDchar++;
+								IDint=1;
+							}
+							else
+								IDint++;
+							ID=""+IDchar+IDint;
+						}
+					}
+					Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, imagePath);
+					contestantsArray[contCount] = newContestant;
+					contCount++;
+					if (imagePath == null){
+					JOptionPane.showMessageDialog(this, "Contestant added, but you didn't add a picture!" );
+					}
+					else{
+					JOptionPane.showMessageDialog(this, "Contestant added" );
+					}
 				}
 			}
 		}
@@ -1163,26 +1360,31 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String inputTribe = textFields_c.getTribe();
 
 
-			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+			if(getStartGame()==true) {
+				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 			}
-			else if (!checkValidChars(inputFirst)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
-			}
-
-			else if ((inputLast.length() < 1) || (inputLast.length() >20)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
-			}
-			else if (!checkValidChars(inputLast)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
-			}
-
-			else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
-			}
-
-			else if (!checkValidChars(inputTribe)){
-				JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
+			else{
+				if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+				}
+				else if (!checkValidChars(inputFirst)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+				}
+	
+				else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+				}
+				else if (!checkValidChars(inputLast)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+				}
+	
+				else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+				}
+	
+				else if (!checkValidChars(inputTribe)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
+				}
 			}
 		}
 		/**  Reset Fields Handler  **/
@@ -1210,11 +1412,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			System.exit(0);
 		}
 		/**  Create New Game Button Handler **/
-		else if(e.getActionCommand().equals("new")) {
+		if(e.getActionCommand().equals("new")) {
 
 		}
 		/**  Main Menu Button Handler **/
-		else if(e.getActionCommand().equals("main")) {			
+		if(e.getActionCommand().equals("main")) {			
 			getContentPane().removeAll();		
 			getContentPane().add(mainScreen());	
 
@@ -1222,7 +1424,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			validate();		
 		}
 		/**  Players List Button Handler **/
-		else if(e.getActionCommand().equals("players")) {
+		if(e.getActionCommand().equals("players")) {
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());			
@@ -1232,7 +1434,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			validate();								
 		}
 		/**  Contestants List Button Handler **/
-		else if(e.getActionCommand().equals("contestants")) {
+		if(e.getActionCommand().equals("contestants")) {
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());
@@ -1242,7 +1444,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			validate();								
 		}
 		/**  Contestants List Button Handler **/
-		else if(e.getActionCommand().equals("contMod")) {
+		if(e.getActionCommand().equals("contMod")) {
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());
@@ -1252,7 +1454,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			validate();								
 		}
 		/**  Standings List Button Handler **/
-		else if(e.getActionCommand().equals("standings")) {
+		if(e.getActionCommand().equals("standings")) {
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());
@@ -1262,7 +1464,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			validate();		
 		}
 		/**  Bonus Question Admin Button Handler **/
-		else if(e.getActionCommand().equals("bonus")) {
+		if(e.getActionCommand().equals("bonus")) {
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());
@@ -1271,41 +1473,67 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			repaint();
 			validate();	
 		}
-		/**  Theme Selector Button Handler **/
-		else if(e.getActionCommand().equals("theme")) {		
-			// Setst the jungle theme
-			if(themeMaker.getIcon().equals(goldBackground)) {
-				jungleTheme();
-			}
-			// Sets the Golden Ruins Theme
-			else 
-			{ 
-				goldenRuinsTheme();
-			}
-			//			if(contestantBg.getIcon().equals(contestantGBg))
-			//				contestantBg.setIcon(contestantJBg);
-			//			else
-			//				contestantBg.setIcon(contestantGBg);
-
-		}
 		/**  Start the Game **/
-		else if(e.getActionCommand().equals("settings")) {
-			GameSettings settings = new GameSettings();
-			settings.gameSettingsWindow();
+		if(e.getActionCommand().equals("settings")) {
+			getContentPane().removeAll();
+
+			getContentPane().add(quitButton());
+			getContentPane().add(gameSettingsPanel());
+			
+			repaint();
+			validate();	
 			// If Game Start has confirmed ********  TODO ****************
 			//Disable edit and delete Player/Contestant Forms
 		}
 		/**  Start a new Game **/
-		else if(e.getActionCommand().equals("new")) {
+		if(e.getActionCommand().equals("new")) {
 
 		}
 		/**  Upload Button Handler  **/
-		else if(e.getActionCommand().equals("upload")) {
+		if(e.getActionCommand().equals("upload")) {
 			imagePath = JOptionPane.showInputDialog(null, "Enter the photo's path : ");
 			ImageIcon contestantImage = createImageIcon(imagePath);
 			contestantPicFrame.setIcon(contestantImage);
 		}
-	}		
+		/**  Reset Game button handler  **/
+		if(e.getActionCommand().equals("resetGame")) {
+			//TODO
+		}
+		/**	 Start Game Button Handler  
+		 *  When the game starts, TextFields will convert to TextAreas that display settings panel TODO
+		 **/
+		if(e.getActionCommand().equals("startGame")) {		
+			if(getWager()==0) {
+				JOptionPane.showMessageDialog(this, 
+						"Please enter the amount of money that each player is going to pitch in.",
+						"No Wager Entered", 
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				// Before the game starts, a dialog box will appear to confirm settings
+				JOptionPane.showMessageDialog(this,
+					    "Are you sure you want to start the game?",
+					    "Once you start the gamem you will no longer be able to add/delete players & contestants.",
+					    JOptionPane.PLAIN_MESSAGE);
+				
+				setStartGame(true);
+			}
+
+		}
+		/**  Saves the inputted settings before game starts Button Handler   **/
+		if(e.getActionCommand().equals("saveSettings")) {
+			if (Integer.parseInt(contField.getText()) < 6 || Integer.parseInt(contField.getText()) > 15){
+				contField.setText(""); // resets the field if the number of contestants is outside the range
+				JOptionPane.showMessageDialog(this, "Number of Contestants must be between 6 and 15", null, contCount); // notifies the user of this requirement
+				
+				}
+			else{
+				numConts = Integer.parseInt(contField.getText());
+				numRounds = numConts - 2;
+				JOptionPane.showMessageDialog(this, "The total number of rounds will be: " + numRounds);
+			}
+		}
+	}	
 }
 
 

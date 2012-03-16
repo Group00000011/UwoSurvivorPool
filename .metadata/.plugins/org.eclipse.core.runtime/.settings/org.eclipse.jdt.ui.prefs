@@ -1,9 +1,10 @@
-#Wed Feb 29 17:35:02 EST 2012
+#Fri Mar 16 14:02:40 EDT 2012
 useQuickDiffPrefPage=true
 proposalOrderMigrated=true
 tabWidthPropagated=true
 content_assist_proposals_background=255,255,255
 org.eclipse.jdt.ui.javadoclocations.migrated=true
+LexicalSortingAction.isChecked=true
 useAnnotationsPrefPage=true
 spelling_locale=en_GB
 org.eclipse.jface.textfont=1|Courier New|10.0|0|WINDOWS|1|0|0|0|0|0|0|0|0|1|0|0|0|0|Courier New;
