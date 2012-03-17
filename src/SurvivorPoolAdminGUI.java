@@ -46,7 +46,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private String playString = "Number of Players: ";
 	private String wagerString = "Amount Wagered: " ;
 	// Fields for data entry
-	private JTextField contField, wagerField;	
+	private JTextField contField; 
+	private JFormattedTextField wagerField;	
 	// Area that shows the number of players currently on record 
 	private JTextArea playArea;	
 	// Stores the number of contestants and total number of rounds
@@ -101,7 +102,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private void createGame() {
 		//initialize players and contestants array
 		String fileName="players.txt";
-		readPlayers(fileName);
+//		readPlayers(fileName);
 		contestantsArray=new Contestant[15];
 		roundNum=1;
 		
@@ -727,7 +728,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * @return 2 buttons on a panel
 	 */
 	private JComponent addDeleteContButtons() {
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
 		addContBtn = new JButton("Add Contestant");
 		addContBtn.setActionCommand("+C");
@@ -750,7 +751,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * @return 2 buttons on a panel
 	 */
 	private JComponent modifyContButtons() {
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
 		updateBtn = new JButton("Update Contestant");
 		updateBtn.setActionCommand("updateC");
@@ -763,13 +764,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		panel.add(updateBtn);
 		panel.add(resetBtn);
 		panel.setOpaque(false);
-		
-//		// add the buttons if the game has not started yet
-//		if(getStartGame()==true) {
-			panel.add(addDeleteContButtons());
-//			repaint();
-//			validate();
-//		}
 
 		//Match the SpringLayout's gap, subtracting 5 to make
 		//up for the default gap FlowLayout provides.
@@ -777,6 +771,39 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		
 		return panel;
+	}
+	/**
+	 * Contestant Panel after game has started
+	 * Shows  a eliminate contestant radio button & textField for Round Eliminated	 * 
+	 */
+	private JComponent elimContPanel() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		   
+		JRadioButton eliminateYBtn = new JRadioButton("Yes");
+		JRadioButton eliminateNBtn = new JRadioButton("No");
+		//Group the radio buttons.
+	    ButtonGroup yNgroup = new ButtonGroup();
+	    yNgroup.add(eliminateYBtn);
+	    yNgroup.add(eliminateNBtn);
+	    
+	    eliminateNBtn.setSelected(true);
+
+		JLabel elimLabel = new JLabel("Eliminate Contestant");
+//		elimLabel.setLabelFor(ynPnl);
+		
+		JTextField roundField = new JTextField();
+		roundField.setColumns(10);
+		JLabel roundLbl = new JLabel("Round Eliminated");
+		roundLbl.setLabelFor(roundField);
+		
+		panel.add(elimLabel);	
+		panel.add(eliminateYBtn);
+		panel.add(eliminateNBtn);
+		panel.add(roundLbl);
+		panel.add(roundField);
+		panel.setOpaque(false);
+		
+		return panel;		
 	}
 	/**
 	 * Once the game has started, admin cannot add/delete players & contestants
@@ -796,12 +823,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	public boolean getStartGame() {
 		return startGame;
 	}
-	public double getWager() {
-		String stringAmount = wagerField.getText();
-		if(stringAmount==null || stringAmount.equals(""))
-			return 0;
-		wager = Integer.getInteger(stringAmount);
-		return wager;
+	public int getWager() {
+		return (Integer) wagerField.getValue();
 	}
 	/**
 	 * This button allows the user to upload a pic from file and it will fit the image into a special frame
@@ -812,7 +835,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JComponent uploadButton() {
 		JPanel p = new JPanel();
 
-		uploadedImage = createImageIcon("images/uploadPicFrame_Goldblank.jpg");
+		uploadedImage = createImageIcon("images/uploadPicFrame.jpg");
 
 		uploadBtn = new JButton("Upload a Picture", uploadedImage);
 		uploadBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
@@ -1079,17 +1102,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
 		leftHalf_c.setOpaque(false);
 		leftHalf_c.add(textFields_c.createFieldsCont());
-		//	    leftHalf_c.add(textFields_c.createTribeField());
+
 		leftHalf_c.add(uploadButton());
+
+		// if the game has started show the eliminate contestant option otherwise show the add/delete contestant options
+		if(getStartGame()==true) {  leftHalf_c.add(elimContPanel());  }
+		if(getStartGame()==false) {  leftHalf_c.add(addDeleteContButtons());  }
+
 		leftHalf_c.add(modifyContButtons());
 
-		// Create a seperator
-		leftHalf_c.setBorder(BorderFactory.createEmptyBorder(
-				GAP/2, //top
-				0,     //left
-				GAP/2, //bottom
-				0));   //right
-		leftHalf_c.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.LINE_START);
 		leftHalf_c.setPreferredSize(new Dimension(492,580));
 
 		// Create a Contestant List Panel to switch back to the contestant list
@@ -1210,7 +1231,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	        // Create the text fields/areas & set them up
 	        contField = new JTextField();
 	        contField.setColumns(10);
-	        wagerField = new JTextField();
+	        
+	        wagerField = new JFormattedTextField();
+	        wagerField.setValue(new Integer(0));
 	        wagerField.setColumns(10);
 	        
 	        playArea = new JTextArea();
@@ -1279,12 +1302,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			
 			return settingPanel; 
 		} 
-	    private class SettingsHandler implements ActionListener  {
-            public void actionPerformed(ActionEvent e)  {
-
-            }
-			
-		}
 	/**
 	 * The Golden Ruins Theme
 	 * Modifications of components to the theme

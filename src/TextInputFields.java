@@ -26,7 +26,6 @@ public class TextInputFields extends JPanel implements ActionListener {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private static JTextField firstFieldP, lastFieldP, tribeField, firstFieldC, lastFieldC;
 	private String firstNameString = "", lastNameString = "", tribeString = "";  // Record Display String
-    private JButton uploadBtn, updateBtn, addBtn, deleteBtn, resetBtn;
     private JLabel recordDisplay;
     private ImageIcon uploadedImage;
     private Font regularFont, italicFont, textInputFieldFont;
@@ -107,34 +106,6 @@ public class TextInputFields extends JPanel implements ActionListener {
 		lastFieldP.setText(input);
 	}
 
-	//    /**
-//     * This button allows the user to upload a pic from file and it will fit the image into a special frame
-//     * depending on the theme.
-//     * @return upload button
-//     */
-//    protected JComponent uploadButton() {
-//    	JPanel p = new JPanel();
-//    	
-//    	uploadedImage = new ImageIcon(getClass().getResource("images/uploadPicFrame_Goldblank.jpg"), "No Contestant Image has been loaded yet.");
-//    	
-//    	uploadBtn = new JButton("Upload a Picture", uploadedImage);
-//    	uploadBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
-//    	uploadBtn.setHorizontalTextPosition(AbstractButton.CENTER);
-//    	uploadBtn.setActionCommand("upload");
-//    	uploadBtn.addActionListener(this);
-//    	
-//    	p.setOpaque(false);
-//    	p.add(uploadBtn);
-//    	return p;
-//    }
-    /**
-     * Format the image - resize to specifications
-     * & uploaded into the image icon frame
-     * This object will be used throughout the program as the image of the contestant
-     */
-    protected void createContestantImage() {
-    	
-    }
     /**
      * Button Handler for actions performed on string matched keys
      */
@@ -416,22 +387,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     									GAP, GAP/2); //xpad, ypad
     	return namePanel; 	    	
     }  
-//    /**
-//     * The textfield spinners
-//     * The strings inputed in the textfields are stored as search terms  in the spinner
-//     */
-//    public JFormattedTextField getTextField(JSpinner spinner) {
-//    	JComponent editor = spinner.getEditor();
-//    	if(editor instanceof JSpinner.DefaultEditor) {
-//    		return((JSpinner.DefaultEditor)editor).getTextField();
-//    	} else {
-//    		System.err.println("Unexpected editor type: "
-//    							+ spinner.getEditor().getClass()
-//    							+ " isn't a descendant DefaultEditor");
-//    		return null;
-//    	}
-//    }
-
     protected JComponent setGameFontP(Font font, Color color) {
     	this.textInputFieldFont = font;
     	this.textInputFieldColor = color;
