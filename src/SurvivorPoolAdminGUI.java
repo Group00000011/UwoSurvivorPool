@@ -39,6 +39,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	/////////// Attributes for the startGame Dialog box
 	// The Buttons
 	private JButton resetGameBtn, startGameBtn, saveSettingBtn;
+	private JRadioButton eliminateYBtn;
+	
 	// Labels to ID fields
 	private JLabel contLabel, playLabel, wagerLabel;
 	// Strings for labels
@@ -47,7 +49,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private String wagerString = "Amount Wagered: " ;
 	// Fields for data entry
 	private JTextField contField; 
-	private JFormattedTextField wagerField;	
+	private JFormattedTextField wagerField, roundField;	
 	// Area that shows the number of players currently on record 
 	private JTextArea playArea;	
 	// Stores the number of contestants and total number of rounds
@@ -86,6 +88,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	
 	//Variables for setters & getters
 	private boolean startGame=false;
+	private boolean contEliminated=false;
 	private int wager,roundNum;
 	
 
@@ -779,7 +782,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JComponent elimContPanel() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		   
-		JRadioButton eliminateYBtn = new JRadioButton("Yes");
+		eliminateYBtn = new JRadioButton("Yes");
 		JRadioButton eliminateNBtn = new JRadioButton("No");
 		//Group the radio buttons.
 	    ButtonGroup yNgroup = new ButtonGroup();
@@ -787,11 +790,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	    yNgroup.add(eliminateNBtn);
 	    
 	    eliminateNBtn.setSelected(true);
+	    
+	    eliminateYBtn.addActionListener(this);
 
 		JLabel elimLabel = new JLabel("Eliminate Contestant");
 //		elimLabel.setLabelFor(ynPnl);
 		
-		JTextField roundField = new JTextField();
+		roundField = new JFormattedTextField();
+		roundField.setValue(new Integer(0));
 		roundField.setColumns(10);
 		JLabel roundLbl = new JLabel("Round Eliminated");
 		roundLbl.setLabelFor(roundField);
@@ -805,6 +811,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		
 		return panel;		
 	}
+	private boolean setEliminated() {
+		return contEliminated=true;
+	}
+	private boolean getEliminated() {
+		return contEliminated;
+	}
+	private int getRoundEliminated() {
+		return (Integer) roundField.getValue();
+	}
+	/**
+	 * 
+	 */
 	/**
 	 * Once the game has started, admin cannot add/delete players & contestants
 	 * @param boolean button value
@@ -1536,7 +1554,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String inputLast = textFields_c.getLastC();
 			String inputTribe = textFields_c.getTribe();
 
-
+			// Validate Text Input Fields
 			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
 				JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 			}
@@ -1558,6 +1576,16 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			else if (!checkValidChars(inputTribe)){
 				JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
 			}
+			
+			// When game has started the round eliminated & eliminate contestant fields will be visible
+			// Validate that the Round Eliminated is filled in appropriately and set update the contestant record array
+			// TODO
+			if(e.getActionCommand().equals(eliminateYBtn))  {
+				while(getRoundEliminated() != 0) {
+					setEliminated(); 
+					getRoundEliminated();
+					}
+				}
 		}
 		/**  Delete Contestant Handler  **/
 		if(e.getActionCommand().equals("deleteC")) {
