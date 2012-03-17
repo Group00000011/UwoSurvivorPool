@@ -95,7 +95,7 @@ public class ContestantListGUI extends JPanel	{
 				{ "MG", "Martin", "Grabarczyk", "Dental Tribe", placeHolderImg, "Round 1" },
 				{ "HR", "Hazel", "Rivera", "Cavity Tribe", placeHolderImg, "Round 2" },
 				{ "MF", "Manor", "Freeman", "Dental Tribe",placeHolderImg, "Round 3" },
-				{ "DH", "Delerina", "Grabarczyk", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
+				{ "DH", "Delerina", "Hill", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
 				{ "JW", "Jeff", "Westaway", "Dental Tribe", placeHolderImg, "Not Eliminated" },
 				{ "LC", "Liam", "Corrigan", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
 		};

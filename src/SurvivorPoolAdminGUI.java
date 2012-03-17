@@ -1580,13 +1580,19 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			// When game has started the round eliminated & eliminate contestant fields will be visible
 			// Validate that the Round Eliminated is filled in appropriately and set update the contestant record array
 			// TODO
-			if(e.getActionCommand().equals(eliminateYBtn))  {
-				while(getRoundEliminated() != 0) {
-					setEliminated(); 
-					getRoundEliminated();
-					}
+//			if(e.getActionCommand().equals(eliminateYBtn))  {
+//				if(getRoundEliminated() == 0) {
+//					JOptionPane.showMessageDialog(this, "Please select the round this contestant was eliminated" );
+//				} else {
+//					setEliminated(); 
+//					getRoundEliminated();
+//					}
+				JOptionPane.showMessageDialog(this, 
+						"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
+						"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
 				}
-		}
+			
+//		}
 		/**  Delete Contestant Handler  **/
 		if(e.getActionCommand().equals("deleteC")) {
 			String inputFirst = textFields_c.getFirstC();
