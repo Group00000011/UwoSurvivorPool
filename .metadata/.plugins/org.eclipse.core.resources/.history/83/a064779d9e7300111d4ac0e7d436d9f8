@@ -91,7 +91,6 @@ public class ContestantListGUI extends JPanel	{
 //			}
 //			
 //		}
-		
 		private Object[][] data = {  /*************** TODO Implement getters  here */
 				{ "MG", "Martin", "Grabarczyk", "Dental Tribe", placeHolderImg, "Round 1" },
 				{ "HR", "Hazel", "Rivera", "Cavity Tribe", placeHolderImg, "Round 2" },
