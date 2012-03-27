@@ -26,6 +26,7 @@ public class TextInputFields extends JPanel implements ActionListener {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private static JTextField firstFieldP, lastFieldP, tribeField, firstFieldC, lastFieldC;
 	private String firstNameString = "", lastNameString = "", tribeString = "";  // Record Display String
+	private JComboBox playerComboBox, contestantComboBox;
     private JLabel recordDisplay;
     private ImageIcon uploadedImage;
     private Font regularFont, italicFont, textInputFieldFont;
@@ -115,8 +116,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     		if(firstFieldP.getText().equals("") && lastFieldP.getText().equals("") || firstFieldC.getText().equals("") && lastFieldC.getText().equals(""))
     			JOptionPane.showMessageDialog(null, "Fields cannot be blank.", null, JOptionPane.WARNING_MESSAGE, null);
     		else {
-    			// Add Record ***** TO DO ******
-    			// Add To Spinner
     			JOptionPane.showMessageDialog(null, "Item Added Successfully.",null, JOptionPane.INFORMATION_MESSAGE);
     			firstFieldP.selectAll();
     			lastFieldP.selectAll();
@@ -142,28 +141,8 @@ public class TextInputFields extends JPanel implements ActionListener {
         		tribeField.setText("");  
     		}
     	}
-//    	/**  Upload Button Handler  **/
-//    	else if(e.getActionCommand().equals("upload")) {
-//    		JFileChooser fileChooser = new JFileChooser();
-//    		int returnVal = fileChooser.showOpenDialog(this);
-//    		if (returnVal == JFileChooser.APPROVE_OPTION){
-//    		File contestantPhoto = fileChooser.getSelectedFile();
-//    		}
-//    	}
-//    	
-    }// End of ActionPerformed Button Handler
-    /**
-     * Update Record
-     */
-    protected void updateRecord() {
-    	
     }
-    /**
-     * Add New Record
-     */
-    protected void addNew() {
-    	
-    }
+
     /**
      * Updates a formatted display of the record added or edited
      */
@@ -213,20 +192,7 @@ public class TextInputFields extends JPanel implements ActionListener {
         	lastNameString = lastFieldC.getText();
         	tribeString = tribeField.getText();	
     	}
-//    	String empty = "";
-//    	
-//    	if((firstName == null) || empty.equals(firstName)) {
-//    		firstName = "<em>(no first name specified)</em>";
-//    		//+ must be 1-20 letters
-//    	}
-//    	if((lastName == null) || empty.equals(lastName)) {
-//    		lastName = "<em>(no last name specified)</em>";
-//    		//+ must be 1-20 letters
-//    	}
-//    	if((firstName == null) || empty.equals(firstName)) {
-//    		firstName = "<em>(no first name specified)</em>";
-//    	}
-    	
+
     	StringBuffer sb = new StringBuffer();
     	sb.append("<html><p align=center>");
     	sb.append(firstNameString);
@@ -238,27 +204,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     	sb.append("</p></html>");
     	
     	return sb.toString();    	
-    }
-    /**
-     * Generates a unique player ID
-     * Unique userid - this id should be the same as the western userid: first initial, 
-     * Player:  last name up to 6 character and then a number 
-     *   		if that first initial and 1-6 characters are already used
-     *   		@return 6(+a possible number) character string
-     * Contestant: case insensitive
-     * 			@return 2 character string
-     * @param firstName, lastName, desired length of ID
-     * @return a unique ID
-     */
-    private String uniqueIDGenerator(String firstName, String lastName, int output) {
-    	String uniqueID = "";
-    	
-    	if(output ==2) {	// Generate ID for contestants
-    		
-    	} else {  			// Generate ID for players
-    		
-    	}
-    	return uniqueID;
     }
     
     //A convenience method for creating a MaskFormatter.
@@ -343,6 +288,7 @@ public class TextInputFields extends JPanel implements ActionListener {
     									GAP, GAP/2); //xpad, ypad
     	return namePanel; 	    	
     }
+    
     /**
      * General Entry Text Fields for player
      * @return First & Last name & Unique ID Text Fields
@@ -387,6 +333,56 @@ public class TextInputFields extends JPanel implements ActionListener {
     									GAP, GAP/2); //xpad, ypad
     	return namePanel; 	    	
     }  
+    
+    /**
+     * JComboBox of current players - appears once games starts
+     * @return a combobox of all current Players
+     */
+    public JComponent playerDropDownList() {
+    	//Temp Data
+    	String[] nameStrings = {"H", "M", "G", "D", "J"};
+    	
+    	playerComboBox = new JComboBox(nameStrings);
+    	playerComboBox.setSelectedItem("Select from a list of current players");
+    	playerComboBox.addActionListener(new ActionListener() {
+    	    public void actionPerformed(ActionEvent e) {    			
+    	    	JComboBox cb = (JComboBox)e.getSource();
+    			Object[] name = cb.getSelectedObjects(); //TODO return the selected player record array
+    			firstFieldP.setText(getFirstP()); 
+    			lastFieldP.setText(getLastP());
+    		}
+    	});
+    	
+    	JPanel p = new JPanel();
+    	p.add(playerComboBox);
+    	return p;
+    }
+    
+    /**
+     * JComboBox of current contestants - appears once games starts
+     * @return a combobox of all current Contestants
+     */
+    public JComponent contestantDropDownList() {
+    	//Temp Data
+    	String[] strings = {"A", "G", "4", "S", "D"};
+    	
+    	contestantComboBox = new JComboBox(strings);
+    	contestantComboBox.setSelectedItem("Select from a list of current contestants");
+    	contestantComboBox.addActionListener(new ActionListener() {
+    	    public void actionPerformed(ActionEvent e) {    			
+    	    	JComboBox cb = (JComboBox)e.getSource();
+    			Object[] name = cb.getSelectedObjects(); //TODO return the selected contestant record array
+    			firstFieldC.setText(getFirstC());
+    			lastFieldC.setText(getLastC());
+    			tribeField.setText(getTribe());
+    		}
+    	});
+    	
+    	JPanel c = new JPanel();
+    	c.add(contestantComboBox);
+    	return c;
+    }
+    
     protected JComponent setGameFontP(Font font, Color color) {
     	this.textInputFieldFont = font;
     	this.textInputFieldColor = color;

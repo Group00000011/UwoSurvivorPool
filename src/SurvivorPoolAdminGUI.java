@@ -32,13 +32,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	//	private ImageIcon survivorLogoImg = createImageIcon("images/survivorLogo.png");
 	private ImageIcon title, quitImg, mainMenuBtnImg;
 	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"), jungleBackground;
-	private ImageIcon gameSettings, playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg;
+	private ImageIcon playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg;
 	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg, standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
 	private ImageIcon uploadedImage;
 
 	/////////// Attributes for the startGame Dialog box
 	// The Buttons
-	private JButton resetGameBtn, startGameBtn, saveSettingBtn;
+	private JButton resetGameBtn, startGameBtn, saveSettingBtn, playerModButton;
 	private JRadioButton eliminateYBtn;
 	
 	// Labels to ID fields
@@ -57,9 +57,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private int numRounds;
 	
 	// Buttons
-	private JButton quitBtn, mainMenuBtn, createGameSetBtn, playersBtn, contestantsBtn, standingsBtn, bonusQBtn, themeSelectBtn;	
+	private JButton quitBtn, mainMenuBtn, playersBtn, contestantsBtn, standingsBtn, bonusQBtn, themeSelectBtn;	
 	private JButton addPlayerBtn, addContBtn, updateBtn, deletePlayerBtn, deleteContBtn, resetBtn, uploadBtn, contOptionsBtn, contListBtn;
-
+	private JButton[] gameSettingsButtons = new JButton[13];
+	
 	// JLabels
 	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, standingBg, bqBg, titleBanner, contestantPicFrame;
 
@@ -70,12 +71,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private String currWkString = "Current Week: ";
 
 	// JPanels
-	private JPanel mainPanel, quitPanel, mMenuBtnPanel, titlePanel, mainButtonsPanel, pPanel, cPanel, cLPanel, sPanel, qPanel;
+	private JPanel mainPanel, quitPanel, mMenuBtnPanel, titlePanel, mainButtonsPanel, pPanel, cPanel, cLPanel, sPanel, qPanel, currWkPanel;
 
 	private TextInputFields textFields_p, textFields_c;
 
 	private PlayerListGUI standingsTable;
-	private ContestantListGUI contLiTable;
+	private ContListGUI contLiTable;
 
 	private Font gFont, jFont;
 
@@ -112,8 +113,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		textFields_p = new TextInputFields();
 		textFields_c = new TextInputFields();
 		standingsTable = new PlayerListGUI();
-		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
-
+//		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
+		contLiTable = new ContListGUI();
+		
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero",Font.PLAIN,18);
 		// The jungle theme font
@@ -134,7 +136,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		bqGBg = createImageIcon("images/bqGolden.jpg");
 		bqBg = new JLabel(bqGBg);
-
+		
 		SpringLayout guiLayout = new SpringLayout();	
 		this.setLayout(guiLayout);
 
@@ -551,25 +553,30 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		mainButtonsPanel = new JPanel(new GridLayout(2,3,60,30));
 
 		// Game Settings Button -- To Create New & to Start the Game
-		gameSettings = createImageIcon("images/newGame.png");	
-		createGameSetBtn = new JButton("Create Survivor New Game", gameSettings);
-		// Set the text position
-		createGameSetBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
-		createGameSetBtn.setHorizontalTextPosition(AbstractButton.CENTER);
-		// Set the button layout
-		createGameSetBtn.setOpaque(false);
-		createGameSetBtn.setFocusPainted(false);
-		createGameSetBtn.setBorderPainted(false);
-		createGameSetBtn.setContentAreaFilled(false);
-		createGameSetBtn.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-		// Set Action Commands & Listeners
-		createGameSetBtn.setMnemonic(KeyEvent.VK_N);
-		createGameSetBtn.setToolTipText("Game Settings - Start Game - Create New Game");
-		createGameSetBtn.setActionCommand("settings");
-		createGameSetBtn.addActionListener(this);
+		ImageIcon[] gameSettingsArray = new ImageIcon[13];
+		
+		
+		for(int i=0;i<13;i++) {
+			gameSettingsArray[i] = createImageIcon("images/"+i+".png");
+			gameSettingsButtons[i] = new JButton("Game Settings", gameSettingsArray[i]);
+			// Set the text position
+			gameSettingsButtons[i].setVerticalTextPosition(AbstractButton.BOTTOM);
+			gameSettingsButtons[i].setHorizontalTextPosition(AbstractButton.CENTER);
+			// Set the button layout
+			gameSettingsButtons[i].setOpaque(false);
+			gameSettingsButtons[i].setFocusPainted(false);
+			gameSettingsButtons[i].setBorderPainted(false);
+			gameSettingsButtons[i].setContentAreaFilled(false);
+			gameSettingsButtons[i].setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+			gameSettingsButtons[i].setMnemonic(KeyEvent.VK_N);
+			// Set Action Commands & Listeners
+			gameSettingsButtons[i].setToolTipText("Current Game Settings - Current Round: "+i);
+			gameSettingsButtons[i].setActionCommand("settings");
+			gameSettingsButtons[i].addActionListener(this);
+		}
+		gameSettingsButtons[0].setToolTipText("Game Settings - Start Game - Create New Game");
 
 		// Players List Button - Set Gold image as part of default theme
-		//        playersGoldImg = createImageIcon("images/bbG.png");
 		playersBtn = new JButton("Players",playerBtnImg);
 		// Set the text position
 		playersBtn.setVerticalTextPosition(AbstractButton.BOTTOM);
@@ -661,7 +668,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		mainButtonsPanel.setOpaque(false);
 
 		mainButtonsPanel.add(playersBtn);
-		mainButtonsPanel.add(createGameSetBtn);
+		
+		if(startGame==false) { mainButtonsPanel.add(gameSettingsButtons[0]); }
+		if(startGame==true) { mainButtonsPanel.add(gameSettingsButtons[roundNum]); }
+		
 		mainButtonsPanel.add(contestantsBtn);
 		mainButtonsPanel.add(standingsBtn);
 		mainButtonsPanel.add(bonusQBtn);
@@ -798,7 +808,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		
 		roundField = new JFormattedTextField();
 		roundField.setValue(new Integer(0));
-		roundField.setColumns(10);
+		roundField.setColumns(5);
 		JLabel roundLbl = new JLabel("Round Eliminated");
 		roundLbl.setLabelFor(roundField);
 		
@@ -887,17 +897,17 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * @return a panel with a main menu button on it that changes dynamically depending on the theme
 	 */
 	private JComponent mainMenuButton() {
-		mMenuBtnPanel = new JPanel();
+		mMenuBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		mainMenuBtnImg = createImageIcon("images/mainMenuButton.png");
 		mainMenuBtn = new JButton(mainMenuBtnImg);
 		mainMenuBtn.setToolTipText("Return to the Main Menu  ALT+1");
 
 		// Set the button layout
-		mainMenuBtn.setOpaque(false);
-		mainMenuBtn.setFocusPainted(false);
-		mainMenuBtn.setBorderPainted(false);
-		mainMenuBtn.setContentAreaFilled(false);
-		mainMenuBtn.setBorder(BorderFactory.createEmptyBorder(GAP,GAP*4,GAP,GAP));
+//		mainMenuBtn.setOpaque(false);
+//		mainMenuBtn.setFocusPainted(false);
+//		mainMenuBtn.setBorderPainted(false);
+//		mainMenuBtn.setContentAreaFilled(false);
+		mainMenuBtn.setBorder(BorderFactory.createEmptyBorder(GAP,GAP*4,GAP,400));
 
 		mMenuBtnPanel.setOpaque(false);
 
@@ -906,9 +916,39 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		mainMenuBtn.addActionListener(this);
 
 		mMenuBtnPanel.add(mainMenuBtn);
-
+		mMenuBtnPanel.add(currentWeekBoard());
+		repaint();
+		validate();
+		
 		return mMenuBtnPanel;
 	}	
+	
+	/**
+	 * Current Week Panel
+	 * 
+	 * @return a panel that displays the current week
+	 */
+	private JComponent currentWeekBoard() {		
+		// Create an array of images & convert it to an array of labels
+		ImageIcon[] cWkImgArray = new ImageIcon[13];
+		JLabel[] cWkLabelArray = new JLabel[13];
+		
+		for(int i = 1; i<13; i++) {
+			cWkImgArray[i] = createImageIcon("images/currWkBoard"+i+".png");
+			cWkLabelArray[i] = new JLabel(cWkImgArray[i]);
+		}
+		
+		currWkPanel = new JPanel();
+		currWkPanel.setOpaque(false);
+
+//		currWkPanel.setPreferredSize(new Dimension(wkImage.getIconWidth(),wkImage.getIconHeight()));
+		
+//		currWkPanel.add(week, BorderLayout.EAST);
+		if(startGame==true) { currWkPanel.add(cWkLabelArray[roundNum], BorderLayout.WEST); }
+		
+		return currWkPanel;
+	}
+	
 	/**
 	 * The Quit button
 	 * 
@@ -942,12 +982,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		return quitPanel;
 	}
-	//	/**
-	//	 * Current Week Panel
-	//	 */
-	//	private JComponent currentWkPane() {
-	//		TODO
-	//	}
+
 	/**
 	 * Bonus Question Panel
 	 * A Bonus Q&A Input Area
@@ -957,13 +992,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JComponent bqPanel() {
 		qPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-		getContentPane().add(qPanel);
 		getContentPane().add(mainMenuButton());
 		getContentPane().add(bqBg); 		// Create the background		
 
 		return qPanel;
 
 	}
+
 	/**
 	 * Standings Panel
 	 * A Chart and current information
@@ -973,22 +1008,24 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JComponent standingsPanel() {
 		sPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-		JPanel main = new JPanel();
-		main.setLayout(new BoxLayout(main, BoxLayout.PAGE_AXIS));	
-		main.add(standingsTable.createPlayerList());
-		main.setOpaque(false);
-
-		// Create a separator
-		main.setBorder(BorderFactory.createEmptyBorder(	GAP/4, //top
-				0,     //left
-				GAP/4, //bottom
-				0));   //right
-		main.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.LINE_START);
-		//		main.setPreferredSize(new Dimension(492,580));
-
 		sPanel.setOpaque(false);
-		sPanel.add(main);
+		sPanel.add(standingsTable.createPlayerList());
+		
+		// Create a modify players button that will navigate to the players panel
+		ImageIcon modPlayerImg = createImageIcon("images/playerModButton.png");
+		playerModButton = new JButton(modPlayerImg); 
 
+		// Set the button layout
+		playerModButton.setOpaque(false);
+		playerModButton.setFocusPainted(false);
+		playerModButton.setBorderPainted(false);
+		playerModButton.setContentAreaFilled(false);
+		playerModButton.setBorder(BorderFactory.createEmptyBorder(GAP,GAP,GAP,GAP));
+
+		// Set Action Commands
+		playerModButton.setActionCommand("players");
+		playerModButton.addActionListener(this);
+		
 		// Assemble the text fields with the background as a large panel
 		SpringLayout sLayout = new SpringLayout();
 		JPanel standingPanel = new JPanel(sLayout);
@@ -996,6 +1033,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		getContentPane().add(mainMenuButton());
 		getContentPane().add(sPanel);
+		getContentPane().add(playerModButton);
 		getContentPane().add(standingBg);
 
 		sLayout.putConstraint(SpringLayout.WEST, standingBg, 0, SpringLayout.WEST, getContentPane());
@@ -1005,7 +1043,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		sLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
 
 		sLayout.putConstraint(SpringLayout.WEST, sPanel, GAP*2, SpringLayout.WEST, getContentPane());
-		sLayout.putConstraint(SpringLayout.NORTH, sPanel, 100, SpringLayout.NORTH, getContentPane());
+		sLayout.putConstraint(SpringLayout.NORTH, sPanel, 175, SpringLayout.NORTH, getContentPane());
+
+		sLayout.putConstraint(SpringLayout.EAST, playerModButton, -100, SpringLayout.EAST, getContentPane());
+		sLayout.putConstraint(SpringLayout.NORTH, playerModButton, 625, SpringLayout.NORTH, getContentPane());
 
 		// Create the labels and text areas for this panel
 		String poolString = "Total in Pool";
@@ -1025,6 +1066,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		JPanel leftHalf_p = new JPanel();
 		leftHalf_p.setLayout(new BoxLayout(leftHalf_p, BoxLayout.PAGE_AXIS));	
+		
+		if(getStartGame()==true) {  leftHalf_p.add(textFields_p.playerDropDownList()); }
 		leftHalf_p.add(textFields_p.createFieldsPlayer());
 		leftHalf_p.add(modifyPlayerButtons());
 		leftHalf_p.setOpaque(false);
@@ -1070,7 +1113,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 */
 	private JComponent contListPanel() {
 		//Create a Add/Modify Contestant List Button
-		contOptionsBtn = new JButton("Contestant List Options");
+		ImageIcon textImg = createImageIcon("images/contestantOptions.png");
+		contOptionsBtn = new JButton(textImg);
+		
+		// Set the button layout
+		contOptionsBtn.setOpaque(false);
+		contOptionsBtn.setFocusPainted(false);
+		contOptionsBtn.setBorderPainted(false);
+		contOptionsBtn.setContentAreaFilled(false);
+		contOptionsBtn.setBorder(BorderFactory.createEmptyBorder(GAP,GAP,GAP,GAP));
 
 		// Set Action Commands & Listeners
 		contOptionsBtn.setMnemonic(KeyEvent.VK_I);
@@ -1081,7 +1132,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		cLPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
 		cLPanel.setLayout(new BoxLayout(cLPanel, BoxLayout.PAGE_AXIS));	
-		cLPanel.add(contLiTable.createContList());
+		cLPanel.add(contLiTable.createContestantList());
 		cLPanel.setOpaque(false);
 
 		// Assemble the text fields with the background as a large panel
@@ -1100,8 +1151,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		clLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0, SpringLayout.WEST, getContentPane());
 		clLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
 	    
-		clLayout.putConstraint(SpringLayout.WEST, contOptionsBtn, 500, SpringLayout.WEST, getContentPane());
-		clLayout.putConstraint(SpringLayout.NORTH, contOptionsBtn, 600, SpringLayout.NORTH, getContentPane());
+		clLayout.putConstraint(SpringLayout.WEST, contOptionsBtn, 725, SpringLayout.WEST, getContentPane());
+		clLayout.putConstraint(SpringLayout.NORTH, contOptionsBtn, 550, SpringLayout.NORTH, getContentPane());
 
 		clLayout.putConstraint(SpringLayout.WEST, cLPanel, 77, SpringLayout.WEST, getContentPane());
 		clLayout.putConstraint(SpringLayout.NORTH, cLPanel, 100, SpringLayout.NORTH, getContentPane());
@@ -1119,6 +1170,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		JPanel leftHalf_c = new JPanel();
 		leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
 		leftHalf_c.setOpaque(false);
+		
+		if(getStartGame()==true) {  leftHalf_c.add(textFields_c.contestantDropDownList()); }
+
 		leftHalf_c.add(textFields_c.createFieldsCont());
 
 		leftHalf_c.add(uploadButton());
@@ -1132,7 +1186,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		leftHalf_c.setPreferredSize(new Dimension(492,580));
 
 		// Create a Contestant List Panel to switch back to the contestant list
-		contListBtn = new JButton("Return to Contestant List");
+		ImageIcon retImg = createImageIcon("images/contListButton.png");
+		contListBtn = new JButton(retImg);
+		// Set the button layout
+		contListBtn.setOpaque(false);
+		contListBtn.setFocusPainted(false);
+		contListBtn.setBorderPainted(false);
+		contListBtn.setContentAreaFilled(false);
+		contListBtn.setBorder(BorderFactory.createEmptyBorder(GAP,GAP,GAP,GAP));
 
 		// Set Action Commands & Listeners
 		contListBtn.setMnemonic(KeyEvent.VK_L);
@@ -1300,12 +1361,17 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	        panel.add(fieldPane);
 	        panel.add(buttonPane);    
 	        
+	        // Create a Game Settings Header
+	        ImageIcon title = createImageIcon("images/gameSetTitle.png");
+	        JLabel titleComp = new JLabel(title);
+	        
 			// Assemble the text fields with the background as a large panel
 			SpringLayout settingLayout = new SpringLayout();
 			JPanel settingPanel = new JPanel(settingLayout);
 		    this.setLayout(settingLayout);
 			
 		    getContentPane().add(mainMenuButton());
+			getContentPane().add(titleComp);
 			getContentPane().add(panel);
 			getContentPane().add(themeMaker);
 
@@ -1315,8 +1381,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			settingLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0, SpringLayout.WEST, getContentPane());
 			settingLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
 
-			settingLayout.putConstraint(SpringLayout.WEST, panel, 77, SpringLayout.WEST, getContentPane());
-			settingLayout.putConstraint(SpringLayout.NORTH, panel, 100, SpringLayout.NORTH, getContentPane());
+			settingLayout.putConstraint(SpringLayout.WEST, panel, 150, SpringLayout.WEST, getContentPane());
+			settingLayout.putConstraint(SpringLayout.NORTH, panel, 300, SpringLayout.NORTH, getContentPane());
+			
+			settingLayout.putConstraint(SpringLayout.WEST, titleComp, 300, SpringLayout.WEST, getContentPane());
+			settingLayout.putConstraint(SpringLayout.NORTH, titleComp, 100, SpringLayout.NORTH, getContentPane());
 			
 			return settingPanel; 
 		} 
@@ -1340,8 +1409,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		contestantPicFrame.setIcon(blankGFrame);
 		playersBtn.setIcon(playersGoldImg);
 
-		createGameSetBtn.setFont(gFont);
-		createGameSetBtn.setForeground(Color.YELLOW);
+		for(int i=0;i<gameSettingsButtons.length;i++) {
+			gameSettingsButtons[i].setFont(gFont);
+			gameSettingsButtons[i].setForeground(Color.YELLOW);
+		}
 		playersBtn.setFont(gFont);
 		playersBtn.setForeground(Color.YELLOW);		
 		contestantsBtn.setFont(gFont);
@@ -1360,8 +1431,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private void jungleTheme() {		
 		playersJungleImg = createImageIcon("images/bbJ.png");
 		jungleBackground = createImageIcon("images/jungle1.jpg");
-		playerJBg = createImageIcon("images/jungle10.jpg");
-		contestantJBg = createImageIcon("images/tiger-jungle.jpg");
+		playerJBg = createImageIcon("images/playerJungleBg.jpg");
+		contestantJBg = createImageIcon("images/contestantJungleBg.jpg");
 		blankJFrame = createImageIcon("images/uploadPicFrame_jungleFrame.png");
 		standingJBg = createImageIcon("images/standingsJungle.jpg");
 		bqJBg = createImageIcon("images/bqJungle.jpg");
@@ -1380,8 +1451,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		textFields_p.setGameFontP(jFont, Color.WHITE);
 		textFields_c.setGameFontC(jFont, Color.WHITE);
 
-		createGameSetBtn.setFont(jFont);
-		createGameSetBtn.setForeground(Color.WHITE);
+		for(int i=0;i<gameSettingsButtons.length;i++) {
+			gameSettingsButtons[i].setFont(jFont);
+			gameSettingsButtons[i].setForeground(Color.WHITE);
+		}
 		playersBtn.setFont(jFont);
 		playersBtn.setForeground(Color.WHITE);		
 		contestantsBtn.setFont(jFont);
@@ -1663,7 +1736,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			repaint();
 			validate();		
 		}
-		/**  Players List Button Handler **/
+		/**  Players Add/Modify Panel Button Handler  **/
 		if(e.getActionCommand().equals("players")) {
 			getContentPane().removeAll();
 
@@ -1671,7 +1744,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			getContentPane().add(playersPanel());
 
 			repaint();
-			validate();								
+			validate();	
 		}
 		/**  Contestants List Button Handler **/
 		if(e.getActionCommand().equals("contestants")) {
@@ -1693,15 +1766,21 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			repaint();
 			validate();								
 		}
-		/**  Standings List Button Handler **/
+		/**  Standings List Button Handler 
+		 * 	 Enabled only if game has already begun		
+		 **/
 		if(e.getActionCommand().equals("standings")) {
-			getContentPane().removeAll();
-
-			getContentPane().add(quitButton());
-			getContentPane().add(standingsPanel());
-
-			repaint();
-			validate();		
+			if(getStartGame()==true) {
+				getContentPane().removeAll();
+	
+				getContentPane().add(quitButton());
+				getContentPane().add(standingsPanel());
+	
+				repaint();
+				validate();	
+			}
+			else
+				JOptionPane.showMessageDialog(this, "Game has not started yet.", null,  JOptionPane.ERROR_MESSAGE); 
 		}
 		/**  Bonus Question Admin Button Handler **/
 		if(e.getActionCommand().equals("bonus")) {
