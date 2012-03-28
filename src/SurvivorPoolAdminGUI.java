@@ -93,10 +93,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private int wager,roundNum, inputNumConts;
 	private Round[] rounds;
 	
+
+	
+	//STUFF YOU ADDED
+	private JComponent playPanel;
+	
 	/******************************** Constructor *************************************/
 	/**  Initializes the Administrative GUI  */
 	public SurvivorPoolAdminGUI() {	
-		
 		createGame();
 	}
 	/**
@@ -112,8 +116,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		
 		readSettings("settings.txt");
 		
-		textFields_p = new TextInputFields();
-		textFields_c = new TextInputFields();
+		textFields_p = new TextInputFields(this.contestantsArray,this.numConts,this.playersArray);
+		textFields_c = new TextInputFields(this.contestantsArray,this.numConts,this.playersArray);
 		standingsTable = new PlayerListGUI();
 //		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
 		contLiTable = new ContListGUI();
@@ -1210,7 +1214,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		//		private JTextArea poolArea, currWkArea, numContArea, recElimArea;
 
 		return standingPanel;
-	}	
+	}
+	
+
 	/**
 	 * Players Edit, Add & Store Panel/Screen
 	 * 
@@ -1222,7 +1228,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		JPanel leftHalf_p = new JPanel();
 		leftHalf_p.setLayout(new BoxLayout(leftHalf_p, BoxLayout.PAGE_AXIS));	
 		
-		if(getStartGame()==true) {  leftHalf_p.add(textFields_p.playerDropDownList()); }
+		leftHalf_p.add(textFields_p.playerDropDownList(playersArray)); 
 		leftHalf_p.add(textFields_p.createFieldsPlayer());
 		leftHalf_p.add(modifyPlayerButtons());
 		leftHalf_p.setOpaque(false);
@@ -1326,7 +1332,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
 		leftHalf_c.setOpaque(false);
 		
-		if(getStartGame()==true) {  leftHalf_c.add(textFields_c.contestantDropDownList()); }
+		leftHalf_c.add(textFields_c.contestantDropDownList(this.contestantsArray,numConts)); 
 
 		leftHalf_c.add(textFields_c.createFieldsCont());
 
@@ -1687,6 +1693,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 					this.addPlayer(new Player(first,last,ID));
 					this.writePlayers("players.txt");
+
+					getContentPane().removeAll();
+
+					getContentPane().add(quitButton());	
+					
+					getContentPane().add(playersPanel());
+
+					repaint();
+					validate();	
 				}
 			}
 		}
@@ -1899,7 +1914,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		if(e.getActionCommand().equals("players")) {
 			getContentPane().removeAll();
 
-			getContentPane().add(quitButton());			
+			getContentPane().add(quitButton());	
+			
 			getContentPane().add(playersPanel());
 
 			repaint();
