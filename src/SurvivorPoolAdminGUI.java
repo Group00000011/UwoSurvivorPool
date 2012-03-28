@@ -90,9 +90,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	//Variables for setters & getters
 	private boolean startGame=false;
 	private boolean contEliminated=false;
-	private int wager,roundNum;
+	private int wager,roundNum, inputNumConts;
+	private Round[] rounds;
 	
-
 	/******************************** Constructor *************************************/
 	/**  Initializes the Administrative GUI  */
 	public SurvivorPoolAdminGUI() {	
@@ -106,9 +106,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private void createGame() {
 		//initialize players and contestants array
 		String fileName="players.txt";
-//		readPlayers(fileName);
-		contestantsArray=new Contestant[15];
+		readPlayers(fileName);
+		readContestants("contestants.txt");
 		roundNum=1;
+		
+		readSettings("settings.txt");
 		
 		textFields_p = new TextInputFields();
 		textFields_c = new TextInputFields();
@@ -163,14 +165,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	/******************************  Methods  *********************************/
 
+
 	public String assignRandomCont(int index, int roundNum){
-		if(index>=this.playersArray.length)
+		if(this.playersArray[index]==null)
 			return null;
 		else{
 			Random numGenerator=new Random();
-			
 			int contIndex=numGenerator.nextInt(this.contCount);
-			System.out.println(contestantsArray[contIndex].getFirst());
 			this.playersArray[index].makeRoundPick(roundNum, contestantsArray[contIndex]);
 			String s=""+this.playersArray[index].getFirst()+" "+this.playersArray[index].getLast()+": "+contestantsArray[contIndex].getFirst()+" "+contestantsArray[contIndex].getLast();
 			return s;
@@ -191,6 +192,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	}
 	
 	public void nextRound() {
+		if(startGame==false)
+			JOptionPane.showMessageDialog(this, "You must start the game before going to the next round");
+		else{
 		if(contCount==0 || playersArray==null)
 			JOptionPane.showMessageDialog(this, "Please add players and contestants before changing to the next round");
 		else {
@@ -201,6 +205,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		else{
 			JOptionPane.showMessageDialog(this, "It is now round "+this.roundNum+"\n The following players were assigned random contestant choices: \n\n"+s);
 			writePlayers("players.txt");
+		}
 		}
 		}
 	}
@@ -218,7 +223,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			Player currPlayerObj;
 			Contestant contElim;
 			int pScr, rnd, finRnd;
-			while(currPlayer!=null){
+			while(currPlayer!=null && !currPlayer.trim().equals("")){
 				int i=0;
 				pFirst=pLast=pID=rndStr=finRndStr=pScrStr=cFirst=cLast=cID=cTrb=cPic="";
 				pScr=rnd=finRnd=0;
@@ -416,6 +421,154 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		catch(IOException e){}//unharmful
 
 	}
+ 
+	public void readSettings(String fileName){
+		try{
+			DataInputStream input = new DataInputStream(new FileInputStream(fileName));
+			BufferedReader in = new BufferedReader(new InputStreamReader(input));
+			String currRound=in.readLine();
+			if(currRound!=null && !currRound.trim().equals("")){
+				this.roundNum=Integer.valueOf(currRound.trim());
+			
+			String gameStarted=in.readLine(), inputWager;
+			if(gameStarted!=null && !gameStarted.trim().equals("")){
+				if(gameStarted.equals("true")){
+					this.startGame=true;
+				}
+				else
+					this.startGame=false;
+				String inputSpecifier = in.readLine();
+				if(inputSpecifier!=null) {
+					if(inputSpecifier.equals("R")){
+						String inputNumRounds=in.readLine();
+						if(inputNumRounds!=null){
+							this.numRounds=Integer.valueOf(inputNumRounds);
+							String inNumContestants= in.readLine();
+							if(inNumContestants!=null){
+								this.inputNumConts=Integer.valueOf(inNumContestants);
+								 inputSpecifier = in.readLine();
+								 if(inputSpecifier!=null){
+								 if(inputSpecifier.equals("W")){
+									 inputWager=in.readLine();
+									 if(inputWager!=null)
+										 this.wager=Integer.valueOf(inputWager);
+								 }
+							}		
+						}
+					}
+					}
+					else if(inputSpecifier.equals("W")){
+						inputWager= in.readLine();
+						if(inputWager!=null)
+							this.wager=Integer.valueOf(inputWager);
+					}
+				}
+			}
+			}
+		}
+				catch(IOException e){}
+			}
+	
+	public void writeSettings(String fileName){
+		BufferedWriter bWr = null;
+		try {
+
+			bWr = new BufferedWriter(new FileWriter(fileName));
+			String settingsStr=""+this.roundNum+"\n"+this.startGame+"\n";
+			if(this.inputNumConts!=0){
+				settingsStr=settingsStr+"R\n"+numRounds+"\n"+this.inputNumConts+"\n";
+			}
+			if(this.wager!=0)
+				settingsStr=settingsStr+"W\n"+this.wager+"\n";			
+			bWr.write(settingsStr);
+			bWr.flush();
+			bWr.close();	
+		}
+		catch(IOException e){}
+	}
+	
+	public void readContestants(String fileName) {
+		try{
+		DataInputStream input = new DataInputStream(new FileInputStream(fileName));
+		BufferedReader in = new BufferedReader(new InputStreamReader(input));
+		String currCont = in.readLine();
+		this.contCount=0;
+		this.contestantsArray=new Contestant[15];
+		while(currCont != null && !currCont.trim().equals("")){
+			int i=0;
+			String cFirst="",cLast="",cID="",cTrb="",cPic="",cElimRoundStr="";
+			int elimRound=0;
+			 while( i<currCont.length() && currCont.charAt(i)!='+') {
+				 cFirst=cFirst+currCont.charAt(i);
+				 i++;
+			 }
+			 i++;
+			 while( i<currCont.length() && currCont.charAt(i)!='+') {
+				 cLast=cLast+currCont.charAt(i);
+				 i++;
+			 }
+			 i++;
+			 while( i<currCont.length() && currCont.charAt(i)!='+') {
+				 cID=cID+currCont.charAt(i);
+				 i++;
+			 }
+			 i++;
+			 while( i<currCont.length() && currCont.charAt(i)!='+') {
+				 cPic=cPic+currCont.charAt(i);
+				 i++;
+			 }
+			 i++;
+			 while( i<currCont.length() && currCont.charAt(i)!='+') {
+				 cTrb=cTrb+currCont.charAt(i);
+				 i++;
+			 }
+			 i++;
+			 Contestant contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+			 System.out.println("adding cont "+cFirst);
+			 if(i<currCont.length() && currCont.charAt(i)!='+'){
+			 for(;i<currCont.length();i++){
+				 if(currCont.charAt(i)=='+'){
+					 elimRound=Integer.valueOf(cElimRoundStr);
+					 contElim.setElimRound(new Round(elimRound));
+					 break;
+					 
+				 }
+				 else{
+					 cElimRoundStr=cElimRoundStr+currCont.charAt(i);
+				 }
+			 }
+			 }
+			 this.contestantsArray[contCount]=contElim;
+			 System.out.println(this.contestantsArray[contCount].getFirst());
+			 contCount++;
+			 currCont=in.readLine();
+		}
+		}catch(IOException e) {}	
+	}
+	
+	public void writeContestants(String fileName){
+		BufferedWriter bWr = null;
+		String currString="";
+		try {
+
+			bWr = new BufferedWriter(new FileWriter(fileName));
+			for(int i=0;i<this.contCount;i++){
+				currString=currString+this.contestantsArray[i].getFirst()+"+";
+				currString=currString+this.contestantsArray[i].getLast()+"+";
+				currString=currString+this.contestantsArray[i].getID()+"+";
+				currString=currString+this.contestantsArray[i].getPicture()+"+";
+				currString=currString+this.contestantsArray[i].getTribe()+"+";
+				if(this.contestantsArray[i].getElimRound()!=null){
+					currString=currString+this.contestantsArray[i].getElimRound().getRoundNum();
+				}
+				currString=currString+"+\n";
+			}
+			bWr.write(currString);
+			bWr.flush();
+			bWr.close();
+	}
+		catch(Exception e){}
+	}
 
 	/**
 	 * Creates a new player array & stores the player object to the array
@@ -439,6 +592,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			this.playersArray=newPlayers;
 		}
 	}
+
+
 	public Player[] getPlayers(){
 		return this.playersArray;
 	}
@@ -1541,6 +1696,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		if(e.getActionCommand().equals("next")){
 			nextRound();
+			writeSettings("settings.txt");
 		}
 
 		/**  Delete Player Handler  **/
@@ -1549,7 +1705,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 			}
 			else{
-				
+				writePlayers("players.txt");
 			}
 			
 		}
@@ -1620,6 +1776,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 			}
+			this.writeContestants("contestants.txt");
 		}
 		/**  Update Contestant Handler  **/
 		if(e.getActionCommand().equals("updateC")) {
@@ -1663,7 +1820,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, 
 						"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
 						"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
-				}
+				this.writeContestants("contestants.txt");		
+		}
 			
 //		}
 		/**  Delete Contestant Handler  **/
@@ -1699,6 +1857,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
 				}
 			}
+			this.writeContestants("contestants.txt");
 		}
 		/**  Reset Fields Handler  **/
 		if(e.getActionCommand().equals("reset")) {
@@ -1836,6 +1995,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					    JOptionPane.PLAIN_MESSAGE);
 				
 				setStartGame(true);
+				this.rounds=new Round[numRounds];
+				writeSettings("settings.txt");
 			}
 
 		}
@@ -1847,9 +2008,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				
 				}
 			else{
-				numConts = Integer.parseInt(contField.getText());
-				numRounds = numConts - 2;
+				inputNumConts = Integer.parseInt(contField.getText());
+				numRounds = inputNumConts - 2;
 				JOptionPane.showMessageDialog(this, "The total number of rounds will be: " + numRounds);
+				writeSettings("settings.txt");
 			}
 		}
 	}	
