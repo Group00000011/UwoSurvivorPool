@@ -130,4 +130,7 @@ public class Round {
 
 	}
 
+	public void updateQuestion(int qNumber, BonusQuestion q) {
+		bonusQuestion[qNumber-1] = q;
+	}
 }

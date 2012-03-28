@@ -540,3 +540,12 @@ java.lang.RuntimeException: Widget disposed too early!
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:574)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1407)
 	at org.eclipse.equinox.launcher.Main.main(Main.java:1383)
+!SESSION 2012-03-28 16:57:39.414 -----------------------------------------------
+eclipse.buildId=I20100608-0911
+java.version=1.6.0_21
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_CA
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY org.eclipse.core.resources 2 10035 2012-03-28 16:58:16.287
+!MESSAGE The workspace exited with unsaved changes in the previous session; refreshing workspace to recover changes.
