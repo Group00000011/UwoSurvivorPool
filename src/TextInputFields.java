@@ -399,8 +399,8 @@ public class TextInputFields extends JPanel implements ActionListener {
 	    	    public void actionPerformed(ActionEvent e) {    			
 	    			firstFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getFirst());
 	    			lastFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getLast());
-	    			tribeField.setText(contestants[contestantComboBox.getSelectedIndex()].getID());
-	    			cID=players[playerComboBox.getSelectedIndex()].getID();
+	    			tribeField.setText(contestants[contestantComboBox.getSelectedIndex()].getTribe());
+	    			cID=contestants[contestantComboBox.getSelectedIndex()].getID();
 	    		}
 	    	});
     	} else

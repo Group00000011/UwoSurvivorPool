@@ -377,6 +377,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 			bWr = new BufferedWriter(new FileWriter(fileName));
 			for(int i=0;i<this.playersArray.length;i++){
+				System.out.println(this.playersArray[i].getFirst());
 				currString=currString+this.playersArray[i].getFirst()+"+";
 				currString=currString+this.playersArray[i].getLast()+"+";
 				currString=currString+this.playersArray[i].getID()+"+";
@@ -1321,28 +1322,28 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		return contPanel;
 	}	
 	/**
-	 * Contestants Edit, Add & Store Panel/Screen
-	 * 
-	 * @return a panel to add/delete/modify contestants & a button that will show a panel that displays the contestant list  
-	 */
+	* Contestants Edit, Add & Store Panel/Screen
+	*
+	* @return a panel to add/delete/modify contestants & a button that will show a panel that displays the contestant list
+	*/
 	private JComponent contestantPanel() {
-		cPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	cPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-		JPanel leftHalf_c = new JPanel();
-		leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
-		leftHalf_c.setOpaque(false);
-		
-		leftHalf_c.add(textFields_c.contestantDropDownList(this.contestantsArray,numConts)); 
+	JPanel leftHalf_c = new JPanel();
+	leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
+	leftHalf_c.setOpaque(false);
 
-		leftHalf_c.add(textFields_c.createFieldsCont());
+	leftHalf_c.add(textFields_c.contestantDropDownList(this.contestantsArray, contCount));
 
-		leftHalf_c.add(uploadButton());
+	leftHalf_c.add(textFields_c.createFieldsCont());
 
-		// if the game has started show the eliminate contestant option otherwise show the add/delete contestant options
-		if(getStartGame()==true) {  leftHalf_c.add(elimContPanel());  }
-		if(getStartGame()==false) {  leftHalf_c.add(addDeleteContButtons());  }
+	leftHalf_c.add(uploadButton());
 
-		leftHalf_c.add(modifyContButtons());
+	// if the game has started show the eliminate contestant option otherwise show the add/delete contestant options
+	if(getStartGame()==true) { leftHalf_c.add(elimContPanel()); }
+	if(getStartGame()==false) { leftHalf_c.add(addDeleteContButtons()); }
+
+	leftHalf_c.add(modifyContButtons());
 
 //		leftHalf_c.setPreferredSize(new Dimension(492,580));
 
@@ -1761,8 +1762,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, "Player has been updated");
 				
 				this.writePlayers("players.txt");
+				
+				getContentPane().removeAll();
+
+				getContentPane().add(quitButton());	
+				
+				getContentPane().add(playersPanel());
+
+				repaint();
+				validate();	
 			}
-		}
+		}		
+		
 		
 		
 		if(e.getActionCommand().equals("next")){
@@ -1771,8 +1782,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		
 		
-		//*********************************************************************************************************************
-		//********************************************************************************************************************************************************************************************8
 
 		/**  Delete Player Handler  **/
 		if(e.getActionCommand().equals("deleteP")) { 
@@ -1822,15 +1831,28 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							tempArray[i] = playersArray[i+1];
 						}
 						
+						playersArray = tempArray;
+						
 						JOptionPane.showMessageDialog(this, "" + inputFirst + " has been deleted");	
 						
 						this.writePlayers("players.txt");
+						
+						getContentPane().removeAll();
+
+						getContentPane().add(quitButton());	
+						
+						getContentPane().add(playersPanel());
+
+						repaint();
+						validate();	
 					}
 				}
 			}
 		}				
 	}
-			
+	
+		
+		
 		
 		/**  Add Contestant Handler **/
 		if(e.getActionCommand().equals("+C")) {
@@ -1942,9 +1964,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 //					setEliminated(); 
 //					getRoundEliminated();
 //					}
-//**************************************************************************
-			//**************************************************************
-			//****************************************************************************************************************************************************
+
 			
 			int position = findContestant(textFields_c.getMenuContsID());
 			if (position == -1){
@@ -1961,59 +1981,69 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
 						"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
 				}
-			
-//		}
-		/**  Delete Contestant Handler  **/
-		if(e.getActionCommand().equals("deleteC")) {
+		
+		
+		/** Delete Contestant Handler **/
+		if (e.getActionCommand().equals("deleteC")) {
 			String inputFirst = textFields_c.getFirstC();
 			String inputLast = textFields_c.getLastC();
 			String inputTribe = textFields_c.getTribe();
 
+			if (getStartGame() == true) {
+				JOptionPane.showMessageDialog(this,
+						"You cannot add/delete anymore players",
+						"Game has started", JOptionPane.ERROR_MESSAGE);
+			} else {
+				if ((inputFirst.length() < 1) || (inputFirst.length() > 20)) {
+					JOptionPane
+					.showMessageDialog(
+							this,
+							"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+				} else if (!checkValidChars(inputFirst)) {
+					JOptionPane
+					.showMessageDialog(this,
+							"Sorry that's not a valid first name, it must only contain letters");
+				}
 
-			if(getStartGame()==true) {
-				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
-			}
-			else{
-				if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+				else if ((inputLast.length() < 1) || (inputLast.length() > 20)) {
+					JOptionPane
+					.showMessageDialog(
+							this,
+							"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+				} else if (!checkValidChars(inputLast)) {
+					JOptionPane
+					.showMessageDialog(this,
+							"Sorry that's not a valid last name, it must only contain letters");
 				}
-				else if (!checkValidChars(inputFirst)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+
+				else if ((inputTribe.length() < 1)
+						|| (inputTribe.length() > 30)) {
+					JOptionPane
+					.showMessageDialog(
+							this,
+							"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
 				}
-	
-				else if ((inputLast.length() < 1) || (inputLast.length() >20)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+
+				else if (!checkValidChars(inputTribe)) {
+					JOptionPane
+					.showMessageDialog(this,
+							"Sorry that's not a valid tribe name, it must only contain letters");
 				}
-				else if (!checkValidChars(inputLast)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
-				}
-	
-				else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
-				}
-	
-				else if (!checkValidChars(inputTribe)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
-				}
-				
-//*********************************************************************************************************************
-				//********************************************************************************************************************************************************************************************8
-				
-				else{
+
+				else {
 					int position = findContestant(textFields_c.getMenuContsID());
-					if (position == -1){
-						JOptionPane.showMessageDialog(this, "That contestant does not exist, please check your entry and try again");
-					}
-					else
-					{						
+					if (position == -1) {
+						JOptionPane
+						.showMessageDialog(this,
+								"That contestant does not exist, please check your entry and try again");
+					} else {
 						contestantsArray[position] = null;
-						for (int i = position; i < contestantsArray.length-1; i++)
-						{
+						for (int i = position; i < contestantsArray.length - 1; i++) {
 							contestantsArray[i] = contestantsArray[i + 1];
-						}						
-						JOptionPane.showMessageDialog(this, "" + inputFirst + " has been deleted");
-						
-						
+						}
+						JOptionPane.showMessageDialog(this, "" + inputFirst
+								+ " has been deleted");
+
 					}
 					contCount--;
 					this.writeContestants("contestants.txt");
@@ -2142,44 +2172,70 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		if(e.getActionCommand().equals("resetGame")) {
 			//TODO
 		}
-		/**	 Start Game Button Handler  
-		 *  When the game starts, TextFields will convert to TextAreas that display settings panel TODO
-		 **/
-		if(e.getActionCommand().equals("startGame")) {		
-			if(getWager()==0) {
-				JOptionPane.showMessageDialog(this, 
-						"Please enter the amount of money that each player is going to pitch in.",
-						"No Wager Entered", 
-						JOptionPane.INFORMATION_MESSAGE);
-			}
-			else {
-				// Before the game starts, a dialog box will appear to confirm settings
-				JOptionPane.showMessageDialog(this,
-					    "Are you sure you want to start the game?",
-					    "Once you start the gamem you will no longer be able to add/delete players & contestants.",
-					    JOptionPane.PLAIN_MESSAGE);
-				
-				setStartGame(true);
-				this.rounds=new Round[numRounds];
-				writeSettings("settings.txt");
-			}
+		/** Start Game Button Handler
+		* When the game starts, TextFields will convert to TextAreas that display settings panel TODO
+		**/
+		if(e.getActionCommand().equals("startGame")) {
+		if(getWager()==0) {
+		JOptionPane.showMessageDialog(this,
+		"Please enter the amount of money that each player is going to pitch in.",
+		"No Wager Entered",
+		JOptionPane.INFORMATION_MESSAGE);
+		}
+		else if(inputNumConts==0)
+		JOptionPane.showMessageDialog(this,
+		"Please enter the number of contestants in the game", "",
+		JOptionPane.INFORMATION_MESSAGE);
+		else if(inputNumConts!=numConts){
+		JOptionPane.showMessageDialog(this,
+		"The game cannot be started until the number of contestants specified have been added to the game", "",
+		JOptionPane.INFORMATION_MESSAGE);
+		}
+		else {
+		// Before the game starts, a dialog box will appear to confirm settings
+		JOptionPane.showMessageDialog(this,
+		"Are you sure you want to start the game?",
+		"Once you start the gamem you will no longer be able to add/delete players & contestants.",
+		JOptionPane.PLAIN_MESSAGE);
+
+		setStartGame(true);
+		writeSettings("settings.txt");
+		}
 
 		}
-		/**  Saves the inputted settings before game starts Button Handler   **/
-		if(e.getActionCommand().equals("saveSettings")) {
-			if (Integer.parseInt(contField.getText()) < 6 || Integer.parseInt(contField.getText()) > 15){
-				contField.setText(""); // resets the field if the number of contestants is outside the range
-				JOptionPane.showMessageDialog(this, "Number of Contestants must be between 6 and 15", null, contCount); // notifies the user of this requirement
-				
+
+		/** Saves the inputted settings before game starts Button Handler **/
+		if (e.getActionCommand().equals("saveSettings")) {
+			if (contField.getText() == null
+					|| contField.getText().trim().equals("")) {
+
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Please enter the number of contestants. No settings were saved",
+								null, contCount);
+
+			} else {
+
+				if (Integer.valueOf(contField.getText()) < 6
+						|| Integer.valueOf(contField.getText()) > 15) {
+					contField.setText(""); // resets the field if the number of
+											// contestants is outside the range
+					JOptionPane.showMessageDialog(this,
+							"Number of Contestants must be between 6 and 15",
+							null, contCount); // notifies the user of this
+												// requirement
+
+				} else {
+					inputNumConts = Integer.valueOf(contField.getText());
+					numRounds = inputNumConts - 2;
+					for (int i = 0; i < numRounds; i++)
+						this.rounds[i] = new Round(i + 1);
+					JOptionPane.showMessageDialog(this,
+							"The total number of rounds will be: " + numRounds);
+					writeSettings("settings.txt");
 				}
-			else{
-				inputNumConts = Integer.parseInt(contField.getText());
-				numRounds = inputNumConts - 2;
-				JOptionPane.showMessageDialog(this, "The total number of rounds will be: " + numRounds);
-				writeSettings("settings.txt");
 			}
 		}
-	}	
+	}
 }
-
-
