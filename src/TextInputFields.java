@@ -353,26 +353,26 @@ public class TextInputFields extends JPanel implements ActionListener {
      */
     public JComponent playerDropDownList(Player[] plyrs) {
     	players=plyrs;
-    	String[] nameStrings = new String[players.length];
-    	for(int i=0;i<players.length;i++){
-    		nameStrings[i]=""+players[i].getID()+" - "+players[i].getFirst()+" "+players[i].getLast();
-    	}
-    	
-    	playerComboBox = new JComboBox(nameStrings);
-    	playerComboBox.setSelectedItem("Select from a list of current players");
-    	playerComboBox.addActionListener(new ActionListener() {
-    	    public void actionPerformed(ActionEvent e) {    			
-    	    	JComboBox cb = (JComboBox)e.getSource();
-    			Object[] name = cb.getSelectedObjects(); //TODO return the selected player record array
-    			firstFieldP.setText(players[playerComboBox.getSelectedIndex()].getFirst()); 
-    			lastFieldP.setText(players[playerComboBox.getSelectedIndex()].getLast());
-    			pID=players[playerComboBox.getSelectedIndex()].getID();
-    		}
-    	});
-    	
-    	JPanel p = new JPanel();
-    	p.add(playerComboBox);
-    	return p;
+    	if(players!=null){
+	    	String[] nameStrings = new String[players.length];
+	    	for(int i=0;i<players.length;i++){
+	    		nameStrings[i]=""+players[i].getID()+" - "+players[i].getFirst()+" "+players[i].getLast();
+	    	}
+	    	
+	    	playerComboBox = new JComboBox(nameStrings);
+	    	playerComboBox.setSelectedItem("Select from a list of current players");
+	    	playerComboBox.addActionListener(new ActionListener() {
+	    	    public void actionPerformed(ActionEvent e) {    			
+	    			firstFieldP.setText(players[playerComboBox.getSelectedIndex()].getFirst()); 
+	    			lastFieldP.setText(players[playerComboBox.getSelectedIndex()].getLast());
+	    			pID=players[playerComboBox.getSelectedIndex()].getID();
+	    		}
+	    	});
+    	} else
+    		playerComboBox=new JComboBox();
+	    	JPanel p = new JPanel();
+	    	p.add(playerComboBox);
+	    	return p;
     }
     
     public String getMenuPlayerID() {
@@ -388,26 +388,26 @@ public class TextInputFields extends JPanel implements ActionListener {
      */
     public JComponent contestantDropDownList(Contestant[] conts, int numConts) {
     	contestants=conts;
-    	String[] strings = new String[numConts];
-    	for(int i=0;i<numConts;i++){
-    		strings[i]=""+contestants[i].getID()+" - "+contestants[i].getFirst()+" "+contestants[i].getLast();
-    	}
-    	contestantComboBox = new JComboBox(strings);
-    	contestantComboBox.setSelectedItem("Select from a list of current contestants");
-    	contestantComboBox.addActionListener(new ActionListener() {
-    	    public void actionPerformed(ActionEvent e) {    			
-    	    	JComboBox cb = (JComboBox)e.getSource();
-    			Object[] name = cb.getSelectedObjects(); //TODO return the selected contestant record array
-    			firstFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getFirst());
-    			lastFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getLast());
-    			tribeField.setText(contestants[contestantComboBox.getSelectedIndex()].getID());
-    			cID=players[playerComboBox.getSelectedIndex()].getID();
-    		}
-    	});
-    	
-    	JPanel c = new JPanel();
-    	c.add(contestantComboBox);
-    	return c;
+    	if(contestants!=null) {
+	    	String[] strings = new String[numConts];
+	    	for(int i=0;i<numConts;i++){
+	    		strings[i]=""+contestants[i].getID()+" - "+contestants[i].getFirst()+" "+contestants[i].getLast();
+	    	}
+	    	contestantComboBox = new JComboBox(strings);
+	    	contestantComboBox.setSelectedItem("Select from a list of current contestants");
+	    	contestantComboBox.addActionListener(new ActionListener() {
+	    	    public void actionPerformed(ActionEvent e) {    			
+	    			firstFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getFirst());
+	    			lastFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getLast());
+	    			tribeField.setText(contestants[contestantComboBox.getSelectedIndex()].getID());
+	    			cID=players[playerComboBox.getSelectedIndex()].getID();
+	    		}
+	    	});
+    	} else
+    		contestantComboBox=new JComboBox();
+	    	JPanel c = new JPanel();
+	    	c.add(contestantComboBox, BorderLayout.LINE_START);
+	    	return c;
     }
     
     protected JComponent setGameFontP(Font font, Color color) {

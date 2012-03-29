@@ -1239,7 +1239,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				GAP/4, //bottom
 				0));   //right
 		leftHalf_p.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.LINE_START);
-		leftHalf_p.setPreferredSize(new Dimension(492,580));
+//		leftHalf_p.setPreferredSize(new Dimension(492,580));
 
 		pPanel.setOpaque(false);
 		pPanel.add(leftHalf_p);
@@ -1344,7 +1344,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		leftHalf_c.add(modifyContButtons());
 
-		leftHalf_c.setPreferredSize(new Dimension(492,580));
+//		leftHalf_c.setPreferredSize(new Dimension(492,580));
 
 		// Create a Contestant List Panel to switch back to the contestant list
 		ImageIcon retImg = createImageIcon("images/contListButton.png");
@@ -1781,6 +1781,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 					Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, imagePath);
+
 					contestantsArray[contCount] = newContestant;
 					contCount++;
 					if (imagePath == null){

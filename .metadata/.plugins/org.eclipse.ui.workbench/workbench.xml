@@ -17,7 +17,8 @@
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="190" y="22"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.jdt.ui.CompilationUnitEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.ui.DefaultTextEditor" itemType="typePlaceholder" x="-1" y="-1"/>
+<coolItem id="org.eclipse.jdt.ui.CompilationUnitEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
@@ -26,34 +27,18 @@
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
 <folder appearance="1" expanded="2">
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-<part id="1"/>
-<part id="2"/>
-</presentation>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="SurvivorPoolAdminGUI.java" partName="SurvivorPoolAdminGUI.java" path="X:/UwoSurvivorPool/src/SurvivorPoolAdminGUI.java" title="SurvivorPoolAdminGUI.java" tooltip="git proj/src/SurvivorPoolAdminGUI.java" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/git proj/src/SurvivorPoolAdminGUI.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3990" selectionTopPixel="1309"/>
-</editor>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ContestantListGUI.java" partName="ContestantListGUI.java" path="X:/UwoSurvivorPool/src/ContestantListGUI.java" title="ContestantListGUI.java" tooltip="git proj/src/ContestantListGUI.java" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/git proj/src/ContestantListGUI.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1346" selectionTopPixel="255"/>
-</editor>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ContListGUI2.java" partName="ContListGUI2.java" path="X:/UwoSurvivorPool/git proj/src/ContListGUI2.java" title="ContListGUI2.java" tooltip="git proj/src/ContListGUI2.java" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/git proj/src/ContListGUI2.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
-</editor>
 </editors>
 <views>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
-<expanded>&#x0A;<category IMemento.internal.id="Errors"/>
-<category IMemento.internal.id="Warnings (56 items)"/>
+<expanded>
+<category IMemento.internal.id="Errors"/>
 </expanded>
-<columnWidths org.eclipse.ui.ide.locationField="64" org.eclipse.ui.ide.markerType="94" org.eclipse.ui.ide.pathField="124" org.eclipse.ui.ide.resourceField="94" org.eclipse.ui.ide.severityAndDescriptionField="300"/>
+<columnWidths org.eclipse.ui.ide.locationField="0" org.eclipse.ui.ide.markerType="0" org.eclipse.ui.ide.pathField="0" org.eclipse.ui.ide.resourceField="0" org.eclipse.ui.ide.severityAndDescriptionField="0"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
@@ -211,83 +196,7 @@
 </perspective>
 </perspectives>
 <workingSets/>
-<navigationHistory>
-<editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/git proj/src/SurvivorPoolAdminGUI.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/git proj/src/ContestantListGUI.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/git proj/src/ContListGUI.java"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/git proj/src/ContListGUI2.java"/>
-</editors>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="ContestantListGUI.java" index="1">
-<position info="not_deleted" x="5" y="0"/>
-</item>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="37914" y="11"/>
-</item>
-<item historyLabel="ContListGUI.java" index="2">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="ContListGUI2.java" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="37926" y="14"/>
-</item>
-<item historyLabel="ContListGUI2.java" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="ContestantListGUI.java" index="1">
-<position info="not_deleted" x="5" y="0"/>
-</item>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="38087" y="0"/>
-</item>
-<item historyLabel="ContestantListGUI.java" index="1">
-<position info="not_deleted" x="5" y="0"/>
-</item>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="37936" y="0"/>
-</item>
-<item historyLabel="ContListGUI2.java" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="ContListGUI.java" index="2">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="ContListGUI2.java" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="ContestantListGUI.java" index="1">
-<position info="not_deleted" x="5" y="0"/>
-</item>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="4409" y="0"/>
-</item>
-<item historyLabel="ContestantListGUI.java" index="1">
-<position info="not_deleted" x="5" y="0"/>
-</item>
-<item historyLabel="ContListGUI2.java" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="4409" y="0"/>
-</item>
-<item historyLabel="ContestantListGUI.java" index="1">
-<position info="not_deleted" x="1260" y="0"/>
-</item>
-<item historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="4409" y="0"/>
-</item>
-<item historyLabel="ContestantListGUI.java" index="1">
-<position info="not_deleted" x="1346" y="0"/>
-</item>
-<item active="true" historyLabel="SurvivorPoolAdminGUI.java" index="0">
-<position info="not_deleted" x="4409" y="0"/>
-</item>
-</navigationHistory>
+<navigationHistory/>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
 </page>
 <workbenchWindowAdvisor/>
@@ -306,9 +215,6 @@
 <mruList>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ContListGUI2.java" tooltip="git proj/src/ContListGUI2.java">
 <persistable path="/git proj/src/ContListGUI2.java"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ContListGUI.java" tooltip="git proj/src/ContListGUI.java">
-<persistable path="/git proj/src/ContListGUI.java"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ContestantListGUI.java" tooltip="git proj/src/ContestantListGUI.java">
 <persistable path="/git proj/src/ContestantListGUI.java"/>
@@ -339,12 +245,6 @@
 </file>
 <file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="AdminGUI.java" tooltip="X:\UwoSurvivorPool\src\AdminGUI.java">
 <persistable uri="file:/X:/UwoSurvivorPool/src/AdminGUI.java"/>
-</file>
-<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="UWOSurvivorPoolAdmin_Group3.java" tooltip="X:\UwoSurvivorPool\src\UWOSurvivorPoolAdmin_Group3.java">
-<persistable uri="file:/X:/UwoSurvivorPool/src/UWOSurvivorPoolAdmin_Group3.java"/>
-</file>
-<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="PlayerContestantList.java" tooltip="X:\UwoSurvivorPool\src\PlayerContestantList.java">
-<persistable uri="file:/X:/UwoSurvivorPool/src/PlayerContestantList.java"/>
 </file>
 </mruList>
 </workbench>
