@@ -1437,25 +1437,46 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		return validChars;
 	}
+
+	//*****************************************************************************************************************************************************
+	//*****************************************************************************************************************************************************
 	/**
 	 * Searches for contestant
 	 * 
-	 * @param first name
-	 * @param last name
-	 * @return contestant object if found, null if not
+	 * @param ID of player
+	 * @return position of contestant in array if found, -1 if not
 	 */
-	public Contestant findContestant(String first, String last){
-		Contestant tempCont = null;
+	public int findContestant(String id){
+		int position = -1;
 		for (int i = 0; i < contestantsArray.length; i++){
-			if ((contestantsArray[i].getFirst().equals(first) && (contestantsArray[i].getLast().equals(last))))
+			
+			if ((contestantsArray[i].getID().equals(id)))
 			{
-				tempCont = contestantsArray[i];
+				position = i;
+				break;
 			}
-
 		}
-		return tempCont;
-	}
-				
+		return position;
+		}
+	
+	/**
+	 * Searches for a player
+	 * 
+	 * @param ID of player
+	 * @return position of player in array if found, -1 if not
+	 */
+	public int findPlayer(String id){
+		int position = -1;
+		for (int i = 0; i < playersArray.length; i++){
+			
+			if ((playersArray[i].getID().equals(id)))
+			{
+				position = i;
+				break;
+			}
+		}
+		return position;
+	}			
 		/**
 		 * Sets up the game setting panel as a custom JOptionPane Dialog
 		 * Admin can enter numContestants, 
@@ -1705,25 +1726,112 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				}
 			}
 		}
+
+		
 		/**  Update Player Handler  **/
 		if(e.getActionCommand().equals("updateP")) {
+			String inputFirst = textFields_p.getFirstP();
+			String inputLast = textFields_p.getLastP();
 
+			// Validate Text Input Fields
+			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+				JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputFirst)){
+				JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+			}
+
+			else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+				JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+			}
+			else if (!checkValidChars(inputLast)){
+				JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+			}
+	
+			int position = findPlayer(textFields_p.getMenuPlayerID());
+			if (position == -1){
+				JOptionPane.showMessageDialog(this, "That player does not exist, please check your player ID and try again");
+			}
+			else
+			{
+				Player tempPlayer = new Player(inputFirst, inputLast, textFields_p.getMenuPlayerID() );
+				
+				playersArray[position] = tempPlayer;
+				
+				JOptionPane.showMessageDialog(this, "Player has been updated");
+				
+				this.writePlayers("players.txt");
+			}
 		}
+		
+		
 		if(e.getActionCommand().equals("next")){
 			nextRound();
-			writeSettings("settings.txt");
 		}
 
+		
+		
+		//*********************************************************************************************************************
+		//********************************************************************************************************************************************************************************************8
+
 		/**  Delete Player Handler  **/
-		if(e.getActionCommand().equals("deleteP")) { // TODO
+		if(e.getActionCommand().equals("deleteP")) { 
 			if(getStartGame()==true) {
 				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 			}
 			else{
-				writePlayers("players.txt");
+				
+			String inputFirst = textFields_p.getFirstP();
+			String inputLast = textFields_p.getLastP();
+
+
+			if(getStartGame()==true) {
+				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 			}
+			else{
+				if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+				}
+				else if (!checkValidChars(inputFirst)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+				}
+	
+				else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+				}
+				else if (!checkValidChars(inputLast)){
+					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+				}
 			
-		}
+				else{
+					int position = findPlayer(textFields_p.getMenuPlayerID());
+					if (position == -1){
+						JOptionPane.showMessageDialog(this, "That player does not exist, please check your ID entry and try again");
+					}
+					else
+					{						
+						playersArray[position] = null;
+						Player tempArray[] = new Player[playersArray.length-1];
+						
+						for (int i = 0; i < position; i++)
+						{
+							tempArray[i] = playersArray[i];
+						}
+						
+						for (int i = position; i < playersArray.length-1; i++){
+							tempArray[i] = playersArray[i+1];
+						}
+						
+						JOptionPane.showMessageDialog(this, "" + inputFirst + " has been deleted");	
+						
+						this.writePlayers("players.txt");
+					}
+				}
+			}
+		}				
+	}
+			
+		
 		/**  Add Contestant Handler **/
 		if(e.getActionCommand().equals("+C")) {
 			String inputFirst = textFields_c.getFirstC();
@@ -1781,7 +1889,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 					Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, imagePath);
-
 					contestantsArray[contCount] = newContestant;
 					contCount++;
 					if (imagePath == null){
@@ -1794,6 +1901,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			}
 			this.writeContestants("contestants.txt");
 		}
+
+
 		/**  Update Contestant Handler  **/
 		if(e.getActionCommand().equals("updateC")) {
 			String inputFirst = textFields_c.getFirstC();
@@ -1833,11 +1942,25 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 //					setEliminated(); 
 //					getRoundEliminated();
 //					}
+//**************************************************************************
+			//**************************************************************
+			//****************************************************************************************************************************************************
+			
+			int position = findContestant(textFields_c.getMenuContsID());
+			if (position == -1){
+				JOptionPane.showMessageDialog(this, "That contestant does not exist, please check your contestant ID and try again");
+			}
+			else
+			{
+				Contestant tempCont = new Contestant(inputFirst, inputLast, textFields_c.getMenuContsID(), inputTribe, imagePath);				
+				contestantsArray[position] = tempCont;
+			}
+			
+			
 				JOptionPane.showMessageDialog(this, 
 						"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
 						"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
-				this.writeContestants("contestants.txt");		
-		}
+				}
 			
 //		}
 		/**  Delete Contestant Handler  **/
@@ -1872,9 +1995,34 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				else if (!checkValidChars(inputTribe)){
 					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
 				}
+				
+//*********************************************************************************************************************
+				//********************************************************************************************************************************************************************************************8
+				
+				else{
+					int position = findContestant(textFields_c.getMenuContsID());
+					if (position == -1){
+						JOptionPane.showMessageDialog(this, "That contestant does not exist, please check your entry and try again");
+					}
+					else
+					{						
+						contestantsArray[position] = null;
+						for (int i = position; i < contestantsArray.length-1; i++)
+						{
+							contestantsArray[i] = contestantsArray[i + 1];
+						}						
+						JOptionPane.showMessageDialog(this, "" + inputFirst + " has been deleted");
+						
+						
+					}
+					contCount--;
+					this.writeContestants("contestants.txt");
+				}
 			}
-			this.writeContestants("contestants.txt");
 		}
+
+			
+		
 		/**  Reset Fields Handler  **/
 		if(e.getActionCommand().equals("reset")) {
 			String firstFieldC = textFields_c.getFirstC();

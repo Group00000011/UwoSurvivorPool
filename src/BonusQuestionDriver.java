@@ -15,7 +15,7 @@ public class BonusQuestionDriver {
 		fakeGame = new GameInProgressStub();
 		bqPane = new BonusQuestionGUI(fakeGame.getRoundArray(), fakeGame.CURRENT_ROUND);
 		window.add(bqPane);
-		window.revalidate();
+		window.validate();
 	}
 	
 	private static void makeWindow() {

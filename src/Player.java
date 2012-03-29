@@ -37,6 +37,15 @@ public class Player {
 	}
 	
 
+	public void setFirst(String first){
+		this.firstName=first;
+	}
+	
+	
+	public void setLast(String last){
+		this.lastName=last;
+	}
+	
 	// Accessor methods
 
 	/**
