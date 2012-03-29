@@ -36,7 +36,7 @@ public class ContestantListGUI extends JPanel	{
 	/**
 	 * Calls the contestant list interface
 	 */
-	public ContestantListGUI(int numConts, Contestant[] conts) {
+	public ContestantListGUI(Contestant[] conts, int numConts) {
 		super(new GridLayout(1,0));
 		this.numConts=numConts;
 		this.contestants=conts;
@@ -49,7 +49,7 @@ public class ContestantListGUI extends JPanel	{
 	public JComponent createContList() {
 		contListPanel = new JPanel();
 		
-		MyTableModel contTable=new MyTableModel();
+		MyTableModel contTable=new MyTableModel(contestants, numConts);
 
 		JTable table = new JTable(contTable);
 		
@@ -78,28 +78,30 @@ public class ContestantListGUI extends JPanel	{
 	 */
 	class MyTableModel extends AbstractTableModel {
 		private String[] columnNames =  {"User ID", "First Name", "Last Name", "Tribe", "Picture", "Eliminated"};
-//		public MyTableModel() {
-//			super();
-//			data = new Object[numConts][6];
-//			for(int i=0;i<numConts;i++){
-//				data[i][0]=contestants[i].getID();
-//				data[i][1]=contestants[i].getFirst();
-//				data[i][2]=contestants[i].getLast();
-//				data[i][3]=contestants[i].getTribe();
-//				data[i][4]=new ImageIcon(getClass().getResource(contestants[i].getPicture()));
-//				data[i][5]=(contestants[i].getElimRound()!=null);
-//			}
-//			
-//		}
+		private Contestant[] contestants;
+		private Object[][] data;
+		public MyTableModel(Contestant[] conts, int numConts) {
+			super();
+			this.contestants = conts;
+			data = new Object[numConts][6];
+			for(int i=0;i<numConts;i++){
+				data[i][0]=contestants[i].getID();
+				data[i][1]=contestants[i].getFirst();
+				data[i][2]=contestants[i].getLast();
+				data[i][3]=contestants[i].getTribe();
+				data[i][4]=new ImageIcon(getClass().getResource(contestants[i].getPicture()));
+				data[i][5]=(contestants[i].getElimRound()!=null);
+			}		
+		}
 		
-		private Object[][] data = {  /*************** TODO Implement getters  here */
-				{ "MG", "Martin", "Grabarczyk", "Dental Tribe", placeHolderImg, "Round 1" },
-				{ "HR", "Hazel", "Rivera", "Cavity Tribe", placeHolderImg, "Round 2" },
-				{ "MF", "Manor", "Freeman", "Dental Tribe",placeHolderImg, "Round 3" },
-				{ "DH", "Delerina", "Hill", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
-				{ "JW", "Jeff", "Westaway", "Dental Tribe", placeHolderImg, "Not Eliminated" },
-				{ "LC", "Liam", "Corrigan", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
-		};
+//		private Object[][] data = {  /*************** TODO Implement getters  here */
+//				{ "MG", "Martin", "Grabarczyk", "Dental Tribe", placeHolderImg, "Round 1" },
+//		{ "HR", "Hazel", "Rivera", "Cavity Tribe", placeHolderImg, "Round 2" },
+//				{ "MF", "Manor", "Freeman", "Dental Tribe",placeHolderImg, "Round 3" },
+//				{ "DH", "Delerina", "Hill", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
+//				{ "JW", "Jeff", "Westaway", "Dental Tribe", placeHolderImg, "Not Eliminated" },
+//				{ "LC", "Liam", "Corrigan", "Plaque Tribe", placeHolderImg, "Not Eliminated" },
+//		};
 		/* 
 		 * (non-Javadoc)
 		 * @see javax.swing.table.TableModel#getColumnCount()

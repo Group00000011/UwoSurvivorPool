@@ -81,11 +81,6 @@
 			<locationURI>PARENT-1-PROJECT_LOC/src/UWOSurvivorPoolAdmin_Group3.java</locationURI>
 		</link>
 		<link>
-			<name>src/images</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/src/images</locationURI>
-		</link>
-		<link>
 			<name>src/players.txt</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/src/players.txt</locationURI>

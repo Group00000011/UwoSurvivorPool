@@ -76,7 +76,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private TextInputFields textFields_p, textFields_c;
 
 	private PlayerListGUI standingsTable;
-	private ContListGUI contLiTable;
+	private ContestantListGUI contLiTable;
 
 	private Font gFont, jFont;
 
@@ -114,7 +114,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		textFields_c = new TextInputFields();
 		standingsTable = new PlayerListGUI();
 //		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
-		contLiTable = new ContListGUI();
+		contLiTable = new ContestantListGUI(contestantsArray, numConts);
 		
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero",Font.PLAIN,18);
@@ -1132,7 +1132,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		cLPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
 		cLPanel.setLayout(new BoxLayout(cLPanel, BoxLayout.PAGE_AXIS));	
-		cLPanel.add(contLiTable.createContestantList());
+		cLPanel.add(contLiTable.createContList());
 		cLPanel.setOpaque(false);
 
 		// Assemble the text fields with the background as a large panel
