@@ -34,12 +34,25 @@ public class TextInputFields extends JPanel implements ActionListener {
     private boolean updated = false;
     private JLabel[] cLabels, pLabels;
     private JPanel recordPanel;
+    private Player[] players;
+    private Contestant[] contestants;
+    private int numConts;
     
     final static int GAP = 10;
     
+    
+    
+    
+    ////stuff added
+    private String pID, cID;
+    
+    
     /**************  Constructor *************************/
-    public TextInputFields() {
+    public TextInputFields(Contestant[] conts, int numConts, Player[] players) {
     	super(new FlowLayout(FlowLayout.LEADING));
+    	this.contestants=conts;
+    	this.numConts=numConts;
+    	this.players=players;
     	createFieldsPlayer();
     	createFieldsCont();
     }
@@ -338,9 +351,12 @@ public class TextInputFields extends JPanel implements ActionListener {
      * JComboBox of current players - appears once games starts
      * @return a combobox of all current Players
      */
-    public JComponent playerDropDownList() {
-    	//Temp Data
-    	String[] nameStrings = {"H", "M", "G", "D", "J"};
+    public JComponent playerDropDownList(Player[] plyrs) {
+    	players=plyrs;
+    	String[] nameStrings = new String[players.length];
+    	for(int i=0;i<players.length;i++){
+    		nameStrings[i]=""+players[i].getID()+" - "+players[i].getFirst()+" "+players[i].getLast();
+    	}
     	
     	playerComboBox = new JComboBox(nameStrings);
     	playerComboBox.setSelectedItem("Select from a list of current players");
@@ -348,8 +364,9 @@ public class TextInputFields extends JPanel implements ActionListener {
     	    public void actionPerformed(ActionEvent e) {    			
     	    	JComboBox cb = (JComboBox)e.getSource();
     			Object[] name = cb.getSelectedObjects(); //TODO return the selected player record array
-    			firstFieldP.setText(getFirstP()); 
-    			lastFieldP.setText(getLastP());
+    			firstFieldP.setText(players[playerComboBox.getSelectedIndex()].getFirst()); 
+    			lastFieldP.setText(players[playerComboBox.getSelectedIndex()].getLast());
+    			pID=players[playerComboBox.getSelectedIndex()].getID();
     		}
     	});
     	
@@ -358,23 +375,33 @@ public class TextInputFields extends JPanel implements ActionListener {
     	return p;
     }
     
+    public String getMenuPlayerID() {
+    	return pID;
+    }
+    
+    public String getMenuContsID() {
+    	return cID;
+    }
     /**
      * JComboBox of current contestants - appears once games starts
      * @return a combobox of all current Contestants
      */
-    public JComponent contestantDropDownList() {
-    	//Temp Data
-    	String[] strings = {"A", "G", "4", "S", "D"};
-    	
+    public JComponent contestantDropDownList(Contestant[] conts, int numConts) {
+    	contestants=conts;
+    	String[] strings = new String[numConts];
+    	for(int i=0;i<numConts;i++){
+    		strings[i]=""+contestants[i].getID()+" - "+contestants[i].getFirst()+" "+contestants[i].getLast();
+    	}
     	contestantComboBox = new JComboBox(strings);
     	contestantComboBox.setSelectedItem("Select from a list of current contestants");
     	contestantComboBox.addActionListener(new ActionListener() {
     	    public void actionPerformed(ActionEvent e) {    			
     	    	JComboBox cb = (JComboBox)e.getSource();
     			Object[] name = cb.getSelectedObjects(); //TODO return the selected contestant record array
-    			firstFieldC.setText(getFirstC());
-    			lastFieldC.setText(getLastC());
-    			tribeField.setText(getTribe());
+    			firstFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getFirst());
+    			lastFieldC.setText(contestants[contestantComboBox.getSelectedIndex()].getLast());
+    			tribeField.setText(contestants[contestantComboBox.getSelectedIndex()].getID());
+    			cID=players[playerComboBox.getSelectedIndex()].getID();
     		}
     	});
     	
@@ -426,17 +453,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     	return textInputFieldColor;
     }
 
-    public static void main(String args[]) {
-        //Schedule a job for the event dispatch thread:
-        //creating and showing this application's GUI.
-    SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                //Turn off metal's use of bold fonts
-                UIManager.put("swing.boldMetal", Boolean.FALSE);
-        new TextInputFields().setVisible(true);
-            }
-        });
-    }
     
     
     
