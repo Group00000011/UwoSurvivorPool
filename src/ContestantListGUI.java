@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 
 public class ContestantListGUI extends JPanel	{
 	//Attributes
@@ -88,13 +89,28 @@ public class ContestantListGUI extends JPanel	{
 				data[i][2]=contestants[i].getLast();
 				data[i][3]=contestants[i].getTribe();
 				if(contestants[i].getPicture()!=null && !contestants[i].getPicture().equals("null")){	
-					data[i][4]=new ImageIcon((contestants[i].getPicture()));
+					//Scale the Image to fit inside the table
+					ImageIcon contPic = createImageIcon(contestants[i].getPicture());
+					Image img = contPic.getImage() ;  
+					Image newimg = img.getScaledInstance( 100, 80,  java.awt.Image.SCALE_SMOOTH ) ;  
+					contPic = new ImageIcon(newimg);
+					data[i][4]=contPic;
 				}
 				else{
 					data[i][4]=placeHolderImg;
 				}
 				data[i][5]=(contestants[i].getElimRound()!=null);
 			}	
+		}
+
+		public ImageIcon createImageIcon(String path) {
+			java.net.URL imgURL = SurvivorPoolAdminGUI.class.getResource(path);
+			if(imgURL != null) {
+				return new ImageIcon(imgURL);
+			} else {
+				//JOptionPane.showMessageDialog(this, "The image must be in the images folder.");
+				return null;
+			}		
 		}
 
 		//		private Object[][] data = {  /*************** TODO Implement getters  here */
@@ -130,14 +146,14 @@ public class ContestantListGUI extends JPanel	{
 		/*
 		 * This method makes the tables editable
 		 */
-//		public boolean isCellEditable(int row, int col) {
-			//Note that the cell address is constant
-	//		if(col < 2) {
-	//			return false;
-	//		} else {
-	//			return true;			
-	//		}
-	//	}
+		//		public boolean isCellEditable(int row, int col) {
+		//Note that the cell address is constant
+		//		if(col < 2) {
+		//			return false;
+		//		} else {
+		//			return true;			
+		//		}
+		//	}
 	}
 
 	//		 /*

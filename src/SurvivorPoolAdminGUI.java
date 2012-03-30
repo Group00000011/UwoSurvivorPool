@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * The administrative interface GUI - the administrator add/edits/modifies/creates the backend functionality of the Blackberry Survivor Game.
@@ -35,7 +36,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private ImageIcon playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg;
 	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg, standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
 	private ImageIcon uploadedImage;
-
+	private String picPath = null;
+	private int currentTheme;
 	/////////// Attributes for the startGame Dialog box
 	// The Buttons
 	private JButton resetGameBtn, startGameBtn, saveSettingBtn, playerModButton;
@@ -103,11 +105,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	public boolean eliminateContestant(int contIndex, int roundNum){
 		if(roundNum>numRounds){
 			JOptionPane.showMessageDialog(this,
-					"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
+			"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
 		}
 		else if(contIndex>=contCount){
 			JOptionPane.showMessageDialog(this,
-					"The specified contestant no longer exists. \n Elimination not saved.");
+			"The specified contestant no longer exists. \n Elimination not saved.");
 		}
 		else{
 			this.rounds[roundNum - 1].setContestantEliminated(this.contestantsArray[contIndex]);
@@ -116,7 +118,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		return false;
 	}
-	
+
 	/**  Initializes the Administrative GUI  */
 	public SurvivorPoolAdminGUI() {	
 		createGame();
@@ -250,137 +252,137 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				int i=0;
 				pFirst=pLast=pID=rndStr=finRndStr=pScrStr=cFirst=cLast=cID=cTrb=cPic="";
 				pScr=rnd=finRnd=0;
-				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-							pFirst=pFirst+currPlayer.charAt(i);
-							i++;
-					}//end of first name field
-				 i++;
-				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-							pLast=pLast+currPlayer.charAt(i);
-							i++;
-					}//end of  last name field
-				 i++;
-				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-							pID=pID+currPlayer.charAt(i);
-							i++;
-					}//end of first last name field
-				 i++;
-				 currPlayerObj=new Player(pFirst, pLast, pID);
-				 for(;i<currPlayer.length();i++){
-					 if(currPlayer.charAt(i)=='+'){
-						 pScr=Integer.valueOf(pScrStr);
-						 break;
-					 }
-					 else{
-						 pScrStr=pScrStr+currPlayer.charAt(i);
-					 }
-				 }
-				 i++;
-				 currPlayerObj.setScore(pScr);
-				 if(currPlayer.charAt(i)=='_')
-					 i++;
-				 else{
-					 for(;i<currPlayer.length();i++){
-						 if(currPlayer.charAt(i)=='{'){
-							 finRnd=Integer.valueOf(finRndStr);
-							 break;
-						 }
-						 else{
-							 finRndStr=finRndStr+currPlayer.charAt(i);
-						 }
-					 }
-					 i++;
-					 for(;i<currPlayer.length();i++){
-						 if(currPlayer.charAt(i)=='{'){
-							 rnd=Integer.valueOf(rndStr);
-							 break;
-						 }
-						 else{
-							 rndStr=rndStr+currPlayer.charAt(i);
-						 }
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cFirst=cFirst+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cLast=cLast+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cID=cID+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cPic=cPic+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cTrb=cTrb+currPlayer.charAt(i);
-						 i++;
-					 }
-					 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
-					 currPlayerObj.chooseWinner(contElim, finRnd, rnd+2);
-				 }
-				 i++;
-					 cFirst=cLast=cID=cTrb=cPic=rndStr="";
-					 finRnd=rnd=0;
-					 for(;i<currPlayer.length();){
-						 if(currPlayer.charAt(i)=='_' || currPlayer.charAt(i)=='{')
-							 i++;
-						 else{
-							 cFirst=cLast=cID=cTrb=cPic=rndStr="";
-							 rnd=0; 
-							 for(;i<currPlayer.length();i++){
-								 if(currPlayer.charAt(i)=='{'){
-									 System.out.println(rndStr);
-									 rnd=Integer.valueOf(rndStr);
-									 
-									 break;
-								 }
-								 else{
-									 rndStr=rndStr+currPlayer.charAt(i);
-								 }
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cFirst=cFirst+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cLast=cLast+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cID=cID+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cPic=cPic+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cTrb=cTrb+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
-							 currPlayerObj.makeRoundPick(rnd, contElim);
-						 }
-					 }
-					 addPlayer(currPlayerObj);
-					 currPlayer=in.readLine();
+				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+					pFirst=pFirst+currPlayer.charAt(i);
+					i++;
+				}//end of first name field
+				i++;
+				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+					pLast=pLast+currPlayer.charAt(i);
+					i++;
+				}//end of  last name field
+				i++;
+				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+					pID=pID+currPlayer.charAt(i);
+					i++;
+				}//end of first last name field
+				i++;
+				currPlayerObj=new Player(pFirst, pLast, pID);
+				for(;i<currPlayer.length();i++){
+					if(currPlayer.charAt(i)=='+'){
+						pScr=Integer.valueOf(pScrStr);
+						break;
+					}
+					else{
+						pScrStr=pScrStr+currPlayer.charAt(i);
+					}
+				}
+				i++;
+				currPlayerObj.setScore(pScr);
+				if(currPlayer.charAt(i)=='_')
+					i++;
+				else{
+					for(;i<currPlayer.length();i++){
+						if(currPlayer.charAt(i)=='{'){
+							finRnd=Integer.valueOf(finRndStr);
+							break;
+						}
+						else{
+							finRndStr=finRndStr+currPlayer.charAt(i);
+						}
+					}
+					i++;
+					for(;i<currPlayer.length();i++){
+						if(currPlayer.charAt(i)=='{'){
+							rnd=Integer.valueOf(rndStr);
+							break;
+						}
+						else{
+							rndStr=rndStr+currPlayer.charAt(i);
+						}
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cFirst=cFirst+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cLast=cLast+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cID=cID+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cPic=cPic+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cTrb=cTrb+currPlayer.charAt(i);
+						i++;
+					}
+					contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+					currPlayerObj.chooseWinner(contElim, finRnd, rnd+2);
+				}
+				i++;
+				cFirst=cLast=cID=cTrb=cPic=rndStr="";
+				finRnd=rnd=0;
+				for(;i<currPlayer.length();){
+					if(currPlayer.charAt(i)=='_' || currPlayer.charAt(i)=='{')
+						i++;
+					else{
+						cFirst=cLast=cID=cTrb=cPic=rndStr="";
+						rnd=0; 
+						for(;i<currPlayer.length();i++){
+							if(currPlayer.charAt(i)=='{'){
+								System.out.println(rndStr);
+								rnd=Integer.valueOf(rndStr);
 
-		}
+								break;
+							}
+							else{
+								rndStr=rndStr+currPlayer.charAt(i);
+							}
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cFirst=cFirst+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cLast=cLast+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cID=cID+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cPic=cPic+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cTrb=cTrb+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+						currPlayerObj.makeRoundPick(rnd, contElim);
+					}
+				}
+				addPlayer(currPlayerObj);
+				currPlayer=in.readLine();
+
+			}
 		}
 		catch(IOException e){}//unharmful
 	}
@@ -418,7 +420,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				else {
 					RoundPick[] weekPicks=this.playersArray[i].getAllWeekPicks();
 					int max=weekPicks.length;
-					
+
 					for(int j=0;j<max;j++){
 						if(weekPicks[j]==null)
 							;
@@ -433,7 +435,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 				currString=currString+"\n";
-				
+
 			}
 			//Start writing to the output stream
 			bWr.write(currString);
@@ -443,7 +445,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		catch(IOException e){}//unharmful
 
 	}
- 
+
 
 	public void readSettings(String fileName){
 		try{
@@ -452,51 +454,51 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String currRound=in.readLine();
 			if(currRound!=null && !currRound.trim().equals("")){
 				this.roundNum=Integer.valueOf(currRound.trim());
-			
-			String gameStarted=in.readLine(), inputWager;
-			if(gameStarted!=null && !gameStarted.trim().equals("")){
-				if(gameStarted.equals("true")){
-					this.startGame=true;
-				}
-				else
-					this.startGame=false;
-				String inputSpecifier = in.readLine();
-				if(inputSpecifier!=null) {
-					if(inputSpecifier.equals("R")){
-						String inputNumRounds=in.readLine();
-						if(inputNumRounds!=null){
-							this.numRounds=Integer.valueOf(inputNumRounds);
-							
-							String inNumContestants= in.readLine();
-							if(inNumContestants!=null){
-								this.inputNumConts=Integer.valueOf(inNumContestants);
-								this.rounds=new Round[inputNumConts-2];
-								for (int i = 0; i < inputNumConts-2; i++){
+
+				String gameStarted=in.readLine(), inputWager;
+				if(gameStarted!=null && !gameStarted.trim().equals("")){
+					if(gameStarted.equals("true")){
+						this.startGame=true;
+					}
+					else
+						this.startGame=false;
+					String inputSpecifier = in.readLine();
+					if(inputSpecifier!=null) {
+						if(inputSpecifier.equals("R")){
+							String inputNumRounds=in.readLine();
+							if(inputNumRounds!=null){
+								this.numRounds=Integer.valueOf(inputNumRounds);
+
+								String inNumContestants= in.readLine();
+								if(inNumContestants!=null){
+									this.inputNumConts=Integer.valueOf(inNumContestants);
+									this.rounds=new Round[inputNumConts-2];
+									for (int i = 0; i < inputNumConts-2; i++){
 										this.rounds[i]=new Round(i+1);
+									}
+									inputSpecifier = in.readLine();
+									if(inputSpecifier!=null){
+										if(inputSpecifier.equals("W")){
+											inputWager=in.readLine();
+											if(inputWager!=null)
+												this.wager=Integer.valueOf(inputWager);
+										}
+									}		
 								}
-								 inputSpecifier = in.readLine();
-								 if(inputSpecifier!=null){
-								 if(inputSpecifier.equals("W")){
-									 inputWager=in.readLine();
-									 if(inputWager!=null)
-										 this.wager=Integer.valueOf(inputWager);
-								 }
-							}		
+							}
+						}
+						else if(inputSpecifier.equals("W")){
+							inputWager= in.readLine();
+							if(inputWager!=null)
+								this.wager=Integer.valueOf(inputWager);
 						}
 					}
-					}
-					else if(inputSpecifier.equals("W")){
-						inputWager= in.readLine();
-						if(inputWager!=null)
-							this.wager=Integer.valueOf(inputWager);
-					}
 				}
 			}
-			}
 		}
-				catch(IOException e){}
-			}
-	
+		catch(IOException e){}
+	}
+
 	public void writeSettings(String fileName){
 		BufferedWriter bWr = null;
 		try {
@@ -1433,7 +1435,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		if(imgURL != null) {
 			return new ImageIcon(imgURL);
 		} else {
-			System.err.println("Couldn't find file: " + path);
+			JOptionPane.showMessageDialog(this, "The image must be in the images folder.");
 			return null;
 		}		
 	}
@@ -1601,7 +1603,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * The Golden Ruins Theme
 	 * Modifications of components to the theme
 	 */
-	private void goldenRuinsTheme() {		
+	private void goldenRuinsTheme() {	
+		//Set the current theme
+		currentTheme = 0; //0 is the golden ruins theme
+
 		//Switch the images
 		playerBg.setIcon(playerGBg);
 		contestantBg.setIcon(contestantGBg);
@@ -1636,7 +1641,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * The Jungle Theme
 	 * Modifications of components to the theme
 	 */
-	private void jungleTheme() {		
+	private void jungleTheme() {	
+		//set the current theme
+		currentTheme = 1; //1 is the jungle theme
+
 		playersJungleImg = createImageIcon("images/bbJ.png");
 		jungleBackground = createImageIcon("images/jungle1.jpg");
 		playerJBg = createImageIcon("images/playerJungleBg.jpg");
@@ -1960,6 +1968,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String inputFirst = textFields_c.getFirstC();
 			String inputLast = textFields_c.getLastC();
 			String inputTribe = textFields_c.getTribe();
+			String imagePath = picPath;
 
 			// Validate Text Input Fields
 			if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
@@ -2004,9 +2013,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			{
 				Contestant tempCont = new Contestant(inputFirst, inputLast, textFields_c.getMenuContsID(), inputTribe, imagePath);				
 				contestantsArray[position] = tempCont;
-				
+
 				JOptionPane.showMessageDialog(this, "Contestant has been updated");
 				this.writeContestants("contestants.txt");
+				if (currentTheme == 0){
+					contestantPicFrame.setIcon(blankGFrame);	
+				}
+				else{
+					contestantPicFrame.setIcon(blankJFrame);
+				}
 
 				if(eliminateYBtn.isSelected()){
 					if(roundField.getText()==null || roundField.getText().trim().equals("")){
@@ -2018,25 +2033,25 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						if(Integer.valueOf(roundField.getText())==0){
 							JOptionPane
 							.showMessageDialog(this,
-									"To eliminate a contestant, specify the round the contestant is eliminated during");
+							"To eliminate a contestant, specify the round the contestant is eliminated during");
 						}
 						else{
-						if(this.eliminateContestant(position, Integer.valueOf(roundField.getText()))){
-						this.writeContestants("contestants.txt");
-						JOptionPane.showMessageDialog(this, 
-								"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
-								"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
+							if(this.eliminateContestant(position, Integer.valueOf(roundField.getText()))){
+								this.writeContestants("contestants.txt");
+								JOptionPane.showMessageDialog(this, 
+										"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
+										"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
+							}
+
 						}
-						
-						}
-						
-						
+
+
 					}
 				}
 
 			}
-			
-			
+
+
 			contLiTable = new ContestantListGUI(contestantsArray, contCount);
 			getContentPane().removeAll();
 			getContentPane().add(quitButton());	
@@ -2194,16 +2209,16 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		 **/
 		if(e.getActionCommand().equals("standings")) {
 			//if(getStartGame()==true) {
-				getContentPane().removeAll();
+			getContentPane().removeAll();
 
-				getContentPane().add(quitButton());
-				getContentPane().add(standingsPanel());
+			getContentPane().add(quitButton());
+			getContentPane().add(standingsPanel());
 
-				repaint();
-				validate();	
-		//	}
-		//	else
-		//		JOptionPane.showMessageDialog(this, "Game has not started yet.", null,  JOptionPane.ERROR_MESSAGE); 
+			repaint();
+			validate();	
+			//	}
+			//	else
+			//		JOptionPane.showMessageDialog(this, "Game has not started yet.", null,  JOptionPane.ERROR_MESSAGE); 
 		}
 		/**  Bonus Question Admin Button Handler **/
 		if(e.getActionCommand().equals("bonus")) {
@@ -2233,100 +2248,113 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/**  Upload Button Handler  **/
 		if(e.getActionCommand().equals("upload")) {
-			imagePath = JOptionPane.showInputDialog(null, "Enter the photo's path : ");
-			ImageIcon contestantImage = createImageIcon(imagePath);
-			contestantPicFrame.setIcon(contestantImage);
-		}
-		/**  Reset Game button handler  **/
-		if(e.getActionCommand().equals("resetGame")) {
-			//TODO
-		}
-		/** Start Game Button Handler
-		 * When the game starts, TextFields will convert to TextAreas that display settings panel TODO
-		 **/
-		if(e.getActionCommand().equals("startGame")) {
-			if(getWager()==0) {
-				JOptionPane.showMessageDialog(this,
-						"Please enter the amount of money that each player is going to pitch in.",
-						"No Wager Entered",
-						JOptionPane.INFORMATION_MESSAGE);
+			JFileChooser chooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					"JPG, GIF, & PNG Images", "jpg", "gif", "png");
+			chooser.setFileFilter(filter);
+			int returnVal = chooser.showOpenDialog(getParent());
+			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				System.out.println("You chose to open this file: " +
+						chooser.getSelectedFile().getName());
 			}
-			else if(inputNumConts==0)
-				JOptionPane.showMessageDialog(this,
-						"Please enter the number of contestants in the game", "",
-						JOptionPane.INFORMATION_MESSAGE);
-			else if(inputNumConts!=contCount){
-				JOptionPane.showMessageDialog(this,
-						"The game cannot be started until the number of contestants specified have been added to the game", "",
-						JOptionPane.INFORMATION_MESSAGE);
+			//	imagePath = JOptionPane.showInputDialog(null, "Enter the photo's path : ");
+			picPath = "/images/"+chooser.getSelectedFile().getName();
+			ImageIcon contestantImage = createImageIcon(picPath); //image must be in the images folder
+			if (contestantImage != null){
+				contestantPicFrame.setIcon(contestantImage);
 			}
-			else {
-				// Before the game starts, a dialog box will appear to confirm settings
-				JOptionPane.showMessageDialog(this,
-						"Are you sure you want to start the game?",
-						"Once you start the gamem you will no longer be able to add/delete players & contestants.",
-						JOptionPane.PLAIN_MESSAGE);
-
-				setStartGame(true);
-				writeSettings("settings.txt");
+			
+			/**  Reset Game button handler  **/
+			if(e.getActionCommand().equals("resetGame")) {
+				//TODO
 			}
-
-		}
-
-		/** Saves the inputted settings before game starts Button Handler **/
-		if (e.getActionCommand().equals("saveSettings")) {
-			if (contField.getText() == null
-					|| contField.getText().trim().equals("")) {
-
-				JOptionPane
-				.showMessageDialog(
-						this,
-						"Please enter the number of contestants. No settings were saved",
-						null, contCount);
-
-			} else {
-
-				if (Integer.valueOf(contField.getText()) < 6
-						|| Integer.valueOf(contField.getText()) > 15) {
-					contField.setText(""); // resets the field if the number of
-					// contestants is outside the range
+			/** Start Game Button Handler
+			 * When the game starts, TextFields will convert to TextAreas that display settings panel TODO
+			 **/
+			if(e.getActionCommand().equals("startGame")) {
+				if(getWager()==0) {
 					JOptionPane.showMessageDialog(this,
-							"Number of Contestants must be between 6 and 15",
-							null, contCount); // notifies the user of this
-					// requirement
+							"Please enter the amount of money that each player is going to pitch in.",
+							"No Wager Entered",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				else if(inputNumConts==0)
+					JOptionPane.showMessageDialog(this,
+							"Please enter the number of contestants in the game", "",
+							JOptionPane.INFORMATION_MESSAGE);
+				else if(inputNumConts!=contCount){
+					JOptionPane.showMessageDialog(this,
+							"The game cannot be started until the number of contestants specified have been added to the game", "",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				else {
+					// Before the game starts, a dialog box will appear to confirm settings
+					JOptionPane.showMessageDialog(this,
+							"Are you sure you want to start the game?",
+							"Once you start the gamem you will no longer be able to add/delete players & contestants.",
+							JOptionPane.PLAIN_MESSAGE);
+
+					setStartGame(true);
+					writeSettings("settings.txt");
+				}
+
+			}
+
+			/** Saves the inputted settings before game starts Button Handler **/
+			if (e.getActionCommand().equals("saveSettings")) {
+				if (contField.getText() == null
+						|| contField.getText().trim().equals("")) {
+
+					JOptionPane
+					.showMessageDialog(
+							this,
+							"Please enter the number of contestants. No settings were saved",
+							null, contCount);
 
 				} else {
-					inputNumConts = Integer.valueOf(contField.getText());
-					if(numRounds==0){
-						numRounds = inputNumConts - 2;
-						this.rounds=new Round[numRounds];
-						for (int i = 0; i < numRounds; i++)
-							this.rounds[i] = new Round(i + 1);
+
+					if (Integer.valueOf(contField.getText()) < 6
+							|| Integer.valueOf(contField.getText()) > 15) {
+						contField.setText(""); // resets the field if the number of
+						// contestants is outside the range
 						JOptionPane.showMessageDialog(this,
-								"The total number of rounds will be: " + numRounds);
-					}
-					else{
-						if(numRounds>=(inputNumConts-2)){
-							Round[] newRounds=new Round[inputNumConts-2];
-							for (int i = 0; i < inputNumConts-2; i++){
-								newRounds[i]=this.rounds[i];
-							}
+								"Number of Contestants must be between 6 and 15",
+								null, contCount); // notifies the user of this
+						// requirement
+
+					} else {
+						inputNumConts = Integer.valueOf(contField.getText());
+						if(numRounds==0){
+							numRounds = inputNumConts - 2;
+							this.rounds=new Round[numRounds];
+							for (int i = 0; i < numRounds; i++)
+								this.rounds[i] = new Round(i + 1);
+							JOptionPane.showMessageDialog(this,
+									"The total number of rounds will be: " + numRounds);
 						}
 						else{
-							Round[] newRounds=new Round[inputNumConts-2];
-							for(int i=0;i<numRounds;i++){
-								newRounds[i]=this.rounds[i];
+							if(numRounds>=(inputNumConts-2)){
+								Round[] newRounds=new Round[inputNumConts-2];
+								for (int i = 0; i < inputNumConts-2; i++){
+									newRounds[i]=this.rounds[i];
+								}
 							}
-							for(int j=numRounds;j<(inputNumConts-2);j++){
-								newRounds[j]=new Round(j+1);
-							}
+							else{
+								Round[] newRounds=new Round[inputNumConts-2];
+								for(int i=0;i<numRounds;i++){
+									newRounds[i]=this.rounds[i];
+								}
+								for(int j=numRounds;j<(inputNumConts-2);j++){
+									newRounds[j]=new Round(j+1);
+								}
 
+							}
+							numRounds=inputNumConts-2;
+							JOptionPane.showMessageDialog(this,
+									"The total number of rounds will be: " + numRounds);
 						}
-						numRounds=inputNumConts-2;
-						JOptionPane.showMessageDialog(this,
-								"The total number of rounds will be: " + numRounds);
+						writeSettings("settings.txt");
 					}
-					writeSettings("settings.txt");
 				}
 			}
 		}
