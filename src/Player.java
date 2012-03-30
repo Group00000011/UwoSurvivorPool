@@ -48,10 +48,12 @@ public class Player {
 	
 	public int getBQScore() {
 		int score = 0;
+		if(answers!=null){
 		Iterator<BQAnswer> iter = answers.iterator();
 		while (iter.hasNext()) {
 			if (iter.next().isCorrect())
 				score = score + 2;
+		}
 		}
 		return score;
 	}
