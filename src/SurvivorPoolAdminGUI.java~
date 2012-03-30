@@ -2035,7 +2035,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				}
 
 			}
-			
+			JOptionPane.showMessageDialog(this, 
+					"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
+					"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
 			
 			contLiTable = new ContestantListGUI(contestantsArray, contCount);
 			getContentPane().removeAll();
