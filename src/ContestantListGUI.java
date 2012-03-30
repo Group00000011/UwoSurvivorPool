@@ -54,8 +54,8 @@ public class ContestantListGUI extends JPanel	{
 		JTable table = new JTable(contTable);
 		
 		table.setPreferredScrollableViewportSize(new Dimension(WIDTH,HEIGHT));
-		table.setFillsViewportHeight(true);
-		table.setAutoCreateRowSorter(true);
+//		table.setFillsViewportHeight(true);
+//		table.setAutoCreateRowSorter(true);
 		table.setRowHeight(77);
 		
 		table.setFont(new Font("Viner Hand ITC",Font.PLAIN,18));
@@ -89,7 +89,10 @@ public class ContestantListGUI extends JPanel	{
 				data[i][1]=contestants[i].getFirst();
 				data[i][2]=contestants[i].getLast();
 				data[i][3]=contestants[i].getTribe();
-				data[i][4]=new ImageIcon(getClass().getResource(contestants[i].getPicture()));
+				if(contestants[i].getPicture()!=null && !contestants[i].getPicture().equals("null"))	
+					data[i][4]=new ImageIcon((contestants[i].getPicture()));
+				else
+					data[i][4]=placeHolderImg;
 				data[i][5]=(contestants[i].getElimRound()!=null);
 			}		
 		}

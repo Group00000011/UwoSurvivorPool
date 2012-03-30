@@ -1469,7 +1469,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 */
 	public int findContestant(String id){
 		int position = -1;
-		for (int i = 0; i < contestantsArray.length; i++){
+		for (int i = 0; i < contCount; i++){
 			
 			if ((contestantsArray[i].getID().equals(id)))
 			{
