@@ -1,3 +1,6 @@
+import java.util.Iterator;
+import java.util.Vector;
+
 /**
  * Player - creates a player in the Survivor Pool
  * 
@@ -14,6 +17,7 @@ public class Player {
 	private int roundOfFinalPick;
 	private int score;
 	private RoundPick[] weeklyPicks;
+	private Vector<BQAnswer> answers;
 
 	/**
 	 * Constructor for objects of class Player that initializes player's first
@@ -36,8 +40,24 @@ public class Player {
 		this.weeklyPicks=null;
 	}
 	
+	public boolean answerQuestion(BonusQuestion b, String answer, int round) {
+		BQAnswer ans = new BQAnswer(b, round);
+		answers.add(ans);
+		return ans.answerQuestion(answer);
+	}
+	
+	public int getBQScore() {
+		int score = 0;
+		Iterator<BQAnswer> iter = answers.iterator();
+		while (iter.hasNext()) {
+			if (iter.next().isCorrect())
+				score = score + 2;
+		}
+		return score;
+	}
+		
 
-	public void setFirst(String first){
+ 	public void setFirst(String first){
 		this.firstName=first;
 	}
 	

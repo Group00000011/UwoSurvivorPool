@@ -23,6 +23,7 @@ import java.awt.event.MouseListener;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -151,12 +152,19 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	 * makes tabbed panel to display old questions
 	 */
 	private void initQuestionPane() {
+		ImageIcon selected, uSelected, nA;
+		selected = createImageIcon("images/tab_sel.png");
+		uSelected = createImageIcon("image/tab_usel.png");
+		nA = createImageIcon("images/tab_na");
+		JLabel selectedTab, uSelectedTab, nATab;
+		selectedTab = newJLabel
 		questionPane = new JTabbedPane();
 		questionPane.setTabPlacement(SwingConstants.LEFT);
 		for (int i = totalRounds; i > 0; i--) {
-			String tab = "Week " + Integer.toString(i);
+			String tabName = "Week " + Integer.toString(i);
 			// TODO tab icon
-			questionPane.addTab(tab, makeQPanel(i));
+			questionPane.addTab(tabName, makeQPanel(i));
+			questionPane.setL
 		}
 		for (int i = currentRound; i < totalRounds; i++) {
 			questionPane.setEnabledAt(totalRounds - i - 1, false);
@@ -165,6 +173,16 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 
 	}
 
+	private ImageIcon createImageIcon(String path) {
+		java.net.URL imgURL = SurvivorPoolAdminGUI.class.getResource(path);
+		if(imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}		
+	}
+	
 	/**
 	 * makes scrollable panel showing the bonus questions for the round number
 	 * that is supplied
