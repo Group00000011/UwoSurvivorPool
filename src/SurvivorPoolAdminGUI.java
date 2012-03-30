@@ -99,6 +99,23 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JComponent playPanel;
 	
 	/******************************** Constructor *************************************/
+	
+	public void eliminateContestant(int contIndex, int roundNum){
+		if(roundNum>numRounds){
+			JOptionPane.showMessageDialog(this,
+					"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
+		}
+		else if(contIndex>=contCount){
+			JOptionPane.showMessageDialog(this,
+					"The specified contestant no longer exists. \n Elimination not saved.");
+		}
+		else{
+			this.rounds[roundNum].setContestantEliminated(this.contestantsArray[contIndex]);
+			contestantsArray[contIndex].setElimRound(new Round(roundNum));
+		}
+	}
+	
+	
 	/**  Initializes the Administrative GUI  */
 	public SurvivorPoolAdminGUI() {	
 		createGame();
@@ -116,11 +133,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		
 		readSettings("settings.txt");
 		
-		textFields_p = new TextInputFields(this.contestantsArray,this.numConts,this.playersArray);
-		textFields_c = new TextInputFields(this.contestantsArray,this.numConts,this.playersArray);
+		textFields_p = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
+		textFields_c = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
 		standingsTable = new PlayerListGUI();
 //		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
-		contLiTable = new ContestantListGUI(contestantsArray, numConts);
+		contLiTable = new ContestantListGUI(contestantsArray, contCount);
 		
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero",Font.PLAIN,18);
@@ -213,6 +230,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		}
 	}
+	
 	/**
 	 * Persistence for player fields - reads the player name and ID
 	 * from the file where all player records are stored.
@@ -1035,6 +1053,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		p.add(uploadBtn);
 		return p;
 	}
+	
+	
 	/**
 	 * The Title Banner
 	 * 
@@ -1974,6 +1994,26 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			{
 				Contestant tempCont = new Contestant(inputFirst, inputLast, textFields_c.getMenuContsID(), inputTribe, imagePath);				
 				contestantsArray[position] = tempCont;
+				
+				
+				if(eliminateYBtn.isSelected()){
+					if(roundField.getText()==null || roundField.getText().trim().equals("")){
+						JOptionPane
+						.showMessageDialog(this,
+								"To eliminate a contestant, specify the round the contestant is eliminated during");
+					}
+					else{
+						try{
+						this.eliminateContestant(position, Integer.valueOf(roundField.getText()));
+						}
+						catch(Exception er){
+							JOptionPane
+							.showMessageDialog(this,
+									"Please specify a number in the number input fields");
+						}
+					}
+				}
+				
 			}
 			
 			
@@ -2186,7 +2226,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		JOptionPane.showMessageDialog(this,
 		"Please enter the number of contestants in the game", "",
 		JOptionPane.INFORMATION_MESSAGE);
-		else if(inputNumConts!=numConts){
+		else if(inputNumConts!=contCount){
 		JOptionPane.showMessageDialog(this,
 		"The game cannot be started until the number of contestants specified have been added to the game", "",
 		JOptionPane.INFORMATION_MESSAGE);
@@ -2228,11 +2268,35 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 				} else {
 					inputNumConts = Integer.valueOf(contField.getText());
+					if(numRounds==0){
 					numRounds = inputNumConts - 2;
+						this.rounds=new Round[numRounds];
 					for (int i = 0; i < numRounds; i++)
 						this.rounds[i] = new Round(i + 1);
 					JOptionPane.showMessageDialog(this,
 							"The total number of rounds will be: " + numRounds);
+					}
+					else{
+						if(numRounds>=(inputNumConts-2)){
+							Round[] newRounds=new Round[inputNumConts-2];
+							for (int i = 0; i < inputNumConts-2; i++){
+									newRounds[i]=this.rounds[i];
+							}
+						}
+						else{
+							Round[] newRounds=new Round[inputNumConts-2];
+							for(int i=0;i<numRounds;i++){
+								newRounds[i]=this.rounds[i];
+							}
+							for(int j=numRounds;j<(inputNumConts-2);j++){
+								newRounds[j]=new Round(j+1);
+							}
+									
+						}
+						numRounds=inputNumConts-2;
+						JOptionPane.showMessageDialog(this,
+								"The total number of rounds will be: " + numRounds);
+					}
 					writeSettings("settings.txt");
 				}
 			}
