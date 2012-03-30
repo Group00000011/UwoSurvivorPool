@@ -76,13 +76,13 @@ public class ContestantListGUI extends JPanel	{
 	 * This class gets called by the main panel
 	 */
 	class MyTableModel extends AbstractTableModel {
-		private String[] columnNames =  {"User ID", "First Name", "Last Name", "Tribe", "Picture", "Eliminated"};
+		private String[] columnNames =  {"User ID", "First Name", "Last Name", "Tribe", "Picture", "Round Eliminated", "Eliminated"};
 		private Contestant[] contestants;
 		private Object[][] data;
 		public MyTableModel(Contestant[] conts, int numConts) {
 			super();
 			this.contestants = conts;
-			data = new Object[numConts][6];
+			data = new Object[numConts][7];
 			for(int i=0;i<numConts;i++){
 				data[i][0]=contestants[i].getID();
 				data[i][1]=contestants[i].getFirst();
@@ -99,7 +99,13 @@ public class ContestantListGUI extends JPanel	{
 				else{
 					data[i][4]=placeHolderImg;
 				}
-				data[i][5]=(contestants[i].getElimRound()!=null);
+				if (contestants[i].getElimRound() != null){
+				data[i][5]=contestants[i].getElimRound().getRoundNum();
+				}
+				else{
+					data[i][5]="Not Eliminated";
+				}
+				data[i][6]=(contestants[i].getElimRound()!=null);
 			}	
 		}
 
