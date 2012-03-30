@@ -135,7 +135,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		textFields_p = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
 		textFields_c = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
-		standingsTable = new PlayerListGUI();
+		standingsTable = new PlayerListGUI(playersArray, roundNum);
 		//		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
 		contLiTable = new ContestantListGUI(contestantsArray, contCount);
 
@@ -1735,13 +1735,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 					this.addPlayer(new Player(first,last,ID));
 					this.writePlayers("players.txt");
-
+					standingsTable = new PlayerListGUI(playersArray, roundNum);
 					getContentPane().removeAll();
-
 					getContentPane().add(quitButton());	
-
 					getContentPane().add(playersPanel());
-
 					repaint();
 					validate();	
 				}
@@ -1783,6 +1780,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 				this.writePlayers("players.txt");
 
+				standingsTable = new PlayerListGUI(playersArray, roundNum);
 				getContentPane().removeAll();
 
 				getContentPane().add(quitButton());	
@@ -1857,6 +1855,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 							this.writePlayers("players.txt");
 
+							standingsTable = new PlayerListGUI(playersArray, roundNum);
 							getContentPane().removeAll();
 
 							getContentPane().add(quitButton());	
@@ -1941,6 +1940,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						JOptionPane.showMessageDialog(this, "Contestant added" );
 					}
 					contLiTable = new ContestantListGUI(contestantsArray, contCount);
+					getContentPane().removeAll();
+					getContentPane().add(quitButton());	
+					getContentPane().add(contestantPanel());
+					repaint();
+					validate();
 				}					
 			}
 		}
@@ -1995,7 +1999,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			{
 				Contestant tempCont = new Contestant(inputFirst, inputLast, textFields_c.getMenuContsID(), inputTribe, imagePath);				
 				contestantsArray[position] = tempCont;
-
+				
+				JOptionPane.showMessageDialog(this, "Contestant has been updated");
+				this.writeContestants("contestants.txt");
 
 				if(eliminateYBtn.isSelected()){
 					if(roundField.getText()==null || roundField.getText().trim().equals("")){
@@ -2019,7 +2025,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(this, 
 					"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
 					"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
+			
 			contLiTable = new ContestantListGUI(contestantsArray, contCount);
+			getContentPane().removeAll();
+			getContentPane().add(quitButton());	
+			getContentPane().add(contestantPanel());
+			repaint();
+			validate();
 		}
 
 
@@ -2088,6 +2100,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					contCount--;
 					this.writeContestants("contestants.txt");
 					contLiTable = new ContestantListGUI(contestantsArray, contCount);
+					getContentPane().removeAll();
+					getContentPane().add(quitButton());	
+					getContentPane().add(contestantPanel());
+					repaint();
+					validate();
 				}
 			}
 		}
@@ -2165,7 +2182,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		 * 	 Enabled only if game has already begun		
 		 **/
 		if(e.getActionCommand().equals("standings")) {
-			if(getStartGame()==true) {
+			//if(getStartGame()==true) {
 				getContentPane().removeAll();
 
 				getContentPane().add(quitButton());
@@ -2173,9 +2190,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 				repaint();
 				validate();	
-			}
-			else
-				JOptionPane.showMessageDialog(this, "Game has not started yet.", null,  JOptionPane.ERROR_MESSAGE); 
+		//	}
+		//	else
+		//		JOptionPane.showMessageDialog(this, "Game has not started yet.", null,  JOptionPane.ERROR_MESSAGE); 
 		}
 		/**  Bonus Question Admin Button Handler **/
 		if(e.getActionCommand().equals("bonus")) {

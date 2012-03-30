@@ -48,9 +48,7 @@ public class ContestantListGUI extends JPanel	{
 	 */
 	public JComponent createContList() {
 		contListPanel = new JPanel();
-
 		MyTableModel contTable=new MyTableModel(contestants, numConts);
-
 		JTable table = new JTable(contTable);
 
 		table.setPreferredScrollableViewportSize(new Dimension(WIDTH,HEIGHT));
@@ -132,14 +130,14 @@ public class ContestantListGUI extends JPanel	{
 		/*
 		 * This method makes the tables editable
 		 */
-		public boolean isCellEditable(int row, int col) {
+//		public boolean isCellEditable(int row, int col) {
 			//Note that the cell address is constant
-			if(col < 2) {
-				return false;
-			} else {
-				return true;			
-			}
-		}
+	//		if(col < 2) {
+	//			return false;
+	//		} else {
+	//			return true;			
+	//		}
+	//	}
 	}
 
 	//		 /*
