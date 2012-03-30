@@ -100,22 +100,23 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	/******************************** Constructor *************************************/
 
-	public void eliminateContestant(int contIndex, int roundNum){
+	public boolean eliminateContestant(int contIndex, int roundNum){
 		if(roundNum>numRounds){
 			JOptionPane.showMessageDialog(this,
-			"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
+					"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
 		}
 		else if(contIndex>=contCount){
 			JOptionPane.showMessageDialog(this,
-			"The specified contestant no longer exists. \n Elimination not saved.");
+					"The specified contestant no longer exists. \n Elimination not saved.");
 		}
 		else{
 			this.rounds[roundNum].setContestantEliminated(this.contestantsArray[contIndex]);
 			contestantsArray[contIndex].setElimRound(new Round(roundNum));
+			return true;
 		}
+		return false;
 	}
-
-
+	
 	/**  Initializes the Administrative GUI  */
 	public SurvivorPoolAdminGUI() {	
 		createGame();
@@ -249,137 +250,137 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				int i=0;
 				pFirst=pLast=pID=rndStr=finRndStr=pScrStr=cFirst=cLast=cID=cTrb=cPic="";
 				pScr=rnd=finRnd=0;
-				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-					pFirst=pFirst+currPlayer.charAt(i);
-					i++;
-				}//end of first name field
-				i++;
-				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-					pLast=pLast+currPlayer.charAt(i);
-					i++;
-				}//end of  last name field
-				i++;
-				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-					pID=pID+currPlayer.charAt(i);
-					i++;
-				}//end of first last name field
-				i++;
-				currPlayerObj=new Player(pFirst, pLast, pID);
-				for(;i<currPlayer.length();i++){
-					if(currPlayer.charAt(i)=='+'){
-						pScr=Integer.valueOf(pScrStr);
-						break;
-					}
-					else{
-						pScrStr=pScrStr+currPlayer.charAt(i);
-					}
-				}
-				i++;
-				currPlayerObj.setScore(pScr);
-				if(currPlayer.charAt(i)=='_')
-					i++;
-				else{
-					for(;i<currPlayer.length();i++){
-						if(currPlayer.charAt(i)=='{'){
-							finRnd=Integer.valueOf(finRndStr);
-							break;
-						}
-						else{
-							finRndStr=finRndStr+currPlayer.charAt(i);
-						}
-					}
-					i++;
-					for(;i<currPlayer.length();i++){
-						if(currPlayer.charAt(i)=='{'){
-							rnd=Integer.valueOf(rndStr);
-							break;
-						}
-						else{
-							rndStr=rndStr+currPlayer.charAt(i);
-						}
-					}
-					i++;
-					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						cFirst=cFirst+currPlayer.charAt(i);
-						i++;
-					}
-					i++;
-					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						cLast=cLast+currPlayer.charAt(i);
-						i++;
-					}
-					i++;
-					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						cID=cID+currPlayer.charAt(i);
-						i++;
-					}
-					i++;
-					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						cPic=cPic+currPlayer.charAt(i);
-						i++;
-					}
-					i++;
-					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						cTrb=cTrb+currPlayer.charAt(i);
-						i++;
-					}
-					contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
-					currPlayerObj.chooseWinner(contElim, finRnd, rnd+2);
-				}
-				i++;
-				cFirst=cLast=cID=cTrb=cPic=rndStr="";
-				finRnd=rnd=0;
-				for(;i<currPlayer.length();){
-					if(currPlayer.charAt(i)=='_' || currPlayer.charAt(i)=='{')
-						i++;
-					else{
-						cFirst=cLast=cID=cTrb=cPic=rndStr="";
-						rnd=0; 
-						for(;i<currPlayer.length();i++){
-							if(currPlayer.charAt(i)=='{'){
-								System.out.println(rndStr);
-								rnd=Integer.valueOf(rndStr);
+				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+							pFirst=pFirst+currPlayer.charAt(i);
+							i++;
+					}//end of first name field
+				 i++;
+				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+							pLast=pLast+currPlayer.charAt(i);
+							i++;
+					}//end of  last name field
+				 i++;
+				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+							pID=pID+currPlayer.charAt(i);
+							i++;
+					}//end of first last name field
+				 i++;
+				 currPlayerObj=new Player(pFirst, pLast, pID);
+				 for(;i<currPlayer.length();i++){
+					 if(currPlayer.charAt(i)=='+'){
+						 pScr=Integer.valueOf(pScrStr);
+						 break;
+					 }
+					 else{
+						 pScrStr=pScrStr+currPlayer.charAt(i);
+					 }
+				 }
+				 i++;
+				 currPlayerObj.setScore(pScr);
+				 if(currPlayer.charAt(i)=='_')
+					 i++;
+				 else{
+					 for(;i<currPlayer.length();i++){
+						 if(currPlayer.charAt(i)=='{'){
+							 finRnd=Integer.valueOf(finRndStr);
+							 break;
+						 }
+						 else{
+							 finRndStr=finRndStr+currPlayer.charAt(i);
+						 }
+					 }
+					 i++;
+					 for(;i<currPlayer.length();i++){
+						 if(currPlayer.charAt(i)=='{'){
+							 rnd=Integer.valueOf(rndStr);
+							 break;
+						 }
+						 else{
+							 rndStr=rndStr+currPlayer.charAt(i);
+						 }
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cFirst=cFirst+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cLast=cLast+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cID=cID+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cPic=cPic+currPlayer.charAt(i);
+						 i++;
+					 }
+					 i++;
+					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						 cTrb=cTrb+currPlayer.charAt(i);
+						 i++;
+					 }
+					 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+					 currPlayerObj.chooseWinner(contElim, finRnd, rnd+2);
+				 }
+				 i++;
+					 cFirst=cLast=cID=cTrb=cPic=rndStr="";
+					 finRnd=rnd=0;
+					 for(;i<currPlayer.length();){
+						 if(currPlayer.charAt(i)=='_' || currPlayer.charAt(i)=='{')
+							 i++;
+						 else{
+							 cFirst=cLast=cID=cTrb=cPic=rndStr="";
+							 rnd=0; 
+							 for(;i<currPlayer.length();i++){
+								 if(currPlayer.charAt(i)=='{'){
+									 System.out.println(rndStr);
+									 rnd=Integer.valueOf(rndStr);
+									 
+									 break;
+								 }
+								 else{
+									 rndStr=rndStr+currPlayer.charAt(i);
+								 }
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cFirst=cFirst+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cLast=cLast+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cID=cID+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cPic=cPic+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+								 cTrb=cTrb+currPlayer.charAt(i);
+								 i++;
+							 }
+							 i++;
+							 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+							 currPlayerObj.makeRoundPick(rnd, contElim);
+						 }
+					 }
+					 addPlayer(currPlayerObj);
+					 currPlayer=in.readLine();
 
-								break;
-							}
-							else{
-								rndStr=rndStr+currPlayer.charAt(i);
-							}
-						}
-						i++;
-						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-							cFirst=cFirst+currPlayer.charAt(i);
-							i++;
-						}
-						i++;
-						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-							cLast=cLast+currPlayer.charAt(i);
-							i++;
-						}
-						i++;
-						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-							cID=cID+currPlayer.charAt(i);
-							i++;
-						}
-						i++;
-						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-							cPic=cPic+currPlayer.charAt(i);
-							i++;
-						}
-						i++;
-						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-							cTrb=cTrb+currPlayer.charAt(i);
-							i++;
-						}
-						i++;
-						contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
-						currPlayerObj.makeRoundPick(rnd, contElim);
-					}
-				}
-				addPlayer(currPlayerObj);
-				currPlayer=in.readLine();
-
-			}
+		}
 		}
 		catch(IOException e){}//unharmful
 	}
@@ -417,9 +418,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				else {
 					RoundPick[] weekPicks=this.playersArray[i].getAllWeekPicks();
 					int max=weekPicks.length;
-					if(this.playersArray[i].getFinal()!=null) 
-						max=max-1;
-
+					
 					for(int j=0;j<max;j++){
 						if(weekPicks[j]==null)
 							;
@@ -434,7 +433,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 				currString=currString+"\n";
-
+				
 			}
 			//Start writing to the output stream
 			bWr.write(currString);
@@ -444,6 +443,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		catch(IOException e){}//unharmful
 
 	}
+ 
 
 	public void readSettings(String fileName){
 		try{
@@ -2004,14 +2004,22 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						"To eliminate a contestant, specify the round the contestant is eliminated during");
 					}
 					else{
-						try{
-							this.eliminateContestant(position, Integer.valueOf(roundField.getText()));
-						}
-						catch(Exception er){
+						if(Integer.valueOf(roundField.getText())==0){
 							JOptionPane
 							.showMessageDialog(this,
-							"Please specify a number in the number input fields");
+									"To eliminate a contestant, specify the round the contestant is eliminated during");
 						}
+						else{
+						if(this.eliminateContestant(position, Integer.valueOf(roundField.getText()))){
+						this.writeContestants("contestants.txt");
+						JOptionPane.showMessageDialog(this, 
+								"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
+								"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
+						}
+						
+						}
+						
+						
 					}
 				}
 
