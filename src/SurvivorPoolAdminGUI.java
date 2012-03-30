@@ -110,7 +110,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					"The specified contestant no longer exists. \n Elimination not saved.");
 		}
 		else{
-			this.rounds[roundNum].setContestantEliminated(this.contestantsArray[contIndex]);
+			this.rounds[roundNum - 1].setContestantEliminated(this.contestantsArray[contIndex]);
 			contestantsArray[contIndex].setElimRound(new Round(roundNum));
 			return true;
 		}
@@ -452,46 +452,51 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String currRound=in.readLine();
 			if(currRound!=null && !currRound.trim().equals("")){
 				this.roundNum=Integer.valueOf(currRound.trim());
-
-				String gameStarted=in.readLine(), inputWager;
-				if(gameStarted!=null && !gameStarted.trim().equals("")){
-					if(gameStarted.equals("true")){
-						this.startGame=true;
-					}
-					else
-						this.startGame=false;
-					String inputSpecifier = in.readLine();
-					if(inputSpecifier!=null) {
-						if(inputSpecifier.equals("R")){
-							String inputNumRounds=in.readLine();
-							if(inputNumRounds!=null){
-								this.numRounds=Integer.valueOf(inputNumRounds);
-								String inNumContestants= in.readLine();
-								if(inNumContestants!=null){
-									this.inputNumConts=Integer.valueOf(inNumContestants);
-									inputSpecifier = in.readLine();
-									if(inputSpecifier!=null){
-										if(inputSpecifier.equals("W")){
-											inputWager=in.readLine();
-											if(inputWager!=null)
-												this.wager=Integer.valueOf(inputWager);
-										}
-									}		
+			
+			String gameStarted=in.readLine(), inputWager;
+			if(gameStarted!=null && !gameStarted.trim().equals("")){
+				if(gameStarted.equals("true")){
+					this.startGame=true;
+				}
+				else
+					this.startGame=false;
+				String inputSpecifier = in.readLine();
+				if(inputSpecifier!=null) {
+					if(inputSpecifier.equals("R")){
+						String inputNumRounds=in.readLine();
+						if(inputNumRounds!=null){
+							this.numRounds=Integer.valueOf(inputNumRounds);
+							
+							String inNumContestants= in.readLine();
+							if(inNumContestants!=null){
+								this.inputNumConts=Integer.valueOf(inNumContestants);
+								this.rounds=new Round[inputNumConts-2];
+								for (int i = 0; i < inputNumConts-2; i++){
+										this.rounds[i]=new Round(i+1);
 								}
-							}
+								 inputSpecifier = in.readLine();
+								 if(inputSpecifier!=null){
+								 if(inputSpecifier.equals("W")){
+									 inputWager=in.readLine();
+									 if(inputWager!=null)
+										 this.wager=Integer.valueOf(inputWager);
+								 }
+							}		
 						}
-						else if(inputSpecifier.equals("W")){
-							inputWager= in.readLine();
-							if(inputWager!=null)
-								this.wager=Integer.valueOf(inputWager);
-						}
+					}
+					}
+					else if(inputSpecifier.equals("W")){
+						inputWager= in.readLine();
+						if(inputWager!=null)
+							this.wager=Integer.valueOf(inputWager);
 					}
 				}
 			}
+			}
 		}
-		catch(IOException e){}
-	}
-
+				catch(IOException e){}
+			}
+	
 	public void writeSettings(String fileName){
 		BufferedWriter bWr = null;
 		try {
