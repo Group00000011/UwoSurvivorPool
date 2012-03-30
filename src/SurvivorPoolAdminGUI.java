@@ -40,7 +40,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// The Buttons
 	private JButton resetGameBtn, startGameBtn, saveSettingBtn, playerModButton;
 	private JRadioButton eliminateYBtn;
-	
+
 	// Labels to ID fields
 	private JLabel contLabel, playLabel, wagerLabel;
 	// Strings for labels
@@ -55,12 +55,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// Stores the number of contestants and total number of rounds
 	private int numConts;
 	private int numRounds;
-	
+
 	// Buttons
 	private JButton quitBtn, mainMenuBtn, playersBtn, contestantsBtn, standingsBtn, bonusQBtn, themeSelectBtn;	
 	private JButton addPlayerBtn, addContBtn, updateBtn, deletePlayerBtn, deleteContBtn, resetBtn, uploadBtn, contOptionsBtn, contListBtn;
 	private JButton[] gameSettingsButtons = new JButton[13];
-	
+
 	// JLabels
 	private JLabel themeMaker = new JLabel(goldBackground), playerBg, contestantBg, standingBg, bqBg, titleBanner, contestantPicFrame;
 
@@ -86,36 +86,36 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private Player[] playersArray;
 	private Contestant[] contestantsArray;
 	private int contCount = 0;
-	
+
 	//Variables for setters & getters
 	private boolean startGame=false;
 	private boolean contEliminated=false;
 	private int wager,roundNum, inputNumConts;
 	private Round[] rounds;
-	
 
-	
+
+
 	//STUFF YOU ADDED
 	private JComponent playPanel;
-	
+
 	/******************************** Constructor *************************************/
-	
+
 	public void eliminateContestant(int contIndex, int roundNum){
 		if(roundNum>numRounds){
 			JOptionPane.showMessageDialog(this,
-					"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
+			"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
 		}
 		else if(contIndex>=contCount){
 			JOptionPane.showMessageDialog(this,
-					"The specified contestant no longer exists. \n Elimination not saved.");
+			"The specified contestant no longer exists. \n Elimination not saved.");
 		}
 		else{
 			this.rounds[roundNum].setContestantEliminated(this.contestantsArray[contIndex]);
 			contestantsArray[contIndex].setElimRound(new Round(roundNum));
 		}
 	}
-	
-	
+
+
 	/**  Initializes the Administrative GUI  */
 	public SurvivorPoolAdminGUI() {	
 		createGame();
@@ -130,15 +130,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		readPlayers(fileName);
 		readContestants("contestants.txt");
 		roundNum=1;
-		
+
 		readSettings("settings.txt");
-		
+
 		textFields_p = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
 		textFields_c = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
 		standingsTable = new PlayerListGUI();
-//		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
+		//		contLiTable = new ContestantListGUI(contCount, this.contestantsArray);
 		contLiTable = new ContestantListGUI(contestantsArray, contCount);
-		
+
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero",Font.PLAIN,18);
 		// The jungle theme font
@@ -159,7 +159,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		bqGBg = createImageIcon("images/bqGolden.jpg");
 		bqBg = new JLabel(bqGBg);
-		
+
 		SpringLayout guiLayout = new SpringLayout();	
 		this.setLayout(guiLayout);
 
@@ -197,9 +197,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String s=""+this.playersArray[index].getFirst()+" "+this.playersArray[index].getLast()+": "+contestantsArray[contIndex].getFirst()+" "+contestantsArray[contIndex].getLast();
 			return s;
 		}
-		
+
 	}
-	
+
 	public String assignRandomPicks(int roundNum){
 		String s="";
 		for(int i=0; i<this.playersArray.length && this.playersArray[i]!=null;i++){
@@ -211,26 +211,26 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		else
 			return s;
 	}
-	
+
 	public void nextRound() {
 		if(startGame==false)
 			JOptionPane.showMessageDialog(this, "You must start the game before going to the next round");
 		else{
-		if(contCount==0 || playersArray==null)
-			JOptionPane.showMessageDialog(this, "Please add players and contestants before changing to the next round");
-		else {
-		String s=assignRandomPicks(this.roundNum);
-		roundNum++;
-		if(s==null)
-		JOptionPane.showMessageDialog(this, "It is now round "+this.roundNum);
-		else{
-			JOptionPane.showMessageDialog(this, "It is now round "+this.roundNum+"\n The following players were assigned random contestant choices: \n\n"+s);
-			writePlayers("players.txt");
-		}
-		}
+			if(contCount==0 || playersArray==null)
+				JOptionPane.showMessageDialog(this, "Please add players and contestants before changing to the next round");
+			else {
+				String s=assignRandomPicks(this.roundNum);
+				roundNum++;
+				if(s==null)
+					JOptionPane.showMessageDialog(this, "It is now round "+this.roundNum);
+				else{
+					JOptionPane.showMessageDialog(this, "It is now round "+this.roundNum+"\n The following players were assigned random contestant choices: \n\n"+s);
+					writePlayers("players.txt");
+				}
+			}
 		}
 	}
-	
+
 	/**
 	 * Persistence for player fields - reads the player name and ID
 	 * from the file where all player records are stored.
@@ -249,137 +249,137 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				int i=0;
 				pFirst=pLast=pID=rndStr=finRndStr=pScrStr=cFirst=cLast=cID=cTrb=cPic="";
 				pScr=rnd=finRnd=0;
-				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-							pFirst=pFirst+currPlayer.charAt(i);
-							i++;
-					}//end of first name field
-				 i++;
-				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-							pLast=pLast+currPlayer.charAt(i);
-							i++;
-					}//end of  last name field
-				 i++;
-				 while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
-							pID=pID+currPlayer.charAt(i);
-							i++;
-					}//end of first last name field
-				 i++;
-				 currPlayerObj=new Player(pFirst, pLast, pID);
-				 for(;i<currPlayer.length();i++){
-					 if(currPlayer.charAt(i)=='+'){
-						 pScr=Integer.valueOf(pScrStr);
-						 break;
-					 }
-					 else{
-						 pScrStr=pScrStr+currPlayer.charAt(i);
-					 }
-				 }
-				 i++;
-				 currPlayerObj.setScore(pScr);
-				 if(currPlayer.charAt(i)=='_')
-					 i++;
-				 else{
-					 for(;i<currPlayer.length();i++){
-						 if(currPlayer.charAt(i)=='{'){
-							 finRnd=Integer.valueOf(finRndStr);
-							 break;
-						 }
-						 else{
-							 finRndStr=finRndStr+currPlayer.charAt(i);
-						 }
-					 }
-					 i++;
-					 for(;i<currPlayer.length();i++){
-						 if(currPlayer.charAt(i)=='{'){
-							 rnd=Integer.valueOf(rndStr);
-							 break;
-						 }
-						 else{
-							 rndStr=rndStr+currPlayer.charAt(i);
-						 }
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cFirst=cFirst+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cLast=cLast+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cID=cID+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cPic=cPic+currPlayer.charAt(i);
-						 i++;
-					 }
-					 i++;
-					 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-						 cTrb=cTrb+currPlayer.charAt(i);
-						 i++;
-					 }
-					 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
-					 currPlayerObj.chooseWinner(contElim, finRnd, rnd+2);
-				 }
-				 i++;
-					 cFirst=cLast=cID=cTrb=cPic=rndStr="";
-					 finRnd=rnd=0;
-					 for(;i<currPlayer.length();){
-						 if(currPlayer.charAt(i)=='_' || currPlayer.charAt(i)=='{')
-							 i++;
-						 else{
-							 cFirst=cLast=cID=cTrb=cPic=rndStr="";
-							 rnd=0; 
-							 for(;i<currPlayer.length();i++){
-								 if(currPlayer.charAt(i)=='{'){
-									 System.out.println(rndStr);
-									 rnd=Integer.valueOf(rndStr);
-									 
-									 break;
-								 }
-								 else{
-									 rndStr=rndStr+currPlayer.charAt(i);
-								 }
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cFirst=cFirst+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cLast=cLast+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cID=cID+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cPic=cPic+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
-								 cTrb=cTrb+currPlayer.charAt(i);
-								 i++;
-							 }
-							 i++;
-							 contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
-							 currPlayerObj.makeRoundPick(rnd, contElim);
-						 }
-					 }
-					 addPlayer(currPlayerObj);
-					 currPlayer=in.readLine();
+				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+					pFirst=pFirst+currPlayer.charAt(i);
+					i++;
+				}//end of first name field
+				i++;
+				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+					pLast=pLast+currPlayer.charAt(i);
+					i++;
+				}//end of  last name field
+				i++;
+				while(currPlayer.charAt(i)!='+' && i<currPlayer.length()) {
+					pID=pID+currPlayer.charAt(i);
+					i++;
+				}//end of first last name field
+				i++;
+				currPlayerObj=new Player(pFirst, pLast, pID);
+				for(;i<currPlayer.length();i++){
+					if(currPlayer.charAt(i)=='+'){
+						pScr=Integer.valueOf(pScrStr);
+						break;
+					}
+					else{
+						pScrStr=pScrStr+currPlayer.charAt(i);
+					}
+				}
+				i++;
+				currPlayerObj.setScore(pScr);
+				if(currPlayer.charAt(i)=='_')
+					i++;
+				else{
+					for(;i<currPlayer.length();i++){
+						if(currPlayer.charAt(i)=='{'){
+							finRnd=Integer.valueOf(finRndStr);
+							break;
+						}
+						else{
+							finRndStr=finRndStr+currPlayer.charAt(i);
+						}
+					}
+					i++;
+					for(;i<currPlayer.length();i++){
+						if(currPlayer.charAt(i)=='{'){
+							rnd=Integer.valueOf(rndStr);
+							break;
+						}
+						else{
+							rndStr=rndStr+currPlayer.charAt(i);
+						}
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cFirst=cFirst+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cLast=cLast+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cID=cID+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cPic=cPic+currPlayer.charAt(i);
+						i++;
+					}
+					i++;
+					while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+						cTrb=cTrb+currPlayer.charAt(i);
+						i++;
+					}
+					contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+					currPlayerObj.chooseWinner(contElim, finRnd, rnd+2);
+				}
+				i++;
+				cFirst=cLast=cID=cTrb=cPic=rndStr="";
+				finRnd=rnd=0;
+				for(;i<currPlayer.length();){
+					if(currPlayer.charAt(i)=='_' || currPlayer.charAt(i)=='{')
+						i++;
+					else{
+						cFirst=cLast=cID=cTrb=cPic=rndStr="";
+						rnd=0; 
+						for(;i<currPlayer.length();i++){
+							if(currPlayer.charAt(i)=='{'){
+								System.out.println(rndStr);
+								rnd=Integer.valueOf(rndStr);
 
-		}
+								break;
+							}
+							else{
+								rndStr=rndStr+currPlayer.charAt(i);
+							}
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cFirst=cFirst+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cLast=cLast+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cID=cID+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cPic=cPic+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						while( i<currPlayer.length() && currPlayer.charAt(i)!='{') {
+							cTrb=cTrb+currPlayer.charAt(i);
+							i++;
+						}
+						i++;
+						contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+						currPlayerObj.makeRoundPick(rnd, contElim);
+					}
+				}
+				addPlayer(currPlayerObj);
+				currPlayer=in.readLine();
+
+			}
 		}
 		catch(IOException e){}//unharmful
 	}
@@ -419,7 +419,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					int max=weekPicks.length;
 					if(this.playersArray[i].getFinal()!=null) 
 						max=max-1;
-					
+
 					for(int j=0;j<max;j++){
 						if(weekPicks[j]==null)
 							;
@@ -434,7 +434,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 				currString=currString+"\n";
-				
+
 			}
 			//Start writing to the output stream
 			bWr.write(currString);
@@ -444,7 +444,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		catch(IOException e){}//unharmful
 
 	}
- 
+
 	public void readSettings(String fileName){
 		try{
 			DataInputStream input = new DataInputStream(new FileInputStream(fileName));
@@ -452,46 +452,46 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String currRound=in.readLine();
 			if(currRound!=null && !currRound.trim().equals("")){
 				this.roundNum=Integer.valueOf(currRound.trim());
-			
-			String gameStarted=in.readLine(), inputWager;
-			if(gameStarted!=null && !gameStarted.trim().equals("")){
-				if(gameStarted.equals("true")){
-					this.startGame=true;
-				}
-				else
-					this.startGame=false;
-				String inputSpecifier = in.readLine();
-				if(inputSpecifier!=null) {
-					if(inputSpecifier.equals("R")){
-						String inputNumRounds=in.readLine();
-						if(inputNumRounds!=null){
-							this.numRounds=Integer.valueOf(inputNumRounds);
-							String inNumContestants= in.readLine();
-							if(inNumContestants!=null){
-								this.inputNumConts=Integer.valueOf(inNumContestants);
-								 inputSpecifier = in.readLine();
-								 if(inputSpecifier!=null){
-								 if(inputSpecifier.equals("W")){
-									 inputWager=in.readLine();
-									 if(inputWager!=null)
-										 this.wager=Integer.valueOf(inputWager);
-								 }
-							}		
+
+				String gameStarted=in.readLine(), inputWager;
+				if(gameStarted!=null && !gameStarted.trim().equals("")){
+					if(gameStarted.equals("true")){
+						this.startGame=true;
+					}
+					else
+						this.startGame=false;
+					String inputSpecifier = in.readLine();
+					if(inputSpecifier!=null) {
+						if(inputSpecifier.equals("R")){
+							String inputNumRounds=in.readLine();
+							if(inputNumRounds!=null){
+								this.numRounds=Integer.valueOf(inputNumRounds);
+								String inNumContestants= in.readLine();
+								if(inNumContestants!=null){
+									this.inputNumConts=Integer.valueOf(inNumContestants);
+									inputSpecifier = in.readLine();
+									if(inputSpecifier!=null){
+										if(inputSpecifier.equals("W")){
+											inputWager=in.readLine();
+											if(inputWager!=null)
+												this.wager=Integer.valueOf(inputWager);
+										}
+									}		
+								}
+							}
+						}
+						else if(inputSpecifier.equals("W")){
+							inputWager= in.readLine();
+							if(inputWager!=null)
+								this.wager=Integer.valueOf(inputWager);
 						}
 					}
-					}
-					else if(inputSpecifier.equals("W")){
-						inputWager= in.readLine();
-						if(inputWager!=null)
-							this.wager=Integer.valueOf(inputWager);
-					}
 				}
 			}
-			}
 		}
-				catch(IOException e){}
-			}
-	
+		catch(IOException e){}
+	}
+
 	public void writeSettings(String fileName){
 		BufferedWriter bWr = null;
 		try {
@@ -509,66 +509,66 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		catch(IOException e){}
 	}
-	
+
 	public void readContestants(String fileName) {
 		try{
-		DataInputStream input = new DataInputStream(new FileInputStream(fileName));
-		BufferedReader in = new BufferedReader(new InputStreamReader(input));
-		String currCont = in.readLine();
-		this.contCount=0;
-		this.contestantsArray=new Contestant[15];
-		while(currCont != null && !currCont.trim().equals("")){
-			int i=0;
-			String cFirst="",cLast="",cID="",cTrb="",cPic="",cElimRoundStr="";
-			int elimRound=0;
-			 while( i<currCont.length() && currCont.charAt(i)!='+') {
-				 cFirst=cFirst+currCont.charAt(i);
-				 i++;
-			 }
-			 i++;
-			 while( i<currCont.length() && currCont.charAt(i)!='+') {
-				 cLast=cLast+currCont.charAt(i);
-				 i++;
-			 }
-			 i++;
-			 while( i<currCont.length() && currCont.charAt(i)!='+') {
-				 cID=cID+currCont.charAt(i);
-				 i++;
-			 }
-			 i++;
-			 while( i<currCont.length() && currCont.charAt(i)!='+') {
-				 cPic=cPic+currCont.charAt(i);
-				 i++;
-			 }
-			 i++;
-			 while( i<currCont.length() && currCont.charAt(i)!='+') {
-				 cTrb=cTrb+currCont.charAt(i);
-				 i++;
-			 }
-			 i++;
-			 Contestant contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
-			 System.out.println("adding cont "+cFirst);
-			 if(i<currCont.length() && currCont.charAt(i)!='+'){
-			 for(;i<currCont.length();i++){
-				 if(currCont.charAt(i)=='+'){
-					 elimRound=Integer.valueOf(cElimRoundStr);
-					 contElim.setElimRound(new Round(elimRound));
-					 break;
-					 
-				 }
-				 else{
-					 cElimRoundStr=cElimRoundStr+currCont.charAt(i);
-				 }
-			 }
-			 }
-			 this.contestantsArray[contCount]=contElim;
-			 System.out.println(this.contestantsArray[contCount].getFirst());
-			 contCount++;
-			 currCont=in.readLine();
-		}
+			DataInputStream input = new DataInputStream(new FileInputStream(fileName));
+			BufferedReader in = new BufferedReader(new InputStreamReader(input));
+			String currCont = in.readLine();
+			this.contCount=0;
+			this.contestantsArray=new Contestant[15];
+			while(currCont != null && !currCont.trim().equals("")){
+				int i=0;
+				String cFirst="",cLast="",cID="",cTrb="",cPic="",cElimRoundStr="";
+				int elimRound=0;
+				while( i<currCont.length() && currCont.charAt(i)!='+') {
+					cFirst=cFirst+currCont.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currCont.length() && currCont.charAt(i)!='+') {
+					cLast=cLast+currCont.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currCont.length() && currCont.charAt(i)!='+') {
+					cID=cID+currCont.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currCont.length() && currCont.charAt(i)!='+') {
+					cPic=cPic+currCont.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currCont.length() && currCont.charAt(i)!='+') {
+					cTrb=cTrb+currCont.charAt(i);
+					i++;
+				}
+				i++;
+				Contestant contElim=new Contestant(cFirst,cLast,cID,cTrb,cPic);
+				System.out.println("adding cont "+cFirst);
+				if(i<currCont.length() && currCont.charAt(i)!='+'){
+					for(;i<currCont.length();i++){
+						if(currCont.charAt(i)=='+'){
+							elimRound=Integer.valueOf(cElimRoundStr);
+							contElim.setElimRound(new Round(elimRound));
+							break;
+
+						}
+						else{
+							cElimRoundStr=cElimRoundStr+currCont.charAt(i);
+						}
+					}
+				}
+				this.contestantsArray[contCount]=contElim;
+				System.out.println(this.contestantsArray[contCount].getFirst());
+				contCount++;
+				currCont=in.readLine();
+			}
 		}catch(IOException e) {}	
 	}
-	
+
 	public void writeContestants(String fileName){
 		BufferedWriter bWr = null;
 		String currString="";
@@ -589,7 +589,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			bWr.write(currString);
 			bWr.flush();
 			bWr.close();
-	}
+		}
 		catch(Exception e){}
 	}
 
@@ -732,8 +732,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		// Game Settings Button -- To Create New & to Start the Game
 		ImageIcon[] gameSettingsArray = new ImageIcon[13];
-		
-		
+
+
 		for(int i=0;i<13;i++) {
 			gameSettingsArray[i] = createImageIcon("images/"+i+".png");
 			gameSettingsButtons[i] = new JButton("Game Settings", gameSettingsArray[i]);
@@ -846,10 +846,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		mainButtonsPanel.setOpaque(false);
 
 		mainButtonsPanel.add(playersBtn);
-		
+
 		if(startGame==false) { mainButtonsPanel.add(gameSettingsButtons[0]); }
 		if(startGame==true) { mainButtonsPanel.add(gameSettingsButtons[roundNum]); }
-		
+
 		mainButtonsPanel.add(contestantsBtn);
 		mainButtonsPanel.add(standingsBtn);
 		mainButtonsPanel.add(bonusQBtn);
@@ -878,7 +878,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		panel.add(addPlayerBtn);
 		panel.add(deletePlayerBtn);
 		panel.setOpaque(false);
-		
+
 		return panel;
 	}
 	/**
@@ -895,13 +895,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		updateBtn = new JButton("Update Player");
 		updateBtn.setActionCommand("updateP");
 		updateBtn.addActionListener(this);
-		
+
 		resetBtn = new JButton("Reset");
 		resetBtn.setActionCommand("reset");
 		resetBtn.addActionListener(this);
 
 		panel.setOpaque(false);
-		
+
 		//Add the buttons to the panel
 		panel.add(addDeletePlayerButtons());
 		panel.add(updateBtn);
@@ -933,7 +933,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		panel.setOpaque(false);
 		panel.add(addContBtn);
 		panel.add(deleteContBtn);
-		
+
 		return panel;
 	}
 	/**
@@ -943,7 +943,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 */
 	private JComponent modifyContButtons() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		
+
 		updateBtn = new JButton("Update Contestant");
 		updateBtn.setActionCommand("updateC");
 		updateBtn.addActionListener(this);
@@ -960,7 +960,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		//up for the default gap FlowLayout provides.
 		panel.setBorder(BorderFactory.createEmptyBorder(0,0,GAP-5,GAP-5));
 
-		
+
 		return panel;
 	}
 	/**
@@ -969,34 +969,34 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 */
 	private JComponent elimContPanel() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		   
+
 		eliminateYBtn = new JRadioButton("Yes");
 		JRadioButton eliminateNBtn = new JRadioButton("No");
 		//Group the radio buttons.
-	    ButtonGroup yNgroup = new ButtonGroup();
-	    yNgroup.add(eliminateYBtn);
-	    yNgroup.add(eliminateNBtn);
-	    
-	    eliminateNBtn.setSelected(true);
-	    
-	    eliminateYBtn.addActionListener(this);
+		ButtonGroup yNgroup = new ButtonGroup();
+		yNgroup.add(eliminateYBtn);
+		yNgroup.add(eliminateNBtn);
+
+		eliminateNBtn.setSelected(true);
+
+		eliminateYBtn.addActionListener(this);
 
 		JLabel elimLabel = new JLabel("Eliminate Contestant");
-//		elimLabel.setLabelFor(ynPnl);
-		
+		//		elimLabel.setLabelFor(ynPnl);
+
 		roundField = new JFormattedTextField();
 		roundField.setValue(new Integer(0));
 		roundField.setColumns(5);
 		JLabel roundLbl = new JLabel("Round Eliminated");
 		roundLbl.setLabelFor(roundField);
-		
+
 		panel.add(elimLabel);	
 		panel.add(eliminateYBtn);
 		panel.add(eliminateNBtn);
 		panel.add(roundLbl);
 		panel.add(roundField);
 		panel.setOpaque(false);
-		
+
 		return panel;		
 	}
 	private boolean setEliminated() {
@@ -1053,8 +1053,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		p.add(uploadBtn);
 		return p;
 	}
-	
-	
+
+
 	/**
 	 * The Title Banner
 	 * 
@@ -1083,10 +1083,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		mainMenuBtn.setToolTipText("Return to the Main Menu  ALT+1");
 
 		// Set the button layout
-//		mainMenuBtn.setOpaque(false);
-//		mainMenuBtn.setFocusPainted(false);
-//		mainMenuBtn.setBorderPainted(false);
-//		mainMenuBtn.setContentAreaFilled(false);
+		//		mainMenuBtn.setOpaque(false);
+		//		mainMenuBtn.setFocusPainted(false);
+		//		mainMenuBtn.setBorderPainted(false);
+		//		mainMenuBtn.setContentAreaFilled(false);
 		mainMenuBtn.setBorder(BorderFactory.createEmptyBorder(GAP,GAP*4,GAP,400));
 
 		mMenuBtnPanel.setOpaque(false);
@@ -1099,10 +1099,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		mMenuBtnPanel.add(currentWeekBoard());
 		repaint();
 		validate();
-		
+
 		return mMenuBtnPanel;
 	}	
-	
+
 	/**
 	 * Current Week Panel
 	 * 
@@ -1112,23 +1112,23 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// Create an array of images & convert it to an array of labels
 		ImageIcon[] cWkImgArray = new ImageIcon[13];
 		JLabel[] cWkLabelArray = new JLabel[13];
-		
+
 		for(int i = 1; i<13; i++) {
 			cWkImgArray[i] = createImageIcon("images/currWkBoard"+i+".png");
 			cWkLabelArray[i] = new JLabel(cWkImgArray[i]);
 		}
-		
+
 		currWkPanel = new JPanel();
 		currWkPanel.setOpaque(false);
 
-//		currWkPanel.setPreferredSize(new Dimension(wkImage.getIconWidth(),wkImage.getIconHeight()));
-		
-//		currWkPanel.add(week, BorderLayout.EAST);
+		//		currWkPanel.setPreferredSize(new Dimension(wkImage.getIconWidth(),wkImage.getIconHeight()));
+
+		//		currWkPanel.add(week, BorderLayout.EAST);
 		if(startGame==true) { currWkPanel.add(cWkLabelArray[roundNum], BorderLayout.WEST); }
-		
+
 		return currWkPanel;
 	}
-	
+
 	/**
 	 * The Quit button
 	 * 
@@ -1190,7 +1190,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		sPanel.setOpaque(false);
 		sPanel.add(standingsTable.createPlayerList());
-		
+
 		// Create a modify players button that will navigate to the players panel
 		ImageIcon modPlayerImg = createImageIcon("images/playerModButton.png");
 		playerModButton = new JButton(modPlayerImg); 
@@ -1205,7 +1205,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// Set Action Commands
 		playerModButton.setActionCommand("players");
 		playerModButton.addActionListener(this);
-		
+
 		// Assemble the text fields with the background as a large panel
 		SpringLayout sLayout = new SpringLayout();
 		JPanel standingPanel = new JPanel(sLayout);
@@ -1236,7 +1236,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		return standingPanel;
 	}
-	
+
 
 	/**
 	 * Players Edit, Add & Store Panel/Screen
@@ -1248,7 +1248,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		JPanel leftHalf_p = new JPanel();
 		leftHalf_p.setLayout(new BoxLayout(leftHalf_p, BoxLayout.PAGE_AXIS));	
-		
+
 		leftHalf_p.add(textFields_p.playerDropDownList(playersArray)); 
 		leftHalf_p.add(textFields_p.createFieldsPlayer());
 		leftHalf_p.add(modifyPlayerButtons());
@@ -1260,7 +1260,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				GAP/4, //bottom
 				0));   //right
 		leftHalf_p.add(new JSeparator(JSeparator.VERTICAL), BorderLayout.LINE_START);
-//		leftHalf_p.setPreferredSize(new Dimension(492,580));
+		//		leftHalf_p.setPreferredSize(new Dimension(492,580));
 
 		pPanel.setOpaque(false);
 		pPanel.add(leftHalf_p);
@@ -1297,7 +1297,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		//Create a Add/Modify Contestant List Button
 		ImageIcon textImg = createImageIcon("images/contestantOptions.png");
 		contOptionsBtn = new JButton(textImg);
-		
+
 		// Set the button layout
 		contOptionsBtn.setOpaque(false);
 		contOptionsBtn.setFocusPainted(false);
@@ -1310,9 +1310,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		contOptionsBtn.setToolTipText("Add, Modify, Delete Contestants  Alt+I");
 		contOptionsBtn.setActionCommand("contMod");
 		contOptionsBtn.addActionListener(this);
-		
+
 		cLPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		
+
 		cLPanel.setLayout(new BoxLayout(cLPanel, BoxLayout.PAGE_AXIS));	
 		cLPanel.add(contLiTable.createContList());
 		cLPanel.setOpaque(false);
@@ -1320,9 +1320,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// Assemble the text fields with the background as a large panel
 		SpringLayout clLayout = new SpringLayout();
 		JPanel contPanel = new JPanel(clLayout);
-	    this.setLayout(clLayout);
-		
-	    getContentPane().add(mainMenuButton());
+		this.setLayout(clLayout);
+
+		getContentPane().add(mainMenuButton());
 		getContentPane().add(cLPanel);
 		getContentPane().add(contOptionsBtn);
 		getContentPane().add(contestantBg);
@@ -1332,40 +1332,40 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		clLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0, SpringLayout.WEST, getContentPane());
 		clLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
-	    
+
 		clLayout.putConstraint(SpringLayout.WEST, contOptionsBtn, 725, SpringLayout.WEST, getContentPane());
 		clLayout.putConstraint(SpringLayout.NORTH, contOptionsBtn, 550, SpringLayout.NORTH, getContentPane());
 
 		clLayout.putConstraint(SpringLayout.WEST, cLPanel, 77, SpringLayout.WEST, getContentPane());
 		clLayout.putConstraint(SpringLayout.NORTH, cLPanel, 100, SpringLayout.NORTH, getContentPane());
-		
+
 		return contPanel;
 	}	
 	/**
-	* Contestants Edit, Add & Store Panel/Screen
-	*
-	* @return a panel to add/delete/modify contestants & a button that will show a panel that displays the contestant list
-	*/
+	 * Contestants Edit, Add & Store Panel/Screen
+	 *
+	 * @return a panel to add/delete/modify contestants & a button that will show a panel that displays the contestant list
+	 */
 	private JComponent contestantPanel() {
-	cPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		cPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-	JPanel leftHalf_c = new JPanel();
-	leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
-	leftHalf_c.setOpaque(false);
+		JPanel leftHalf_c = new JPanel();
+		leftHalf_c.setLayout(new BoxLayout(leftHalf_c, BoxLayout.PAGE_AXIS));
+		leftHalf_c.setOpaque(false);
 
-	leftHalf_c.add(textFields_c.contestantDropDownList(this.contestantsArray, contCount));
+		leftHalf_c.add(textFields_c.contestantDropDownList(this.contestantsArray, contCount));
 
-	leftHalf_c.add(textFields_c.createFieldsCont());
+		leftHalf_c.add(textFields_c.createFieldsCont());
 
-	leftHalf_c.add(uploadButton());
+		leftHalf_c.add(uploadButton());
 
-	// if the game has started show the eliminate contestant option otherwise show the add/delete contestant options
-	if(getStartGame()==true) { leftHalf_c.add(elimContPanel()); }
-	if(getStartGame()==false) { leftHalf_c.add(addDeleteContButtons()); }
+		// if the game has started show the eliminate contestant option otherwise show the add/delete contestant options
+		if(getStartGame()==true) { leftHalf_c.add(elimContPanel()); }
+		if(getStartGame()==false) { leftHalf_c.add(addDeleteContButtons()); }
 
-	leftHalf_c.add(modifyContButtons());
+		leftHalf_c.add(modifyContButtons());
 
-//		leftHalf_c.setPreferredSize(new Dimension(492,580));
+		//		leftHalf_c.setPreferredSize(new Dimension(492,580));
 
 		// Create a Contestant List Panel to switch back to the contestant list
 		ImageIcon retImg = createImageIcon("images/contListButton.png");
@@ -1382,7 +1382,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		contListBtn.setToolTipText("Contestants List  Alt+L");
 		contListBtn.setActionCommand("contestants");
 		contListBtn.addActionListener(this);
-		
+
 		JPanel rightHalf_c = new JPanel();
 		rightHalf_c.setLayout(new BoxLayout(rightHalf_c, BoxLayout.PAGE_AXIS));
 		rightHalf_c.setOpaque(false);
@@ -1470,7 +1470,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	public int findContestant(String id){
 		int position = -1;
 		for (int i = 0; i < contCount; i++){
-			
+
 			if ((contestantsArray[i].getID().equals(id)))
 			{
 				position = i;
@@ -1478,8 +1478,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			}
 		}
 		return position;
-		}
-	
+	}
+
 	/**
 	 * Searches for a player
 	 * 
@@ -1489,7 +1489,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	public int findPlayer(String id){
 		int position = -1;
 		for (int i = 0; i < playersArray.length; i++){
-			
+
 			if ((playersArray[i].getID().equals(id)))
 			{
 				position = i;
@@ -1498,100 +1498,100 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		return position;
 	}			
-		/**
-		 * Sets up the game setting panel as a custom JOptionPane Dialog
-		 * Admin can enter numContestants, 
-		 */
-		private JComponent gameSettingsPanel() {
-			JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-			
-	        // Create Labels
-	        contLabel = new JLabel(contString);
-	        playLabel = new JLabel(playString);
-	        wagerLabel = new JLabel(wagerString);
-	        
-	        // Create the text fields/areas & set them up
-	        contField = new JTextField();
-	        contField.setColumns(10);
-	        
-	        wagerField = new JFormattedTextField();
-	        wagerField.setValue(new Integer(0));
-	        wagerField.setColumns(10);
-	        
-	        playArea = new JTextArea();
-//	        playArea.setText(getNumPlayers())  ************ TODO ***************
-	        playArea.setEditable(false);
-	        playArea.setColumns(10);
-	        
-	        // Tell accessibility tools about label/textfield & area pairs
-	        contLabel.setLabelFor(contField);
-	        playLabel.setLabelFor(playArea);
-	        wagerLabel.setLabelFor(wagerField);
-	        
-	        // Layout the labels in a panel
-	        JPanel labelPane = new JPanel(new GridLayout(0,1));
-	        labelPane.add(contLabel);
-	        labelPane.add(playLabel);
-	        labelPane.add(wagerLabel);
-	        
-	        // Layout the text fields/area in a panel
-	        JPanel fieldPane = new JPanel(new GridLayout(0,1));
-	        fieldPane.add(contField);
-	        fieldPane.add(playArea);
-	        fieldPane.add(wagerField);
-	        
-	        // Create the buttons
-	        resetGameBtn = new JButton("Reset Game");
-	        resetGameBtn.addActionListener(this);
-	        resetGameBtn.setActionCommand("resetGame");
-	        
-	        startGameBtn = new JButton ("Start Game");
-	        startGameBtn.addActionListener(this);
-	        startGameBtn.setActionCommand("startGame");
-	        
-	        saveSettingBtn = new JButton("Save Settings");
-	        saveSettingBtn.addActionListener(this);
-	        saveSettingBtn.setActionCommand("saveSettings");
-	        
-	        // Layout the buttons in a panel
-	        JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	        buttonPane.add(resetGameBtn);
-	        buttonPane.add(startGameBtn);
-	        buttonPane.add(saveSettingBtn);
-	        
-	        // Put the panels together, labels on the left, text fields/area on the right, buttons on the bottom
-	        panel.add(labelPane);
-	        panel.add(fieldPane);
-	        panel.add(buttonPane);    
-	        
-	        // Create a Game Settings Header
-	        ImageIcon title = createImageIcon("images/gameSetTitle.png");
-	        JLabel titleComp = new JLabel(title);
-	        
-			// Assemble the text fields with the background as a large panel
-			SpringLayout settingLayout = new SpringLayout();
-			JPanel settingPanel = new JPanel(settingLayout);
-		    this.setLayout(settingLayout);
-			
-		    getContentPane().add(mainMenuButton());
-			getContentPane().add(titleComp);
-			getContentPane().add(panel);
-			getContentPane().add(themeMaker);
+	/**
+	 * Sets up the game setting panel as a custom JOptionPane Dialog
+	 * Admin can enter numContestants, 
+	 */
+	private JComponent gameSettingsPanel() {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-			settingLayout.putConstraint(SpringLayout.WEST, themeMaker, 0, SpringLayout.WEST, getContentPane());
-			settingLayout.putConstraint(SpringLayout.NORTH, themeMaker, 0, SpringLayout.NORTH, getContentPane());
+		// Create Labels
+		contLabel = new JLabel(contString);
+		playLabel = new JLabel(playString);
+		wagerLabel = new JLabel(wagerString);
 
-			settingLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0, SpringLayout.WEST, getContentPane());
-			settingLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
+		// Create the text fields/areas & set them up
+		contField = new JTextField();
+		contField.setColumns(10);
 
-			settingLayout.putConstraint(SpringLayout.WEST, panel, 150, SpringLayout.WEST, getContentPane());
-			settingLayout.putConstraint(SpringLayout.NORTH, panel, 300, SpringLayout.NORTH, getContentPane());
-			
-			settingLayout.putConstraint(SpringLayout.WEST, titleComp, 300, SpringLayout.WEST, getContentPane());
-			settingLayout.putConstraint(SpringLayout.NORTH, titleComp, 100, SpringLayout.NORTH, getContentPane());
-			
-			return settingPanel; 
-		} 
+		wagerField = new JFormattedTextField();
+		wagerField.setValue(new Integer(0));
+		wagerField.setColumns(10);
+
+		playArea = new JTextArea();
+		//	        playArea.setText(getNumPlayers())  ************ TODO ***************
+		playArea.setEditable(false);
+		playArea.setColumns(10);
+
+		// Tell accessibility tools about label/textfield & area pairs
+		contLabel.setLabelFor(contField);
+		playLabel.setLabelFor(playArea);
+		wagerLabel.setLabelFor(wagerField);
+
+		// Layout the labels in a panel
+		JPanel labelPane = new JPanel(new GridLayout(0,1));
+		labelPane.add(contLabel);
+		labelPane.add(playLabel);
+		labelPane.add(wagerLabel);
+
+		// Layout the text fields/area in a panel
+		JPanel fieldPane = new JPanel(new GridLayout(0,1));
+		fieldPane.add(contField);
+		fieldPane.add(playArea);
+		fieldPane.add(wagerField);
+
+		// Create the buttons
+		resetGameBtn = new JButton("Reset Game");
+		resetGameBtn.addActionListener(this);
+		resetGameBtn.setActionCommand("resetGame");
+
+		startGameBtn = new JButton ("Start Game");
+		startGameBtn.addActionListener(this);
+		startGameBtn.setActionCommand("startGame");
+
+		saveSettingBtn = new JButton("Save Settings");
+		saveSettingBtn.addActionListener(this);
+		saveSettingBtn.setActionCommand("saveSettings");
+
+		// Layout the buttons in a panel
+		JPanel buttonPane = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		buttonPane.add(resetGameBtn);
+		buttonPane.add(startGameBtn);
+		buttonPane.add(saveSettingBtn);
+
+		// Put the panels together, labels on the left, text fields/area on the right, buttons on the bottom
+		panel.add(labelPane);
+		panel.add(fieldPane);
+		panel.add(buttonPane);    
+
+		// Create a Game Settings Header
+		ImageIcon title = createImageIcon("images/gameSetTitle.png");
+		JLabel titleComp = new JLabel(title);
+
+		// Assemble the text fields with the background as a large panel
+		SpringLayout settingLayout = new SpringLayout();
+		JPanel settingPanel = new JPanel(settingLayout);
+		this.setLayout(settingLayout);
+
+		getContentPane().add(mainMenuButton());
+		getContentPane().add(titleComp);
+		getContentPane().add(panel);
+		getContentPane().add(themeMaker);
+
+		settingLayout.putConstraint(SpringLayout.WEST, themeMaker, 0, SpringLayout.WEST, getContentPane());
+		settingLayout.putConstraint(SpringLayout.NORTH, themeMaker, 0, SpringLayout.NORTH, getContentPane());
+
+		settingLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0, SpringLayout.WEST, getContentPane());
+		settingLayout.putConstraint(SpringLayout.NORTH, mMenuBtnPanel, 0, SpringLayout.NORTH, getContentPane());
+
+		settingLayout.putConstraint(SpringLayout.WEST, panel, 150, SpringLayout.WEST, getContentPane());
+		settingLayout.putConstraint(SpringLayout.NORTH, panel, 300, SpringLayout.NORTH, getContentPane());
+
+		settingLayout.putConstraint(SpringLayout.WEST, titleComp, 300, SpringLayout.WEST, getContentPane());
+		settingLayout.putConstraint(SpringLayout.NORTH, titleComp, 100, SpringLayout.NORTH, getContentPane());
+
+		return settingPanel; 
+	} 
 	/**
 	 * The Golden Ruins Theme
 	 * Modifications of components to the theme
@@ -1669,22 +1669,22 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		themeSelectBtn.setFont(jFont);
 		themeSelectBtn.setForeground(Color.WHITE);	
 	}
-	
-    private class ChangeThemeHandler implements ActionListener  {
-            public void actionPerformed(ActionEvent e)
-            {
-        		/**  Theme Selector Button Handler **/
-        		if(e.getActionCommand().equals("theme")) {		
-        			// Sets the jungle theme
-        			if(themeMaker.getIcon().equals(goldBackground)) 
-        				jungleTheme();
 
-        			// Sets the Golden Ruins Theme
-        			else 
-        				goldenRuinsTheme();
-        		}
-            }
-    }
+	private class ChangeThemeHandler implements ActionListener  {
+		public void actionPerformed(ActionEvent e)
+		{
+			/**  Theme Selector Button Handler **/
+			if(e.getActionCommand().equals("theme")) {		
+				// Sets the jungle theme
+				if(themeMaker.getIcon().equals(goldBackground)) 
+					jungleTheme();
+
+				// Sets the Golden Ruins Theme
+				else 
+					goldenRuinsTheme();
+			}
+		}
+	}
 	/**
 	 * Handles all Button Actions 
 	 * Each case compares the string cast as an ActionCommand
@@ -1739,7 +1739,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					getContentPane().removeAll();
 
 					getContentPane().add(quitButton());	
-					
+
 					getContentPane().add(playersPanel());
 
 					repaint();
@@ -1748,7 +1748,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			}
 		}
 
-		
+
 		/**  Update Player Handler  **/
 		if(e.getActionCommand().equals("updateP")) {
 			String inputFirst = textFields_p.getFirstP();
@@ -1768,7 +1768,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			else if (!checkValidChars(inputLast)){
 				JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
 			}
-	
+
 			int position = findPlayer(textFields_p.getMenuPlayerID());
 			if (position == -1){
 				JOptionPane.showMessageDialog(this, "That player does not exist, please check your player ID and try again");
@@ -1776,32 +1776,32 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			else
 			{
 				Player tempPlayer = new Player(inputFirst, inputLast, textFields_p.getMenuPlayerID() );
-				
+
 				playersArray[position] = tempPlayer;
-				
+
 				JOptionPane.showMessageDialog(this, "Player has been updated");
-				
+
 				this.writePlayers("players.txt");
-				
+
 				getContentPane().removeAll();
 
 				getContentPane().add(quitButton());	
-				
+
 				getContentPane().add(playersPanel());
 
 				repaint();
 				validate();	
 			}
 		}		
-		
-		
-		
+
+
+
 		if(e.getActionCommand().equals("next")){
 			nextRound();
 		}
 
-		
-		
+
+
 
 		/**  Delete Player Handler  **/
 		if(e.getActionCommand().equals("deleteP")) { 
@@ -1809,71 +1809,71 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 			}
 			else{
-				
-			String inputFirst = textFields_p.getFirstP();
-			String inputLast = textFields_p.getLastP();
+
+				String inputFirst = textFields_p.getFirstP();
+				String inputLast = textFields_p.getLastP();
 
 
-			if(getStartGame()==true) {
-				JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
-			}
-			else{
-				if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+				if(getStartGame()==true) {
+					JOptionPane.showMessageDialog(this, "You cannot add/delete anymore players", "Game has started",  JOptionPane.ERROR_MESSAGE); 
 				}
-				else if (!checkValidChars(inputFirst)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
-				}
-	
-				else if ((inputLast.length() < 1) || (inputLast.length() >20)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
-				}
-				else if (!checkValidChars(inputLast)){
-					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
-				}
-			
 				else{
-					int position = findPlayer(textFields_p.getMenuPlayerID());
-					if (position == -1){
-						JOptionPane.showMessageDialog(this, "That player does not exist, please check your ID entry and try again");
+					if ((inputFirst.length() < 1) || (inputFirst.length() >20)){
+						JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 					}
-					else
-					{						
-						playersArray[position] = null;
-						Player tempArray[] = new Player[playersArray.length-1];
-						
-						for (int i = 0; i < position; i++)
-						{
-							tempArray[i] = playersArray[i];
-						}
-						
-						for (int i = position; i < playersArray.length-1; i++){
-							tempArray[i] = playersArray[i+1];
-						}
-						
-						playersArray = tempArray;
-						
-						JOptionPane.showMessageDialog(this, "" + inputFirst + " has been deleted");	
-						
-						this.writePlayers("players.txt");
-						
-						getContentPane().removeAll();
+					else if (!checkValidChars(inputFirst)){
+						JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
+					}
 
-						getContentPane().add(quitButton());	
-						
-						getContentPane().add(playersPanel());
+					else if ((inputLast.length() < 1) || (inputLast.length() >20)){
+						JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+					}
+					else if (!checkValidChars(inputLast)){
+						JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
+					}
 
-						repaint();
-						validate();	
+					else{
+						int position = findPlayer(textFields_p.getMenuPlayerID());
+						if (position == -1){
+							JOptionPane.showMessageDialog(this, "That player does not exist, please check your ID entry and try again");
+						}
+						else
+						{						
+							playersArray[position] = null;
+							Player tempArray[] = new Player[playersArray.length-1];
+
+							for (int i = 0; i < position; i++)
+							{
+								tempArray[i] = playersArray[i];
+							}
+
+							for (int i = position; i < playersArray.length-1; i++){
+								tempArray[i] = playersArray[i+1];
+							}
+
+							playersArray = tempArray;
+
+							JOptionPane.showMessageDialog(this, "" + inputFirst + " has been deleted");	
+
+							this.writePlayers("players.txt");
+
+							getContentPane().removeAll();
+
+							getContentPane().add(quitButton());	
+
+							getContentPane().add(playersPanel());
+
+							repaint();
+							validate();	
+						}
 					}
 				}
-			}
-		}				
-	}
-	
-		
-		
-		
+			}				
+		}
+
+
+
+
 		/**  Add Contestant Handler **/
 		if(e.getActionCommand().equals("+C")) {
 			String inputFirst = textFields_c.getFirstC();
@@ -1890,18 +1890,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				else if (!checkValidChars(inputFirst)){
 					JOptionPane.showMessageDialog(this, "Sorry that's not a valid first name, it must only contain letters");
 				}
-	
+
 				else if ((inputLast.length() < 1) || (inputLast.length() >20)){
 					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must be between 1 and 20 characters long");
 				}
 				else if (!checkValidChars(inputLast)){
 					JOptionPane.showMessageDialog(this, "Sorry that's not a valid last name, it must only contain letters");
 				}
-	
+
 				else if ((inputTribe.length() < 1) || (inputTribe.length() >30)){
 					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
 				}
-	
+
 				else if (!checkValidChars(inputTribe)){
 					JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
 				}
@@ -1933,15 +1933,16 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					Contestant newContestant = new Contestant(inputFirst, inputLast, ID, inputTribe, imagePath);
 					contestantsArray[contCount] = newContestant;
 					contCount++;
+					this.writeContestants("contestants.txt");
 					if (imagePath == null){
-					JOptionPane.showMessageDialog(this, "Contestant added, but you didn't add a picture!" );
+						JOptionPane.showMessageDialog(this, "Contestant added, but you didn't add a picture!" );
 					}
 					else{
-					JOptionPane.showMessageDialog(this, "Contestant added" );
+						JOptionPane.showMessageDialog(this, "Contestant added" );
 					}
-				}
+					contLiTable = new ContestantListGUI(contestantsArray, contCount);
+				}					
 			}
-			this.writeContestants("contestants.txt");
 		}
 
 
@@ -1973,19 +1974,19 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			else if (!checkValidChars(inputTribe)){
 				JOptionPane.showMessageDialog(this, "Sorry that's not a valid tribe name, it must only contain letters");
 			}
-			
+
 			// When game has started the round eliminated & eliminate contestant fields will be visible
 			// Validate that the Round Eliminated is filled in appropriately and set update the contestant record array
 			// TODO
-//			if(e.getActionCommand().equals(eliminateYBtn))  {
-//				if(getRoundEliminated() == 0) {
-//					JOptionPane.showMessageDialog(this, "Please select the round this contestant was eliminated" );
-//				} else {
-//					setEliminated(); 
-//					getRoundEliminated();
-//					}
+			//			if(e.getActionCommand().equals(eliminateYBtn))  {
+			//				if(getRoundEliminated() == 0) {
+			//					JOptionPane.showMessageDialog(this, "Please select the round this contestant was eliminated" );
+			//				} else {
+			//					setEliminated(); 
+			//					getRoundEliminated();
+			//					}
 
-			
+
 			int position = findContestant(textFields_c.getMenuContsID());
 			if (position == -1){
 				JOptionPane.showMessageDialog(this, "That contestant does not exist, please check your contestant ID and try again");
@@ -1994,35 +1995,34 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			{
 				Contestant tempCont = new Contestant(inputFirst, inputLast, textFields_c.getMenuContsID(), inputTribe, imagePath);				
 				contestantsArray[position] = tempCont;
-				
-				
+
+
 				if(eliminateYBtn.isSelected()){
 					if(roundField.getText()==null || roundField.getText().trim().equals("")){
 						JOptionPane
 						.showMessageDialog(this,
-								"To eliminate a contestant, specify the round the contestant is eliminated during");
+						"To eliminate a contestant, specify the round the contestant is eliminated during");
 					}
 					else{
 						try{
-						this.eliminateContestant(position, Integer.valueOf(roundField.getText()));
+							this.eliminateContestant(position, Integer.valueOf(roundField.getText()));
 						}
 						catch(Exception er){
 							JOptionPane
 							.showMessageDialog(this,
-									"Please specify a number in the number input fields");
+							"Please specify a number in the number input fields");
 						}
 					}
 				}
-				
+
 			}
-			
-			
-				JOptionPane.showMessageDialog(this, 
-						"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
-						"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
-				}
-		
-		
+			JOptionPane.showMessageDialog(this, 
+					"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
+					"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
+			contLiTable = new ContestantListGUI(contestantsArray, contCount);
+		}
+
+
 		/** Delete Contestant Handler **/
 		if (e.getActionCommand().equals("deleteC")) {
 			String inputFirst = textFields_c.getFirstC();
@@ -2038,22 +2038,22 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					JOptionPane
 					.showMessageDialog(
 							this,
-							"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+					"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 				} else if (!checkValidChars(inputFirst)) {
 					JOptionPane
 					.showMessageDialog(this,
-							"Sorry that's not a valid first name, it must only contain letters");
+					"Sorry that's not a valid first name, it must only contain letters");
 				}
 
 				else if ((inputLast.length() < 1) || (inputLast.length() > 20)) {
 					JOptionPane
 					.showMessageDialog(
 							this,
-							"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+					"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
 				} else if (!checkValidChars(inputLast)) {
 					JOptionPane
 					.showMessageDialog(this,
-							"Sorry that's not a valid last name, it must only contain letters");
+					"Sorry that's not a valid last name, it must only contain letters");
 				}
 
 				else if ((inputTribe.length() < 1)
@@ -2061,13 +2061,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					JOptionPane
 					.showMessageDialog(
 							this,
-							"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+					"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
 				}
 
 				else if (!checkValidChars(inputTribe)) {
 					JOptionPane
 					.showMessageDialog(this,
-							"Sorry that's not a valid tribe name, it must only contain letters");
+					"Sorry that's not a valid tribe name, it must only contain letters");
 				}
 
 				else {
@@ -2075,7 +2075,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					if (position == -1) {
 						JOptionPane
 						.showMessageDialog(this,
-								"That contestant does not exist, please check your entry and try again");
+						"That contestant does not exist, please check your entry and try again");
 					} else {
 						contestantsArray[position] = null;
 						for (int i = position; i < contestantsArray.length - 1; i++) {
@@ -2087,12 +2087,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 					contCount--;
 					this.writeContestants("contestants.txt");
+					contLiTable = new ContestantListGUI(contestantsArray, contCount);
 				}
 			}
 		}
 
-			
-		
+
+
 		/**  Reset Fields Handler  **/
 		if(e.getActionCommand().equals("reset")) {
 			String firstFieldC = textFields_c.getFirstC();
@@ -2134,7 +2135,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());	
-			
+
 			getContentPane().add(playersPanel());
 
 			repaint();
@@ -2166,10 +2167,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		if(e.getActionCommand().equals("standings")) {
 			if(getStartGame()==true) {
 				getContentPane().removeAll();
-	
+
 				getContentPane().add(quitButton());
 				getContentPane().add(standingsPanel());
-	
+
 				repaint();
 				validate();	
 			}
@@ -2192,7 +2193,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 			getContentPane().add(quitButton());
 			getContentPane().add(gameSettingsPanel());
-			
+
 			repaint();
 			validate();	
 			// If Game Start has confirmed ********  TODO ****************
@@ -2213,34 +2214,34 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			//TODO
 		}
 		/** Start Game Button Handler
-		* When the game starts, TextFields will convert to TextAreas that display settings panel TODO
-		**/
+		 * When the game starts, TextFields will convert to TextAreas that display settings panel TODO
+		 **/
 		if(e.getActionCommand().equals("startGame")) {
-		if(getWager()==0) {
-		JOptionPane.showMessageDialog(this,
-		"Please enter the amount of money that each player is going to pitch in.",
-		"No Wager Entered",
-		JOptionPane.INFORMATION_MESSAGE);
-		}
-		else if(inputNumConts==0)
-		JOptionPane.showMessageDialog(this,
-		"Please enter the number of contestants in the game", "",
-		JOptionPane.INFORMATION_MESSAGE);
-		else if(inputNumConts!=contCount){
-		JOptionPane.showMessageDialog(this,
-		"The game cannot be started until the number of contestants specified have been added to the game", "",
-		JOptionPane.INFORMATION_MESSAGE);
-		}
-		else {
-		// Before the game starts, a dialog box will appear to confirm settings
-		JOptionPane.showMessageDialog(this,
-		"Are you sure you want to start the game?",
-		"Once you start the gamem you will no longer be able to add/delete players & contestants.",
-		JOptionPane.PLAIN_MESSAGE);
+			if(getWager()==0) {
+				JOptionPane.showMessageDialog(this,
+						"Please enter the amount of money that each player is going to pitch in.",
+						"No Wager Entered",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+			else if(inputNumConts==0)
+				JOptionPane.showMessageDialog(this,
+						"Please enter the number of contestants in the game", "",
+						JOptionPane.INFORMATION_MESSAGE);
+			else if(inputNumConts!=contCount){
+				JOptionPane.showMessageDialog(this,
+						"The game cannot be started until the number of contestants specified have been added to the game", "",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				// Before the game starts, a dialog box will appear to confirm settings
+				JOptionPane.showMessageDialog(this,
+						"Are you sure you want to start the game?",
+						"Once you start the gamem you will no longer be able to add/delete players & contestants.",
+						JOptionPane.PLAIN_MESSAGE);
 
-		setStartGame(true);
-		writeSettings("settings.txt");
-		}
+				setStartGame(true);
+				writeSettings("settings.txt");
+			}
 
 		}
 
@@ -2250,37 +2251,37 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					|| contField.getText().trim().equals("")) {
 
 				JOptionPane
-						.showMessageDialog(
-								this,
-								"Please enter the number of contestants. No settings were saved",
-								null, contCount);
+				.showMessageDialog(
+						this,
+						"Please enter the number of contestants. No settings were saved",
+						null, contCount);
 
 			} else {
 
 				if (Integer.valueOf(contField.getText()) < 6
 						|| Integer.valueOf(contField.getText()) > 15) {
 					contField.setText(""); // resets the field if the number of
-											// contestants is outside the range
+					// contestants is outside the range
 					JOptionPane.showMessageDialog(this,
 							"Number of Contestants must be between 6 and 15",
 							null, contCount); // notifies the user of this
-												// requirement
+					// requirement
 
 				} else {
 					inputNumConts = Integer.valueOf(contField.getText());
 					if(numRounds==0){
-					numRounds = inputNumConts - 2;
+						numRounds = inputNumConts - 2;
 						this.rounds=new Round[numRounds];
-					for (int i = 0; i < numRounds; i++)
-						this.rounds[i] = new Round(i + 1);
-					JOptionPane.showMessageDialog(this,
-							"The total number of rounds will be: " + numRounds);
+						for (int i = 0; i < numRounds; i++)
+							this.rounds[i] = new Round(i + 1);
+						JOptionPane.showMessageDialog(this,
+								"The total number of rounds will be: " + numRounds);
 					}
 					else{
 						if(numRounds>=(inputNumConts-2)){
 							Round[] newRounds=new Round[inputNumConts-2];
 							for (int i = 0; i < inputNumConts-2; i++){
-									newRounds[i]=this.rounds[i];
+								newRounds[i]=this.rounds[i];
 							}
 						}
 						else{
@@ -2291,7 +2292,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							for(int j=numRounds;j<(inputNumConts-2);j++){
 								newRounds[j]=new Round(j+1);
 							}
-									
+
 						}
 						numRounds=inputNumConts-2;
 						JOptionPane.showMessageDialog(this,
