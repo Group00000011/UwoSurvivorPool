@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.text.AbstractDocument.Content;
@@ -66,6 +67,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			this.totalRounds = rounds.length;
 			this.currentRound = currentRound;
 		}
+		repaint();
 		refresh();
 	}
 
@@ -75,6 +77,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		// make answer area
 		newAPanel = new JPanel();
+		newAPanel.setOpaque(false);
 		newAPanel.setLayout(new GridBagLayout());
 		// Constraints for lables
 		GridBagConstraints labelsCon = new GridBagConstraints();
@@ -90,6 +93,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		this.add(questionArea);
 		// MakeButtons
 		JPanel bPanel = new JPanel();
+		bPanel.setOpaque(false);
 		bPanel.setLayout(new BoxLayout(bPanel, BoxLayout.X_AXIS));
 		save = new JButton(createImageIcon("images/q-save.png"));
 		save.setPressedIcon(createImageIcon("images/q-save-click.png"));
@@ -201,7 +205,8 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	private JComponent makeQPanel(int rNumber) {
 		// main panel vertical layout scrollable
 		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setOpaque(false);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		JScrollPane sp = new JScrollPane(panel);
 
 		BonusQuestion[] b;
@@ -234,6 +239,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 				// add edit buttons to it
 				if (currentRound == rNumber) {
 					JPanel buttonPanel = new JPanel();
+					buttonPanel.setOpaque(false);
 					buttonPanel.setLayout(new BoxLayout(buttonPanel,
 							BoxLayout.X_AXIS));
 					JButton update, cancel, delete;
@@ -290,6 +296,10 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 
 		sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
 				createImageIcon("images/vine-border.png")));
+		sp.setSize(800, 300);
+		sp.setMaximumSize(new Dimension(800, 400));
+		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		//sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		return sp;
 
 	}
@@ -347,18 +357,25 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		}
 		// game started
 		else {
-			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			this.setLayout(new BorderLayout());
+
+//			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			initQuestionPane();
-			this.add(questionPane);
+//			this.add(questionPane);
+			this.add(questionPane, BorderLayout.WEST);
 			makeButtons();
 			JPanel buttonPanel = new JPanel();
+			buttonPanel.setOpaque(false);
 			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 			buttonPanel.add(newSAQ);
 			buttonPanel.add(newMCQ);
-			this.add(buttonPanel);
+			this.add(buttonPanel, BorderLayout.EAST);
+//			this.add(buttonPanel);
 		}
-		// this.setOpaque(false);
+		this.setOpaque(false);
+		this.setVisible(true);
+		this.setBounds(new Rectangle(800, 400));
 		this.revalidate();
 	}
 
