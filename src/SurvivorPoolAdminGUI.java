@@ -2273,6 +2273,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/**  Start the Game **/
 		if(e.getActionCommand().equals("settings")) {
+			
+			if(startGame==true){
+				JOptionPane
+				.showMessageDialog(this,
+				"Settings can no longer be changed once the game has started. \n The number of players is: "+playersArray.length+"\nThe number of contestants is: "+contCount+"\nThe amount wager is: "+wager);
+			}
+			else{
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());
@@ -2282,6 +2289,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			validate();	
 			// If Game Start has confirmed ********  TODO ****************
 			//Disable edit and delete Player/Contestant Forms
+			}
 		}
 		/**  Start a new Game **/
 		if(e.getActionCommand().equals("new")) {
@@ -2312,9 +2320,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				contField.setText(""); // resets the field if the number of
 				// contestants is outside the range
 				JOptionPane.showMessageDialog(this,
-						"Number of Contestants must be between 6 and 15",
-						null, contCount); // notifies the user of this
-				// requirement
+						"Number of Contestants must be between 6 and 15");
+
 
 			} else {
 				inputNumConts = Integer.valueOf(contField.getText());
@@ -2355,13 +2362,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			
 			
 			
-			if(getWager()==0) {
+			if(getWager()==0 && wager==0) {
 				JOptionPane.showMessageDialog(this,
 						"Please enter the amount of money that each player is going to pitch in.",
 						"No Wager Entered",
 						JOptionPane.INFORMATION_MESSAGE);
 			}
-			else if(inputNumConts==0)
+			else if(inputNumConts==0 )
 				JOptionPane.showMessageDialog(this,
 						"Please enter the number of contestants in the game", "",
 						JOptionPane.INFORMATION_MESSAGE);
@@ -2378,6 +2385,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						JOptionPane.PLAIN_MESSAGE);
 
 				setStartGame(true);
+				if(getWager()!=0){
+					wager=getWager();
+				}
 				writeSettings("settings.txt");
 			}
 
@@ -2435,6 +2445,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						numRounds=inputNumConts-2;
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: " + numRounds);
+					}
+					if(getWager()==0) {
+						JOptionPane.showMessageDialog(this,
+								"Please enter the amount of money that each player is going to pitch in.",
+								"No Wager Entered",
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+					else{
+						wager=getWager();
 					}
 					writeSettings("settings.txt");
 				}
