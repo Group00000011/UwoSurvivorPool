@@ -33,8 +33,8 @@ public class GameInProgressStub {
 	}
 
 	public Round[] getRoundArray() {
-		return null;
-		// return rounds;
+		//return null;
+		return rounds;
 	}
 }
 
