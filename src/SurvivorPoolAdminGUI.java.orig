@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.util.Random;
 
 import javax.swing.*;
-
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -35,11 +34,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// private ImageIcon survivorLogoImg =
 	// createImageIcon("images/survivorLogo.png");
 	private ImageIcon title, quitImg, mainMenuBtnImg;
-	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"),	jungleBackground;
-	private ImageIcon playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg, standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
+	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"),
+			jungleBackground;
+	private ImageIcon playerBtnImg, playersJungleImg,
+			playersGoldImg = createImageIcon("images/bbG.png"), contestantImg,
+			stadingsImg, bonusQImg, themeSelectImg;
+	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg,
+			standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
 	private ImageIcon uploadedImage;
-	private ImageIcon playerGBg, contestantGBg, playerJBg, contestantJBg;
-
 
 	// ///////// Attributes for the startGame Dialog box
 	// The Buttons
@@ -106,7 +108,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	// STUFF YOU ADDED
 	private JComponent playPanel;
-	
 
 	/******************************** Constructor *************************************/
 
@@ -153,8 +154,17 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
 		} else if (contIndex >= contCount) {
 			JOptionPane
+<<<<<<< HEAD
 					.showMessageDialog(this,
 							"The specified contestant no longer exists. \n Elimination not saved.");
+		} else {
+			this.rounds[roundNum - 1]
+					.setContestantEliminated(this.contestantsArray[contIndex]);
+			contestantsArray[contIndex].setElimRound(new Round(roundNum));
+			return true;
+=======
+			.showMessageDialog(this,
+					"The specified contestant no longer exists. \n Elimination not saved.");
 		}
 		else {
 			if(this.rounds[roundNum-1].getContestantEliminated()!=null){
@@ -199,6 +209,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				contestantsArray[contIndex].setElimRound(new Round(roundNum));
 				return true;
 			}
+>>>>>>> 2c9773e125868052d9e8592d2ef0d88705eb5569
 		}
 		return false;
 	}
@@ -388,8 +399,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					"You must start the game before going to the next round");
 		else if (this.rounds[roundNum - 1].getContestantEliminated() == null)
 			JOptionPane
+<<<<<<< HEAD
 					.showMessageDialog(
 							this,
+							"You must eliminate a contestant before going to the next round \n (Contestants >> Contestant Options >> Update Contestant)");
+=======
+			.showMessageDialog(
+					this,
 					"You must eliminate a contestant before going to the next round. \n (Contestants >> Contestant Options >> Update Contestant)");
 		else if (this.roundNum==this.numRounds){
 			if(this.rounds[roundNum-1].getOtherContestantEliminated()==null)
@@ -408,6 +424,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			checkWinners();
 			return;
 		}
+>>>>>>> 2c9773e125868052d9e8592d2ef0d88705eb5569
 		else {
 			if (contCount == 0 || playersArray == null)
 				JOptionPane
@@ -423,13 +440,22 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							+ this.roundNum);
 				else {
 					JOptionPane
+<<<<<<< HEAD
 							.showMessageDialog(
 									this,
 									"It is now round "
 											+ this.roundNum
 											+ "\n The following players were assigned random contestant choices: \n\n"
 											+ s);
+=======
+					.showMessageDialog(
+							this,
+							"It is now round "
+									+ this.roundNum
+									+ "\n The following players were assigned random contestant choices: \n\n"
+									+ s);
 					calcEliminationScore();
+>>>>>>> 2c9773e125868052d9e8592d2ef0d88705eb5569
 					writePlayers("players.txt");
 					writeSettings("settings.txt");
 				}
@@ -2389,9 +2415,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				int firstLen = first.length(), lastLen = last.length();
 				if (firstLen < 1 || firstLen > 20) {
 					JOptionPane
+<<<<<<< HEAD
 							.showMessageDialog(this,
 									"The player's first Name must be between 1 and 20 characters");
+					System.out.println(first + "first");
+=======
+					.showMessageDialog(this,
+							"The player's first Name must be between 1 and 20 characters");
 					
+>>>>>>> 2c9773e125868052d9e8592d2ef0d88705eb5569
 				} else if (lastLen < 1 || lastLen > 20) {
 					JOptionPane
 							.showMessageDialog(this,
