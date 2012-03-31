@@ -51,7 +51,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JLabel contLabel, playLabel, wagerLabel;
 	// Strings for labels
 	private String contString = "Number of Contestants: ";
-	private String playString = "Number of Players: ";
+	private String playString = "";
 	private String wagerString = "Amount Wagered: ";
 	// Fields for data entry
 	private JTextField contField;
@@ -61,6 +61,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// Stores the number of contestants and total number of rounds
 	private int numConts;
 	private int numRounds;
+	private boolean gRuinsThemeOn;
 
 	// Buttons
 	private JButton quitBtn, mainMenuBtn, playersBtn, contestantsBtn,
@@ -213,6 +214,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * them to the main frame As well as setting the main frame
 	 */
 	private void createGame() {
+		gRuinsThemeOn=true;
 		// initialize players and contestants array
 		String fileName = "players.txt";
 		readPlayers(fileName);
@@ -2191,10 +2193,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		wagerField.setValue(new Integer(0));
 		wagerField.setColumns(10);
 
-		playArea = new JTextArea();
-		// playArea.setText(getNumPlayers()) ************ TODO ***************
-		playArea.setEditable(false);
-		playArea.setColumns(10);
+
 
 		// Tell accessibility tools about label/textfield & area pairs
 		contLabel.setLabelFor(contField);
@@ -2204,13 +2203,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// Layout the labels in a panel
 		JPanel labelPane = new JPanel(new GridLayout(0, 1));
 		labelPane.add(contLabel);
-		labelPane.add(playLabel);
+
 		labelPane.add(wagerLabel);
 
 		// Layout the text fields/area in a panel
 		JPanel fieldPane = new JPanel(new GridLayout(0, 1));
 		fieldPane.add(contField);
-		fieldPane.add(playArea);
+
 		fieldPane.add(wagerField);
 
 		// Create the buttons
@@ -2279,6 +2278,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * The Golden Ruins Theme Modifications of components to the theme
 	 */
 	private void goldenRuinsTheme() {
+		gRuinsThemeOn=true;
 		// Switch the images
 		playerBg.setIcon(playerGBg);
 		contestantBg.setIcon(contestantGBg);
@@ -2314,6 +2314,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * The Jungle Theme Modifications of components to the theme
 	 */
 	private void jungleTheme() {
+		gRuinsThemeOn=false;
 		playersJungleImg = createImageIcon("images/bbJ.png");
 		jungleBackground = createImageIcon("images/jungle1.jpg");
 		playerJBg = createImageIcon("images/playerJungleBg.jpg");
@@ -2896,11 +2897,45 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/** Main Menu Button Handler **/
 		if (e.getActionCommand().equals("main")) {
+
+			
 			getContentPane().removeAll();
 			getContentPane().add(mainScreen());
 
 			repaint();
 			validate();
+			if(gRuinsThemeOn){
+			playersBtn.setFont(gFont);
+			playersBtn.setForeground(Color.YELLOW);
+			contestantsBtn.setFont(gFont);
+			contestantsBtn.setForeground(Color.YELLOW);
+			bonusQBtn.setFont(gFont);
+			bonusQBtn.setForeground(Color.YELLOW);
+			standingsBtn.setFont(gFont);
+			standingsBtn.setForeground(Color.YELLOW);
+			themeSelectBtn.setFont(gFont);
+			themeSelectBtn.setForeground(Color.YELLOW);
+			for (int i = 0; i < gameSettingsButtons.length; i++) {
+				gameSettingsButtons[i].setFont(gFont);
+				gameSettingsButtons[i].setForeground(Color.YELLOW);
+			}
+			}
+			else{
+				for (int i = 0; i < gameSettingsButtons.length; i++) {
+					gameSettingsButtons[i].setFont(jFont);
+					gameSettingsButtons[i].setForeground(Color.WHITE);
+				}
+				playersBtn.setFont(jFont);
+				playersBtn.setForeground(Color.WHITE);
+				contestantsBtn.setFont(jFont);
+				contestantsBtn.setForeground(Color.WHITE);
+				bonusQBtn.setFont(jFont);
+				bonusQBtn.setForeground(Color.WHITE);
+				standingsBtn.setFont(jFont);
+				standingsBtn.setForeground(Color.WHITE);
+				themeSelectBtn.setFont(jFont);
+				themeSelectBtn.setForeground(Color.WHITE);
+			}
 		}
 		/** Players Add/Modify Panel Button Handler **/
 		if (e.getActionCommand().equals("players")) {
@@ -3005,10 +3040,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		 * convert to TextAreas that display settings panel TODO
 		 **/
 		if (e.getActionCommand().equals("startGame")) {
-			if (contField.getText() == null
+
+			 if (contField.getText() == null
 					|| contField.getText().trim().equals(""))
 				;
-
+			
 			else {
 				if (Integer.valueOf(contField.getText()) < 6
 
@@ -3028,7 +3064,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: "
 										+ numRounds);
-					} else {
+					} 
+					else {
 						if (numRounds >= (inputNumConts - 2)) {
 							Round[] newRounds = new Round[inputNumConts - 2];
 							for (int i = 0; i < inputNumConts - 2; i++) {
@@ -3053,8 +3090,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 				}
 			}
-
-			if (getWager() == 0 && wager == 0) {
+				if(playersArray==null || playersArray.length<3)
+					JOptionPane.showMessageDialog(this,
+							"Number of players must be greater than or equal to three");
+				else if (getWager() == 0 && wager == 0) {
 				JOptionPane
 						.showMessageDialog(
 								this,
