@@ -10,7 +10,7 @@ public class Round {
 	private int roundNum;
 	private BonusQuestion[] bonusQuestion;
 	private Contestant contestantEliminated;
-
+	private Contestant	otherContestantEliminated;
 	/**
 	 * Constructor for objects of class Round that initializes the round number
 	 * of the round
@@ -22,12 +22,19 @@ public class Round {
 		this.roundNum = roundNum;
 		this.bonusQuestion = null;
 		this.contestantEliminated = null;
-
+		this.otherContestantEliminated=null;
 	}
 
 	// Accessor Methods
-
+	public void setOtherContestantEliminated(Contestant cont){
+		this.otherContestantEliminated=cont;
+	}
+	
+	public Contestant getOtherContestantEliminated(){
+		return this.otherContestantEliminated;
+	}
 	/**
+	 *
 	 * Gets the round number of the round
 	 * 
 	 * @return the round number of the round

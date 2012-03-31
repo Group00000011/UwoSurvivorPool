@@ -122,10 +122,39 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			.showMessageDialog(this,
 					"The specified contestant no longer exists. \n Elimination not saved.");
 		} else {
+			if(this.rounds[roundNum-1].getContestantEliminated()!=null){
+				int eliminatedContIndex=findContestant(this.rounds[roundNum-1].getContestantEliminated().getID());
+				if(roundNum==this.numRounds){
+					if(rounds[roundNum-1].getOtherContestantEliminated()!=null){
+						this.contestantsArray[eliminatedContIndex].setElimRound(null);
+						JOptionPane.showMessageDialog(this,
+								"The contestant elimination in round "+roundNum+", "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+" , has been overwritten ");
+						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
+						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
+						return true;
+					}
+					else{
+						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
+						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
+						return true;
+					}
+				}
+				else if((boolean)(eliminatedContIndex!=-1)){
+					this.contestantsArray[eliminatedContIndex].setElimRound(null);
+					JOptionPane.showMessageDialog(this,
+							"The contestant elimination in round "+roundNum+", "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+" , has been overwritten ");
+					this.rounds[roundNum - 1]
+							.setContestantEliminated(this.contestantsArray[contIndex]);
+					contestantsArray[contIndex].setElimRound(new Round(roundNum));
+					return true;
+				}
+			}
+			else{
 			this.rounds[roundNum - 1]
 					.setContestantEliminated(this.contestantsArray[contIndex]);
 			contestantsArray[contIndex].setElimRound(new Round(roundNum));
 			return true;
+			}
 		}
 		return false;
 	}
