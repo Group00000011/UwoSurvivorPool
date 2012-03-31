@@ -37,16 +37,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"),
 			jungleBackground;
 	private ImageIcon playerBtnImg, playersJungleImg,
-			playersGoldImg = createImageIcon("images/bbG.png"), contestantImg,
-			stadingsImg, bonusQImg, themeSelectImg;
+	playersGoldImg = createImageIcon("images/bbG.png"), contestantImg,
+	stadingsImg, bonusQImg, themeSelectImg;
 	private ImageIcon playerJBg, playerGBg, contestantJBg, contestantGBg,
 			standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
+	standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
 	private ImageIcon uploadedImage;
 
 	// ///////// Attributes for the startGame Dialog box
 	// The Buttons
 	private JButton resetGameBtn, startGameBtn, saveSettingBtn,
 			playerModButton;
+	playerModButton;
 	private JRadioButton eliminateYBtn;
 
 	// Labels to ID fields
@@ -103,7 +105,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// Variables for setters & getters
 	private boolean startGame = false;
 	private boolean contEliminated = false;
-	private int wager, roundNum, inputNumConts;
+	private int wager, roundNum=1, inputNumConts;
 	private Round[] rounds;
 
 	// STUFF YOU ADDED
@@ -111,6 +113,41 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	/******************************** Constructor *************************************/
 
+	/**
+	* Calculates the top three players
+	*/
+	public void checkWinners(){
+	int remainingRounds = numRounds - roundNum;
+	int moneyPool = wager*playersArray.length;
+	double firstMoney = moneyPool*0.6;
+	double secondMoney = moneyPool*0.3;
+	double thirdMoney = moneyPool*0.1;
+	Player first=playersArray[0];
+	Player second=playersArray[1];
+	Player third=playersArray[2];
+
+	for (int i = 0; i < playersArray.length;i++){
+	if (playersArray[i].getScore() > first.getScore()){
+	third = second;
+	second = first;
+	first = playersArray[i];
+	}
+	else if(playersArray[i].getScore() > second.getScore() && !playersArray[i].equals(first)){
+	third = second;
+	second = playersArray[i];
+	}
+	else if (playersArray[i].getScore() > third.getScore() && !playersArray[i].equals(first) && !playersArray[i].equals(second)){
+	third = playersArray[i];
+	}
+	}
+	if (roundNum > numRounds){
+	JOptionPane.showMessageDialog(this,"First Place: "+first.getFirst()+" "+first.getLast()+" wins $"+firstMoney+"\n"+"Second Place: "+second.getFirst()+" "+second.getLast()+" wins $"+secondMoney+"\n"+"Third Place: "+third.getFirst()+" "+third.getLast()+" wins $"+thirdMoney+"\n");
+	}
+	else{
+	JOptionPane.showMessageDialog(this,"Number of Rounds Remaining: "+remainingRounds);
+	}
+	}
+	
 	public boolean eliminateContestant(int contIndex, int roundNum) {
 		if (roundNum > numRounds) {
 			JOptionPane
@@ -121,11 +158,50 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			JOptionPane
 					.showMessageDialog(this,
 							"The specified contestant no longer exists. \n Elimination not saved.");
-		} else {
-			this.rounds[roundNum - 1]
-					.setContestantEliminated(this.contestantsArray[contIndex]);
-			contestantsArray[contIndex].setElimRound(new Round(roundNum));
-			return true;
+		}
+		else {
+			if(this.rounds[roundNum-1].getContestantEliminated()!=null){
+				int eliminatedContIndex=findContestant(this.rounds[roundNum-1].getContestantEliminated().getID());
+				if(contestantsArray[eliminatedContIndex].getID().equals(contestantsArray[contIndex].getID())){
+					JOptionPane.showMessageDialog(this,
+							"The contestant "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+"was already eliminated in round "+roundNum);
+					return false;
+				}
+					
+				if(roundNum==this.numRounds){
+
+					 if(rounds[roundNum-1].getOtherContestantEliminated()!=null){
+
+						this.contestantsArray[eliminatedContIndex].setElimRound(null);
+						JOptionPane.showMessageDialog(this,
+								"The contestant elimination in round "+roundNum+", "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+" , has been overwritten ");
+						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
+						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
+						return true;
+						}
+					
+					else{
+						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
+						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
+						return true;
+					}
+				}
+				else if((boolean)(eliminatedContIndex!=-1)){
+					this.contestantsArray[eliminatedContIndex].setElimRound(null);
+					JOptionPane.showMessageDialog(this,
+							"The contestant elimination in round "+roundNum+", "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+" , has been overwritten ");
+					this.rounds[roundNum - 1]
+							.setContestantEliminated(this.contestantsArray[contIndex]);
+					contestantsArray[contIndex].setElimRound(new Round(roundNum));
+					return true;
+				}
+			}
+			else{
+				this.rounds[roundNum - 1]
+						.setContestantEliminated(this.contestantsArray[contIndex]);
+				contestantsArray[contIndex].setElimRound(new Round(roundNum));
+				return true;
+			}
 		}
 		return false;
 	}
@@ -144,8 +220,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		String fileName = "players.txt";
 		readPlayers(fileName);
 		readContestants("contestants.txt");
-		roundNum = 1;
-
 		readSettings("settings.txt");
 		if (inputNumConts != 0) {
 			readRounds("rounds.txt");
@@ -211,6 +285,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	/****************************** Methods *********************************/
 
+
+
+	public int findContestantWinner(){
+		if(roundNum>numRounds){
+			for(int i=0;i<contCount;i++){
+				if(this.contestantsArray[i].getElimRound()==null)
+					return i;
+			}
+
+		}
+		return -1;
+	}
 	public String assignRandomCont(int index, int roundNum) {
 		if (this.playersArray[index] == null)
 			return null;
@@ -261,8 +347,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			int max = roundNum - 1;
 			if (roundNum > numRounds) {
 				max = numRounds;
-				contElimID = rounds[numRounds - 1].getContestantEliminated()
-						.getID();
+				contElimID = contestantsArray[findContestantWinner()].getID();
 				for (int i = 0; i < playersArray.length; i++) {
 					if (playersArray[i].getFinal() != null
 							&& playersArray[i].getFinal().getContestant() != null) {
@@ -275,18 +360,26 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 			}
-			for (int i = 1; i < max; i++) {
+			for (int i = 0; i < max; i++) {
 				contElimID = rounds[i].getContestantEliminated().getID();
 				for (int j = 0; j < playersArray.length; j++) {
-					if (playersArray[j].getWeekPick(i) != null) {
-						if (contElimID.equals(playersArray[j]
-								.getWeekPick(i + 1).getContestant().getID())) {
-							if (i == numRounds - 1) {
-								playersArray[j].incScore(40);
-							} else
-								playersArray[j].incScore(20);
+					if (playersArray[j].getWeekPick(i+1) != null) 
+						if (i == numRounds - 1) {
+							if (playersArray[j].getWeekPick(i+1) != null){
+								if (contestantsArray[findContestantWinner()].getID().equals(playersArray[j]
+										.getWeekPick(i + 1).getContestant().getID())) 
+									playersArray[j].incScore(40);
+							}
+
+						} else{
+							if (playersArray[j].getWeekPick(i+1) != null){
+								if (contElimID.equals(playersArray[j]
+										.getWeekPick(i + 1).getContestant().getID())) 
+									playersArray[j].incScore(20);
+							}
 						}
-					}
+
+
 				}
 			}
 		}
@@ -300,7 +393,24 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			JOptionPane
 					.showMessageDialog(
 							this,
-							"You must eliminate a contestant before going to the next round \n (Contestants >> Contestant Options >> Update Contestant)");
+					"You must eliminate a contestant before going to the next round. \n (Contestants >> Contestant Options >> Update Contestant)");
+		else if (this.roundNum==this.numRounds){
+			if(this.rounds[roundNum-1].getOtherContestantEliminated()==null)
+			JOptionPane
+			.showMessageDialog(
+					this,
+					"Two contestants must be eliminated before ending the final round. \n (Contestants >> Contestant Options >> Update Contestant)");
+			else{
+				roundNum++;
+				checkWinners();
+				writeSettings("settings.txt");
+				return;
+		}
+			}
+		else if(this.roundNum>this.numRounds){
+			checkWinners();
+			return;
+		}
 		else {
 			if (contCount == 0 || playersArray == null)
 				JOptionPane
@@ -310,9 +420,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				String s = assignRandomPicks(this.roundNum);
 				roundNum++;
 				calcEliminationScore();
-				for (int i = 0; i < playersArray.length; i++)
-					System.out.println(playersArray[i].getFirst() + " "
-							+ playersArray[i].getScore());
+
 				if (s == null)
 					JOptionPane.showMessageDialog(this, "It is now round "
 							+ this.roundNum);
@@ -324,7 +432,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 											+ this.roundNum
 											+ "\n The following players were assigned random contestant choices: \n\n"
 											+ s);
+					calcEliminationScore();
 					writePlayers("players.txt");
+					writeSettings("settings.txt");
 				}
 			}
 		}
@@ -511,7 +621,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						rnd = 0;
 						for (; i < currPlayer.length(); i++) {
 							if (currPlayer.charAt(i) == '{') {
-								System.out.println(rndStr);
+								
 								rnd = Integer.valueOf(rndStr);
 
 								break;
@@ -576,7 +686,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 			bWr = new BufferedWriter(new FileWriter(fileName));
 			for (int i = 0; i < this.playersArray.length; i++) {
-				System.out.println(this.playersArray[i].getFirst());
+				
 				currString = currString + this.playersArray[i].getFirst() + "+";
 				currString = currString + this.playersArray[i].getLast() + "+";
 				currString = currString + this.playersArray[i].getID() + "+";
@@ -988,7 +1098,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				i++;
 				Contestant contElim = new Contestant(cFirst, cLast, cID, cTrb,
 						cPic);
-				System.out.println("adding cont " + cFirst);
+				
 				if (i < currCont.length() && currCont.charAt(i) != '+') {
 					for (; i < currCont.length(); i++) {
 						if (currCont.charAt(i) == '+') {
@@ -1002,7 +1112,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 				this.contestantsArray[contCount] = contElim;
-				System.out.println(this.contestantsArray[contCount].getFirst());
+				
 				contCount++;
 				currCont = in.readLine();
 			}
@@ -2284,7 +2394,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					JOptionPane
 							.showMessageDialog(this,
 									"The player's first Name must be between 1 and 20 characters");
-					System.out.println(first + "first");
+					
 				} else if (lastLen < 1 || lastLen > 20) {
 					JOptionPane
 							.showMessageDialog(this,
@@ -2633,7 +2743,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this,
 						"Contestant has been updated");
 				this.writeContestants("contestants.txt");
-
+				if(startGame==true){
 				if (eliminateYBtn.isSelected()) {
 					if (roundField.getText() == null
 							|| roundField.getText().trim().equals("")) {
@@ -2652,6 +2762,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 									Integer.valueOf(roundField.getText()))) {
 								this.writeContestants("contestants.txt");
 								this.writeRounds("rounds.txt");
+								this.calcEliminationScore();
 								JOptionPane
 										.showMessageDialog(
 												this,
@@ -2674,7 +2785,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				}
 
 			}
-
+			}
 			contLiTable = new ContestantListGUI(contestantsArray, contCount);
 			getContentPane().removeAll();
 			getContentPane().add(quitButton());

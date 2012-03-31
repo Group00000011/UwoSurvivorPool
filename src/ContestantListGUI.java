@@ -100,7 +100,8 @@ public class ContestantListGUI extends JPanel	{
 					data[i][4]=placeHolderImg;
 				}
 				if (contestants[i].getElimRound() != null){
-				data[i][5]=contestants[i].getElimRound().getRoundNum();
+					Integer roundElim = contestants[i].getElimRound().getRoundNum();
+				data[i][5]=roundElim.toString();
 				}
 				else{
 					data[i][5]="Not Eliminated";
