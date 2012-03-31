@@ -46,6 +46,9 @@ public class Player {
 		return ans.answerQuestion(answer);
 	}
 	
+	public Vector<BQAnswer> getAnswers() {
+		return answers;
+	}
 	public int getBQScore() {
 		int score = 0;
 		if(answers!=null){
