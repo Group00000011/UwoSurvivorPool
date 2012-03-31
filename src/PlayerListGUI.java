@@ -47,8 +47,8 @@ public class PlayerListGUI extends JPanel	{
 
 		JTable table = new JTable(new MyTableModel(playerArray, currentRound));
 		table.setPreferredScrollableViewportSize(new Dimension(900,400));
-//		table.setFillsViewportHeight(true);
-	//	table.setAutoCreateRowSorter(true);
+		//		table.setFillsViewportHeight(true);
+		table.setAutoCreateRowSorter(true);
 		table.setRowHeight(77);
 
 		table.setFont(new Font("Viner Hand ITC",Font.PLAIN,18));
@@ -68,14 +68,14 @@ public class PlayerListGUI extends JPanel	{
 	}
 
 	class MyTableModel extends AbstractTableModel {
-		private String[] columnNames =  {"User ID", "First Name", "Last Name", "This Weeks Score", "Total Score", "Contestant Pick"};
+		private String[] columnNames =  {"User ID", "First Name", "Last Name", "Total Score", "Contestant Pick"};
 		private Player[] playersArray;
 		private Object[][] data;
 		public MyTableModel(Player[] players, int currentRound) {
 			super();
 			this.playersArray = players;
 			if (playersArray == null){
-				data = new Object[0][6];	
+				data = new Object[0][5];	
 			}
 			else{
 				data = new Object[playersArray.length][6];
@@ -83,12 +83,22 @@ public class PlayerListGUI extends JPanel	{
 					data[i][0]=playersArray[i].getID();
 					data[i][1]=playersArray[i].getFirst();
 					data[i][2]=playersArray[i].getLast();
-					data[i][3]="";
-					data[i][4]=playersArray[i].getScore();
-					data[i][5]=""; //playersArray[i].getWeekPick(currentRound).getContestant().getPicture();
-				}	
-			}
+					data[i][3]=playersArray[i].getScore();
+					try{
+						if (!playersArray[i].getWeekPick(currentRound).getContestant().getPicture().equals("null")){
+							data[i][4]=playersArray[i].getWeekPick(currentRound).getContestant().getPicture();
+						}
+						else{
+							data[i][4]="No Selection";
+						}
+					}
+					catch (Exception e){ //catch the null pointer if the game isn't started yet(round array is null)
+						data[i][4]="No Selection";
+					}
+				}
+			}	
 		}
+
 
 		/*		private Object[][] data = {{ "mgrabar", "Martin", "Grabarczyk", "7", "14", placeHolderImg },
 				{ "hrivera", "Hazel", "Rivera", "3", "17", placeHolderImg },
@@ -113,13 +123,13 @@ public class PlayerListGUI extends JPanel	{
 		/*
 		 * Default renderer/editor for this cell.
 		 */
-	//	public Class getColumnClass(int c) {
-	//		return getValueAt(0,c).getClass();
-	//	}
+		//	public Class getColumnClass(int c) {
+		//		return getValueAt(0,c).getClass();
+		//	}
 		/*
 		 * This method makes the tables editable
 		 */
-/*		public boolean isCellEditable(int row, int col) {
+		/*		public boolean isCellEditable(int row, int col) {
 			//Note that the cell address is constant
 			if(col < 2) {
 				return false;
