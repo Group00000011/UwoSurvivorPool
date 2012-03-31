@@ -19,6 +19,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
 
@@ -35,6 +36,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.text.AbstractDocument.Content;
 
 public class BonusQuestionGUI extends JPanel implements ActionListener {
@@ -44,37 +46,25 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	private int currentRound, totalRounds;
 	private Round[] round;
 	private JTabbedPane questionPane;
-	private JButton newSAQuestionButton, newMCQuestionButton;
+	private JButton newSAQ, newMCQ;
 	private JScrollPane newQuestionScrollPane;
 	private JPanel newAPanel;
-	private TextArea questionArea;
+	private TextArea questionArea, correct;
 	private JPanel answerArea;
-	private JTextField correct, fake1, fake2, fake3;
-	private Doc d1, d2, d3, d4;
-	private JLabel correctAnswerLabel, fakeAnswersLabel;
+	private JTextField fake1, fake2, fake3;
+	private JLabel fakeAnswersLabel;
 	private JButton save, cancel;
 
 	public BonusQuestionGUI(Round[] rounds, int currentRound) {
 		super();
-		if (currentRound != 0 && rounds != null) {
-			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			// set fields
+		if (currentRound == 0 || rounds == null) {
+			this.round = null;
+			this.totalRounds = 0;
+			this.currentRound = 0;
+		} else {
 			this.round = rounds;
 			this.totalRounds = rounds.length;
 			this.currentRound = currentRound;
-		} else {
-			this.totalRounds = 0;
-			this.currentRound = 0;
-			this.setLayout(new BorderLayout());
-			JLabel lbl = new JLabel();
-			java.net.URL imgURL = SurvivorPoolAdminGUI.class
-					.getResource("images/no-bq.png");
-			if (imgURL != null) {
-				lbl.setIcon(new ImageIcon(imgURL));
-			} else {
-				System.err.println("Couldn't find file: no-bq.png");
-			}
-			this.add(lbl, BorderLayout.CENTER);
 		}
 		refresh();
 	}
@@ -101,41 +91,54 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		// MakeButtons
 		JPanel bPanel = new JPanel();
 		bPanel.setLayout(new BoxLayout(bPanel, BoxLayout.X_AXIS));
-		save = new JButton("Save");
+		save = new JButton(createImageIcon("images/q-save.png"));
+		save.setPressedIcon(createImageIcon("images/q-save-click.png"));
+		save.setOpaque(false);
+		save.setFocusPainted(false);
+		save.setBorderPainted(false);
+		save.setContentAreaFilled(false);
+		save.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		save.setToolTipText("Save");
 		save.addActionListener(this);
-		cancel = new JButton("Cancel");
+		cancel = new JButton(createImageIcon("images/q-discard.png"));
+		cancel.setPressedIcon(createImageIcon("images/q-discard-click.png"));
+		cancel.setOpaque(false);
+		cancel.setFocusPainted(false);
+		cancel.setBorderPainted(false);
+		cancel.setContentAreaFilled(false);
+		cancel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		cancel.setToolTipText("Cancel");
+		cancel.addActionListener(this);
 		cancel.setActionCommand("cancel");
 		cancel.addActionListener(this);
 		bPanel.add(save);
 		bPanel.add(cancel);
 		// Create the answer text fields/areas & set them up
 		if (isMC) {
-			// set up limited text fields
-			d1 = new Doc(MAX_CHARACTERS);
-			d2 = new Doc(MAX_CHARACTERS);
-			d3 = new Doc(MAX_CHARACTERS);
-			d4 = new Doc(MAX_CHARACTERS);
-			// correct answer
-			correctAnswerLabel = new JLabel("Correct Answer:");
-			newAPanel.add(correctAnswerLabel, labelsCon);
-			correct = new JTextField();
-			correct.setColumns(20);
-			correct.setDocument(d4);
-			newAPanel.add(correct, labelsCon);
+			// create correct answer area
+			correct = new TextArea("CorrectAnswer:", "");
+			this.add(correct);
+
+			/*
+			 * correctAnswerLabel = new JLabel("Correct Answer:");
+			 * newAPanel.add(correctAnswerLabel, labelsCon); correct = new
+			 * JTextField(); correct.setColumns(20); correct.setDocument(d4);
+			 * newAPanel.add(correct, labelsCon);
+			 */
 			// fake answers
 			fakeAnswersLabel = new JLabel("Fake Answers:");
 			newAPanel.add(fakeAnswersLabel, labelsCon);
 			fake1 = new JTextField();
 			fake1.setColumns(20);
-			fake1.setDocument(d1);
+			fake1.setDocument(new Doc(MAX_CHARACTERS));
 			newAPanel.add(fake1, fieldsCon);
 			fake2 = new JTextField();
 			fake2.setColumns(20);
-			correct.setDocument(d2);
+			fake2.setDocument(new Doc(MAX_CHARACTERS));
 			newAPanel.add(fake2, fieldsCon);
 			fake3 = new JTextField();
 			fake3.setColumns(20);
-			correct.setDocument(d3);
+			fake3.setDocument(new Doc(MAX_CHARACTERS));
 			newAPanel.add(fake3, fieldsCon);
 			save.setActionCommand("saveMC");
 			this.add(newAPanel);
@@ -148,7 +151,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		this.add(bPanel);
 		this.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
 		// newQuestionPanel.add(buttonPane);
-		this.remove(newSAQuestionButton);
+		this.remove(newSAQ);
 		this.revalidate();
 	}
 
@@ -207,12 +210,19 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		try {
 			b = round[rNumber - 1].getBonusQuestion();
 			if (b == null || b.length == 0) {
-				panel.add(new JLabel("No Questions This Round"));
-				return panel;
+				panel.setLayout(new BorderLayout());
+				panel.add(new JLabel("No Questions This Round."), BorderLayout.CENTER);
+				panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+				sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
+						createImageIcon("images/vine-border.png")));
+				return sp;		
 			}
 		} catch (NullPointerException e) {
-			panel.add(new JLabel("No Questions This Round."));
-			return panel;
+			panel.setLayout(new BorderLayout());
+			panel.add(new JLabel("No Questions This Round."), BorderLayout.CENTER);
+			sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
+					createImageIcon("images/vine-border.png")));
+			return sp;			
 		}
 		// if there are questions add them to the panel
 		try {
@@ -227,9 +237,34 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 					buttonPanel.setLayout(new BoxLayout(buttonPanel,
 							BoxLayout.X_AXIS));
 					JButton update, cancel, delete;
-					update = new JButton("Update");
-					cancel = new JButton("Cancel");
-					delete = new JButton("Delete");
+										
+					update = new JButton(createImageIcon("images/q-save.png"));
+					update.setPressedIcon(createImageIcon("images/q-save-click.png"));
+					update.setToolTipText("Update");
+					update.setOpaque(false);
+					update.setFocusPainted(false);
+					update.setBorderPainted(false);
+					update.setContentAreaFilled(false);
+					update.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+
+					cancel = new JButton(createImageIcon("images/q-discard.png"));
+					cancel.setPressedIcon(createImageIcon("images/q-discard-click.png"));
+					cancel.setToolTipText("Cancel");
+					cancel.setOpaque(false);
+					cancel.setFocusPainted(false);
+					cancel.setBorderPainted(false);
+					cancel.setContentAreaFilled(false);
+					cancel.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+
+					delete = new JButton(createImageIcon("images/q-del.png"));
+					delete.setPressedIcon(createImageIcon("images/q-del-click.png"));
+					delete.setToolTipText("Delete");
+					delete.setOpaque(false);
+					delete.setFocusPainted(false);
+					delete.setBorderPainted(false);
+					delete.setContentAreaFilled(false);
+					delete.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+
 					// pass question number to action listener
 					update.setActionCommand("update");
 					cancel.setActionCommand("cancel");
@@ -252,33 +287,53 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			}
 		} catch (NullPointerException e) {
 		}
+
+		sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
+				createImageIcon("images/vine-border.png")));
 		return sp;
 
 	}
 
-	private void makeButtons() {
-		newSAQuestionButton = new JButton("New Short Answer Question");
-		newSAQuestionButton.addActionListener(this);
-		newSAQuestionButton.setActionCommand("newSA");
+	public ImageIcon createImageIcon(String path) {
+		java.net.URL imgURL = SurvivorPoolAdminGUI.class.getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
+	}
 
-		newMCQuestionButton = new JButton("New Multiple Choice Question");
-		newMCQuestionButton.setActionCommand("newMC");
-		newMCQuestionButton.addActionListener(this);
+	private void makeButtons() {
+		newSAQ = new JButton();
+		newSAQ.setIcon(createImageIcon("images/new-sa.png"));
+		newSAQ.setPressedIcon(createImageIcon("images/new-sa-click.png"));
+		newSAQ.setToolTipText("New Short Answer Question");
+		newSAQ.setActionCommand("newSA");
+		newSAQ.setOpaque(false);
+		newSAQ.setFocusPainted(false);
+		newSAQ.setBorderPainted(false);
+		newSAQ.setContentAreaFilled(false);
+		newSAQ.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		newSAQ.addActionListener(this);
+
+		newMCQ = new JButton();
+		newMCQ.setIcon(createImageIcon("images/new-mc.png"));
+		newMCQ.setPressedIcon(createImageIcon("images/new-mc-click.png"));
+		newMCQ.setToolTipText("New Multiple Choice Question");
+		newMCQ.setActionCommand("newMC");
+		newMCQ.setOpaque(false);
+		newMCQ.setFocusPainted(false);
+		newMCQ.setBorderPainted(false);
+		newMCQ.setContentAreaFilled(false);
+		newMCQ.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		newMCQ.addActionListener(this);
 	}
 
 	public void refresh() {
 		this.removeAll();
-		if (currentRound != 0 && round != null) {
-			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			initQuestionPane();
-			this.add(questionPane);
-			makeButtons();
-			JPanel buttonPanel = new JPanel();
-			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-			buttonPanel.add(newSAQuestionButton);
-			buttonPanel.add(newMCQuestionButton);
-			this.add(buttonPanel);
-		} else {
+		// game not started - display error label
+		if (currentRound == 0 || round == null) {
 			this.setLayout(new BorderLayout());
 			JLabel lbl = new JLabel();
 			java.net.URL imgURL = SurvivorPoolAdminGUI.class
@@ -290,8 +345,20 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			}
 			this.add(lbl, BorderLayout.CENTER);
 		}
-		this.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
-		this.setOpaque(false);
+		// game started
+		else {
+			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			initQuestionPane();
+			this.add(questionPane);
+			makeButtons();
+			JPanel buttonPanel = new JPanel();
+			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+			buttonPanel.add(newSAQ);
+			buttonPanel.add(newMCQ);
+			this.add(buttonPanel);
+		}
+		// this.setOpaque(false);
 		this.revalidate();
 	}
 
