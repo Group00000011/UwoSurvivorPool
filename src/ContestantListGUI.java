@@ -54,7 +54,7 @@ public class ContestantListGUI extends JPanel	{
 
 		table.setPreferredScrollableViewportSize(new Dimension(WIDTH,HEIGHT));
 		//		table.setFillsViewportHeight(true);
-		//		table.setAutoCreateRowSorter(true);
+		table.setAutoCreateRowSorter(true);
 		table.setRowHeight(77);
 
 		table.setFont(new Font("Viner Hand ITC",Font.PLAIN,18));
