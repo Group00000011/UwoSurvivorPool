@@ -56,19 +56,33 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 
 	public BonusQuestionGUI(Round[] rounds, int currentRound) {
 		super();
-		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		// set fields
-		this.round = rounds;
-		this.totalRounds = rounds.length;
-		this.currentRound = currentRound;
+		if (currentRound != 0 && rounds != null) {
+			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			// set fields
+			this.round = rounds;
+			this.totalRounds = rounds.length;
+			this.currentRound = currentRound;
+		} else {
+			this.totalRounds = 0;
+			this.currentRound = 0;
+			this.setLayout(new BorderLayout());
+			JLabel lbl = new JLabel();
+			java.net.URL imgURL = SurvivorPoolAdminGUI.class
+					.getResource("images/no-bq.png");
+			if (imgURL != null) {
+				lbl.setIcon(new ImageIcon(imgURL));
+			} else {
+				System.err.println("Couldn't find file: no-bq.png");
+			}
+			this.add(lbl, BorderLayout.CENTER);
+		}
 		refresh();
 	}
 
 	public void addQuestion(boolean isMC) {
 
 		this.removeAll();
-		this.setLayout(new BoxLayout(this,
-				BoxLayout.Y_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		// make answer area
 		newAPanel = new JPanel();
 		newAPanel.setLayout(new GridBagLayout());
@@ -129,11 +143,10 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			answerArea = new TextArea("Answer:", "");
 			save.setActionCommand("saveSA");
 			this.add(answerArea);
-		}	
+		}
 		this.add(newAPanel);
 		this.add(bPanel);
-		this.setBorder(BorderFactory.createEmptyBorder(100, 100,
-				100, 100));
+		this.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
 		// newQuestionPanel.add(buttonPane);
 		this.remove(newSAQuestionButton);
 		this.revalidate();
@@ -153,33 +166,27 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	 * makes tabbed panel to display old questions
 	 */
 	private void initQuestionPane() {
-		/*ImageIcon selected, uSelected, nA;
-		JLabel selectedTab, uSelectedTab, nATab;
-		selected = createImageIcon("images/tab_sel.png");
-		uSelected = createImageIcon("image/tab_usel.png");
-		nA = createImageIcon("images/tab_na.png");
-		selectedTab = new JLabel(selected);
-		uSelectedTab = new JLabel(uSelected);
-		nATab = new JLabel(nA);
-		*/
+
 		questionPane = new JTabbedPane();
 		questionPane.setUI(new CustomTabUI(TAB_WIDTH));
 		questionPane.setTabPlacement(SwingConstants.LEFT);
-		//questionPane.setBorder(new);
+		// questionPane.setBorder(new);
 		for (int i = totalRounds; i > 0; i--) {
 			String tabName = "Week " + Integer.toString(i);
 			questionPane.addTab(tabName, makeQPanel(i));
 		}
-		
+
 		for (int i = currentRound; i < totalRounds; i++) {
 			questionPane.setEnabledAt(totalRounds - i - 1, false);
 		}
-		questionPane.setSelectedIndex(totalRounds - currentRound);
+		try {
+			questionPane.setSelectedIndex(totalRounds - currentRound);
+		} catch (Exception e) {
+
+		}
 
 	}
 
-
-	
 	/**
 	 * makes scrollable panel showing the bonus questions for the round number
 	 * that is supplied
@@ -261,18 +268,30 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 
 	public void refresh() {
 		this.removeAll();
-		this.revalidate();
-		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-		this.setBorder(BorderFactory.createEmptyBorder(10, 0,
-				10, 10));
-		initQuestionPane();
-		this.add(questionPane);
-		makeButtons();
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-		buttonPanel.add(newSAQuestionButton);
-		buttonPanel.add(newMCQuestionButton);
-		this.add(buttonPanel);
+		if (currentRound != 0 && round != null) {
+			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			initQuestionPane();
+			this.add(questionPane);
+			makeButtons();
+			JPanel buttonPanel = new JPanel();
+			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+			buttonPanel.add(newSAQuestionButton);
+			buttonPanel.add(newMCQuestionButton);
+			this.add(buttonPanel);
+		} else {
+			this.setLayout(new BorderLayout());
+			JLabel lbl = new JLabel();
+			java.net.URL imgURL = SurvivorPoolAdminGUI.class
+					.getResource("images/no-bq.png");
+			if (imgURL != null) {
+				lbl.setIcon(new ImageIcon(imgURL));
+			} else {
+				System.err.println("Couldn't find file: no-bq.png");
+			}
+			this.add(lbl, BorderLayout.CENTER);
+		}
+		this.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 10));
+		this.setOpaque(false);
 		this.revalidate();
 	}
 
@@ -295,8 +314,9 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			answers[2] = fake2.getText();
 			answers[3] = fake3.getText();
 			// Check input lengths
-			if (question.length() < 1 || answers[0].length() < 1 || answers[1].length() < 1
-					|| answers[2].length() < 1 || answers[3].length() < 1) {
+			if (question.length() < 1 || answers[0].length() < 1
+					|| answers[1].length() < 1 || answers[2].length() < 1
+					|| answers[3].length() < 1) {
 				Toolkit.getDefaultToolkit().beep();
 				return;
 			}

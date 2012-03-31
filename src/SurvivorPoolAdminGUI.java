@@ -1229,8 +1229,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		qPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
 		getContentPane().add(mainMenuButton());
-		getContentPane().add(bqBg); 		// Create the background		
-
+		getContentPane().add(bqBg); 	// Create the background		
+		
+		getContentPane().add(new BonusQuestionGUI(rounds, roundNum));
+		
 		return qPanel;
 
 	}
