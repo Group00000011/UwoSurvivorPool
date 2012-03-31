@@ -1,6 +1,6 @@
 jeff+westaway+a1+/images/10.png+pc++
 martin+grabarczyk+a2+null+mac++
-manor+freeman+a3+null+mac++
+manor+freeman+a3+null+mac+1+
 delerina+hill+a4+null+pc++
 liam+corrigan+a5+null+pc++
 hazel+rivera+a6+null+mac++
