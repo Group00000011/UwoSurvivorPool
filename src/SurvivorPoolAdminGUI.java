@@ -133,6 +133,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		roundNum=1;
 
 		readSettings("settings.txt");
+		if(inputNumConts!=0){
+			readRounds("rounds.txt");
+		}
 
 		textFields_p = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
 		textFields_c = new TextInputFields(this.contestantsArray,this.contCount,this.playersArray);
@@ -495,7 +498,185 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	}
  
+	public void readRounds(String fileName){
+		try{
+		DataInputStream input = new DataInputStream(new FileInputStream(fileName));
+		BufferedReader in = new BufferedReader(new InputStreamReader(input));
+		String currRound=in.readLine();
+		String[] ans=new String[1];
+		String cFirst="", cLast="", cID="", cPic="", cTrb="", bQuest="",bAns="",bCorAns="",rndStr="", numAnsStr="", numBonusStr="";
+		int rnd=0, numAns=0, numBonus=0;
+		this.rounds=new Round[inputNumConts-2];
+		for(int j=0;currRound!=null && currRound.trim()!="";j++){
+			int i=0;
+			cFirst=cLast=cID=cPic=cTrb=bQuest=bAns=rndStr=numAnsStr=bCorAns=numBonusStr="";
+			rnd=numAns=numBonus=0;
+			for(;i<currRound.length();i++){
+				if(currRound.charAt(i)=='+'){
+					rnd=Integer.valueOf(rndStr);
+					rounds[j]=new Round(rnd);
+					break;
+				}
+				else{
+					rndStr=rndStr+currRound.charAt(i);
+				}
+			}
+			i++;
+			if(currRound.charAt(i)=='_')
+				i++;
+			else{
+				cFirst=cLast=cID=cPic=cTrb="";
+				while( i<currRound.length() && currRound.charAt(i)!='{') {
+					cFirst=cFirst+currRound.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currRound.length() && currRound.charAt(i)!='{') {
+					cLast=cLast+currRound.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currRound.length() && currRound.charAt(i)!='{') {
+					cID=cID+currRound.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currRound.length() && currRound.charAt(i)!='{') {
+					cPic=cPic+currRound.charAt(i);
+					i++;
+				}
+				i++;
+				while( i<currRound.length() && currRound.charAt(i)!='{') {
+					cTrb=cTrb+currRound.charAt(i);
+					i++;
+				}
+				this.rounds[j].setContestantEliminated(new Contestant(cFirst,cLast,cID,cTrb,cPic));
+			}
+			i++;
+			if(currRound.charAt(i)=='_')
+				i++;
+			else{
+				bQuest=bAns=rndStr=numAnsStr=bCorAns=numBonusStr="";
+				numAns=numBonus=0;
+				for(;i<currRound.length();i++){
+					if(currRound.charAt(i)=='{'){
+						numBonus=Integer.valueOf(numBonusStr);
+						break;
+					}
+					else{
+						numBonusStr=numBonusStr+currRound.charAt(i);
+					}
+				}
+				i++;
+				for(int k=0;k<numBonus && i<currRound.length();k++){
+					if(currRound.charAt(i)=='_')
+						i=i+2;
+					else{
+						while( i<currRound.length() && currRound.charAt(i)!='{') {
+							bQuest=bQuest+currRound.charAt(i);
+							i++;
+						}
+					}
+					i++;
+					if(currRound.charAt(i)=='_')
+						i=i+2;
+					else{
+						for(;i<currRound.length();i++){
+							if(currRound.charAt(i)=='{'){
+								numAns=Integer.valueOf(numAnsStr);
+								ans=new String[numAns];
+								break;
+							}
+							else{
+								numAnsStr=numAnsStr+currRound.charAt(i);
+							}
+						}
+						i++;
+						for(int l=0;l<numAns && i<currRound.length();l++){
+							while( i<currRound.length() && currRound.charAt(i)!='{') {
+								bAns=bAns+currRound.charAt(i);
+								i++;
+							}
+							i++;
+							ans[l]=bAns;
+							bAns="";
+						}
+						
+					}
+					if(currRound.charAt(i)=='_')
+						i=i+2;
+					else{
+						while( i<currRound.length() && currRound.charAt(i)!='{') {
+							bCorAns=bCorAns+currRound.charAt(i);
+							i++;
+						}
+						i++;
+					}
+					BonusQuestion bQuestion=new BonusQuestion(bQuest,ans,bCorAns);
+					this.rounds[j].addBonusQuestion(bQuestion);
+				}
+			}
+			currRound=in.readLine();
+		}
+		}
+		catch(IOException e){}
+	}
+	public void writeRounds(String fileName){
+		BufferedWriter bWr = null;
+		String currString="";
+		try {
 
+			bWr = new BufferedWriter(new FileWriter(fileName));
+			for(int i=0;i<this.rounds.length;i++){
+				currString=currString+this.rounds[i].getRoundNum()+"+";
+				if(rounds[i].getContestantEliminated()==null){
+					currString=currString+"_{";
+				}
+				else{
+				currString=currString+this.rounds[i].getContestantEliminated().getFirst()+"{";
+				currString=currString+this.rounds[i].getContestantEliminated().getLast()+"{";
+				currString=currString+this.rounds[i].getContestantEliminated().getID()+"{";
+				currString=currString+this.rounds[i].getContestantEliminated().getPicture()+"{";
+				currString=currString+this.rounds[i].getContestantEliminated().getTribe()+"{";
+				}
+				BonusQuestion[] bonus=this.rounds[i].getBonusQuestion();
+				if(bonus==null)
+					currString=currString+"_{";
+				else{
+					currString=currString+bonus.length+"{";
+					for(int j=0;j<bonus.length;j++){
+						if(bonus[j].getQuestion()==null)
+							currString=currString+"_{";
+						else
+							currString=currString+bonus[j].getQuestion()+"{";
+						if(bonus[j].getAnswers()==null)
+							currString=currString+"_{";
+						else{
+							String[] answers=bonus[j].getAnswers();
+							currString=currString+answers.length+"{";
+							for(int k=0;k<answers.length;k++){
+									currString=currString+answers[k]+"{";
+							}
+						}
+						if(bonus[j].getCorrectAnswer()==null)
+							currString=currString+"_{";
+						else{
+							currString=currString+bonus[j].getCorrectAnswer();
+						}
+						
+					}
+				}
+				currString=currString+"\n";
+
+			}
+			bWr.write(currString);
+			bWr.flush();
+			bWr.close();
+		}
+		catch(IOException e){} //won't happen
+	}
+	
+	
 	public void readSettings(String fileName){
 		try{
 			DataInputStream input = new DataInputStream(new FileInputStream(fileName));
@@ -2079,6 +2260,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						else{
 						if(this.eliminateContestant(position, Integer.valueOf(roundField.getText()))){
 						this.writeContestants("contestants.txt");
+						this.writeRounds("rounds.txt");
 						JOptionPane.showMessageDialog(this, 
 								"In Round " + getRoundEliminated()  + "\n" + textFields_c.getFirstC() + " " + textFields_c.getLastC() + " has been eliminated from Survivor!", 
 								"Contestant Record Updated", JOptionPane.PLAIN_MESSAGE);
@@ -2383,7 +2565,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						"Are you sure you want to start the game?",
 						"Once you start the gamem you will no longer be able to add/delete players & contestants.",
 						JOptionPane.PLAIN_MESSAGE);
-
+				writeRounds("rounds.txt");
 				setStartGame(true);
 				if(getWager()!=0){
 					wager=getWager();
@@ -2443,6 +2625,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 						}
 						numRounds=inputNumConts-2;
+						writeRounds("rounds.txt");
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: " + numRounds);
 					}
