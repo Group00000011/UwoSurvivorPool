@@ -57,20 +57,30 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	private JButton save, cancel;
 	private SurvivorPoolAdminGUI mainGUI;
 
-	public BonusQuestionGUI(Round[] rounds, int currentRound, SurvivorPoolAdminGUI mainGUI) {
+	public BonusQuestionGUI(Round[] rounds, int currentRound,
+			SurvivorPoolAdminGUI mainGUI) {
 		super();
-		this.mainGUI = mainGUI;
-		if (currentRound == 0 || rounds == null) {
-			this.round = null;
-			this.totalRounds = 0;
-			this.currentRound = 0;
+		// game not started - display error label
+		if (currentRound == 0 || rounds == null || rounds[currentRound-1] == null) {
+			this.setLayout(new BorderLayout());
+			this.setOpaque(false);
+			JLabel lbl = new JLabel();
+			java.net.URL imgURL = SurvivorPoolAdminGUI.class
+					.getResource("images/no-bq.png");
+			if (imgURL != null) {
+				lbl.setIcon(new ImageIcon(imgURL));
+			} else {
+				System.err.println("Couldn't find file: no-bq.png");
+			}
+			this.add(lbl, BorderLayout.CENTER);
 		} else {
+			this.mainGUI = mainGUI;
+			this.currentRound = currentRound;
 			this.round = rounds;
 			this.totalRounds = rounds.length;
-			this.currentRound = currentRound;
+			repaint();
+			refresh();
 		}
-		repaint();
-		refresh();
 	}
 
 	public void addQuestion(boolean isMC) {
@@ -79,7 +89,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		// make answer area
 		newAPanel = new JPanel();
-		//newAPanel.setOpaque(false);
+		// newAPanel.setOpaque(false);
 		newAPanel.setLayout(new GridBagLayout());
 		// Constraints for lables
 		GridBagConstraints labelsCon = new GridBagConstraints();
@@ -103,7 +113,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		save.setFocusPainted(false);
 		save.setBorderPainted(false);
 		save.setContentAreaFilled(false);
-		save.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
+		save.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		save.setToolTipText("Save");
 		save.addActionListener(this);
 		cancel = new JButton(createImageIcon("images/q-discard.png"));
@@ -112,7 +122,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		cancel.setFocusPainted(false);
 		cancel.setBorderPainted(false);
 		cancel.setContentAreaFilled(false);
-		cancel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
+		cancel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 		cancel.setToolTipText("Cancel");
 		cancel.addActionListener(this);
 		cancel.setActionCommand("cancel");
@@ -218,28 +228,33 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			b = round[rNumber - 1].getBonusQuestion();
 			if (b == null || b.length == 0) {
 				panel.setLayout(new BorderLayout());
-				panel.add(new JLabel("No Questions This Round."), BorderLayout.CENTER);
+				panel.add(new JLabel("No Questions This Round."),
+						BorderLayout.CENTER);
 				panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 				sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
 						createImageIcon("images/vine-border.png")));
-				return sp;		
+				return sp;
 			}
 		} catch (NullPointerException e) {
 			panel.setLayout(new BorderLayout());
-			panel.add(new JLabel("No Questions This Round."), BorderLayout.CENTER);
+			panel.add(new JLabel("No Questions This Round."),
+					BorderLayout.CENTER);
 			sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
 					createImageIcon("images/vine-border.png")));
-			return sp;			
+			return sp;
 		}
 		// if there are questions add them to the panel
 		try {
 			for (int i = 0; i < b.length; i++) {
 				JPanel borderQuestion = new JPanel();
-				borderQuestion.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.BLACK));
+				borderQuestion.setBorder(BorderFactory.createMatteBorder(0, 0,
+						3, 0, Color.BLACK));
 				panel.add(borderQuestion);
 				JPanel eachQuestion = new JPanel();
-				eachQuestion.setLayout(new BoxLayout(eachQuestion, BoxLayout.X_AXIS));
-				eachQuestion.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+				eachQuestion.setLayout(new BoxLayout(eachQuestion,
+						BoxLayout.X_AXIS));
+				eachQuestion.setBorder(BorderFactory.createEmptyBorder(3, 3, 3,
+						3));
 				QuestionPanel qp = new QuestionPanel(b[i],
 						(currentRound == rNumber));
 				eachQuestion.add(qp);
@@ -252,33 +267,37 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 					buttonPanel.setLayout(new BoxLayout(buttonPanel,
 							BoxLayout.Y_AXIS));
 					JButton update, cancel, delete;
-										
+
 					update = new JButton(createImageIcon("images/q-save.png"));
 					update.setPressedIcon(createImageIcon("images/q-save-click.png"));
 					update.setToolTipText("Update Question");
 					update.setOpaque(false);
 					update.setFocusPainted(false);
-					//update.setBorderPainted(false);
+					// update.setBorderPainted(false);
 					update.setContentAreaFilled(false);
-					update.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+					update.setBorder(BorderFactory.createEmptyBorder(10, 10,
+							10, 10));
 
-					cancel = new JButton(createImageIcon("images/q-discard.png"));
+					cancel = new JButton(
+							createImageIcon("images/q-discard.png"));
 					cancel.setPressedIcon(createImageIcon("images/q-discard-click.png"));
 					cancel.setToolTipText("Discard Changes");
 					cancel.setOpaque(false);
-					//cancel.setFocusPainted(false);
+					// cancel.setFocusPainted(false);
 					cancel.setBorderPainted(false);
 					cancel.setContentAreaFilled(false);
-					cancel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+					cancel.setBorder(BorderFactory.createEmptyBorder(10, 10,
+							10, 10));
 
 					delete = new JButton(createImageIcon("images/q-del.png"));
 					delete.setPressedIcon(createImageIcon("images/q-del-click.png"));
 					delete.setToolTipText("Delete Question");
 					delete.setOpaque(false);
 					delete.setFocusPainted(false);
-					//delete.setBorderPainted(false);
+					// delete.setBorderPainted(false);
 					delete.setContentAreaFilled(false);
-					delete.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+					delete.setBorder(BorderFactory.createEmptyBorder(10, 10,
+							10, 10));
 
 					// pass question number to action listener
 					update.setActionCommand("update");
@@ -302,7 +321,6 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			}
 		} catch (NullPointerException e) {
 		}
-		
 
 		sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
 				createImageIcon("images/vine-border.png")));
@@ -332,7 +350,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		newSAQ.setFocusPainted(false);
 		newSAQ.setBorderPainted(false);
 		newSAQ.setContentAreaFilled(false);
-		newSAQ.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		newSAQ.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		newSAQ.addActionListener(this);
 
 		newMCQ = new JButton();
@@ -344,14 +362,14 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		newMCQ.setFocusPainted(false);
 		newMCQ.setBorderPainted(false);
 		newMCQ.setContentAreaFilled(false);
-		newMCQ.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		newMCQ.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		newMCQ.addActionListener(this);
 	}
 
 	public void refresh() {
 		this.removeAll();
 		// game not started - display error label
-		if (currentRound == 0 || round == null) {
+		if (currentRound == 0) {
 			this.setLayout(new BorderLayout());
 			JLabel lbl = new JLabel();
 			java.net.URL imgURL = SurvivorPoolAdminGUI.class
@@ -365,19 +383,19 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		}
 		// game started
 		else {
-			//this.setLayout(new BorderLayout());
+			// this.setLayout(new BorderLayout());
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			initQuestionPane();
 			this.add(questionPane);
-			//this.add(questionPane, BorderLayout.WEST);
+			// this.add(questionPane, BorderLayout.WEST);
 			makeButtons();
 			JPanel buttonPanel = new JPanel();
 			buttonPanel.setOpaque(false);
 			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 			buttonPanel.add(newSAQ);
 			buttonPanel.add(newMCQ);
-			//this.add(buttonPanel, BorderLayout.EAST);
+			// this.add(buttonPanel, BorderLayout.EAST);
 			this.add(buttonPanel);
 		}
 		this.setOpaque(false);
@@ -436,10 +454,13 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 				return;
 			}
 			// Add new bonus question to round
+			if (round[currentRound - 1] == null)
+				round[currentRound - 1] = new Round(currentRound);
 			BonusQuestion b = new BonusQuestion(question, answers, cAnswer);
 			round[currentRound - 1].addBonusQuestion(b);
 			mainGUI.writeRounds("rounds.txt");
 			refresh();
+
 		} else if (cmd.equals("cancel")) {
 			refresh();
 		}
