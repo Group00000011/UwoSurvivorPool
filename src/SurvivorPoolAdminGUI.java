@@ -1765,7 +1765,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 */
 	private JComponent bqPanel() {
 		bqPanel = new BonusQuestionGUI(rounds, roundNum);
-		bqPanel.setSize(800, 400);
 		Rectangle r = new Rectangle(800, 400);
 		bqPanel.setBounds(r);
 		qPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -1798,11 +1797,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		bqLayout.putConstraint(SpringLayout.WEST, qPanel, 100,
 				SpringLayout.WEST, getContentPane());
 		bqLayout.putConstraint(SpringLayout.NORTH, qPanel, 170,
-				SpringLayout.NORTH, getContentPane());/*
-		bqLayout.putConstraint(SpringLayout.EAST, qPanel, 100,
-				SpringLayout.WEST, getContentPane());
-		bqLayout.putConstraint(SpringLayout.SOUTH, qPanel, 10,
-				SpringLayout.NORTH, getContentPane());*/
+				SpringLayout.NORTH, getContentPane());
+		bqLayout.putConstraint(SpringLayout.EAST, qPanel, -50,
+				SpringLayout.EAST, getContentPane());
+		bqLayout.putConstraint(SpringLayout.SOUTH, qPanel, -10,
+				SpringLayout.SOUTH, getContentPane());
 
 		
 		return contPanel;
@@ -2988,7 +2987,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		/** Bonus Question Admin Button Handler **/
 		if (e.getActionCommand().equals("bonus")) {
 			getContentPane().removeAll();
-
 			getContentPane().add(quitButton());
 			getContentPane().add(bqPanel());
 

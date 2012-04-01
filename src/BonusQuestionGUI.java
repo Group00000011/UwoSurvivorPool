@@ -8,6 +8,7 @@
  */
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -206,7 +207,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		// main panel vertical layout scrollable
 		JPanel panel = new JPanel();
 		panel.setOpaque(false);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		JScrollPane sp = new JScrollPane(panel);
 
 		BonusQuestion[] b;
@@ -232,44 +233,51 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		// if there are questions add them to the panel
 		try {
 			for (int i = 0; i < b.length; i++) {
+				JPanel borderQuestion = new JPanel();
+				borderQuestion.setBorder(BorderFactory.createMatteBorder(0, 0, 3, 0, Color.BLACK));
+				panel.add(borderQuestion);
+				JPanel eachQuestion = new JPanel();
+				eachQuestion.setLayout(new BoxLayout(eachQuestion, BoxLayout.X_AXIS));
+				eachQuestion.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 				QuestionPanel qp = new QuestionPanel(b[i],
 						(currentRound == rNumber));
-				panel.add(qp);
+				eachQuestion.add(qp);
+				borderQuestion.add(eachQuestion);
 				// if panel is being made for the current round
 				// add edit buttons to it
 				if (currentRound == rNumber) {
 					JPanel buttonPanel = new JPanel();
 					buttonPanel.setOpaque(false);
 					buttonPanel.setLayout(new BoxLayout(buttonPanel,
-							BoxLayout.X_AXIS));
+							BoxLayout.Y_AXIS));
 					JButton update, cancel, delete;
 										
 					update = new JButton(createImageIcon("images/q-save.png"));
 					update.setPressedIcon(createImageIcon("images/q-save-click.png"));
-					update.setToolTipText("Update");
+					update.setToolTipText("Update Question");
 					update.setOpaque(false);
 					update.setFocusPainted(false);
-					update.setBorderPainted(false);
+					//update.setBorderPainted(false);
 					update.setContentAreaFilled(false);
-					update.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+					update.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 					cancel = new JButton(createImageIcon("images/q-discard.png"));
 					cancel.setPressedIcon(createImageIcon("images/q-discard-click.png"));
-					cancel.setToolTipText("Cancel");
+					cancel.setToolTipText("Discard Changes");
 					cancel.setOpaque(false);
-					cancel.setFocusPainted(false);
+					//cancel.setFocusPainted(false);
 					cancel.setBorderPainted(false);
 					cancel.setContentAreaFilled(false);
-					cancel.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+					cancel.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 					delete = new JButton(createImageIcon("images/q-del.png"));
 					delete.setPressedIcon(createImageIcon("images/q-del-click.png"));
-					delete.setToolTipText("Delete");
+					delete.setToolTipText("Delete Question");
 					delete.setOpaque(false);
 					delete.setFocusPainted(false);
-					delete.setBorderPainted(false);
+					//delete.setBorderPainted(false);
 					delete.setContentAreaFilled(false);
-					delete.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
+					delete.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
 					// pass question number to action listener
 					update.setActionCommand("update");
@@ -288,18 +296,17 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 					buttonPanel.add(cancel);
 					buttonPanel.add(delete);
 
-					panel.add(buttonPanel);
+					eachQuestion.add(buttonPanel);
 				}
 			}
 		} catch (NullPointerException e) {
 		}
+		
 
 		sp.setBorder(BorderFactory.createMatteBorder(-1, -1, -1, -1,
 				createImageIcon("images/vine-border.png")));
-		sp.setSize(800, 300);
-		sp.setMaximumSize(new Dimension(800, 400));
-		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		//sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		return sp;
 
 	}
@@ -357,21 +364,20 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		}
 		// game started
 		else {
-			this.setLayout(new BorderLayout());
-
-//			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			//this.setLayout(new BorderLayout());
+			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			initQuestionPane();
-//			this.add(questionPane);
-			this.add(questionPane, BorderLayout.WEST);
+			this.add(questionPane);
+			//this.add(questionPane, BorderLayout.WEST);
 			makeButtons();
 			JPanel buttonPanel = new JPanel();
 			buttonPanel.setOpaque(false);
 			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
 			buttonPanel.add(newSAQ);
 			buttonPanel.add(newMCQ);
-			this.add(buttonPanel, BorderLayout.EAST);
-//			this.add(buttonPanel);
+			//this.add(buttonPanel, BorderLayout.EAST);
+			this.add(buttonPanel);
 		}
 		this.setOpaque(false);
 		this.setVisible(true);
