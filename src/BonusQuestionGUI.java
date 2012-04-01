@@ -56,9 +56,11 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	private JTextField fake1, fake2, fake3;
 	private JLabel fakeAnswersLabel;
 	private JButton save, cancel;
+	private SurvivorPoolAdminGUI mainGUI;
 
-	public BonusQuestionGUI(Round[] rounds, int currentRound) {
+	public BonusQuestionGUI(Round[] rounds, int currentRound, SurvivorPoolAdminGUI mainGUI) {
 		super();
+		this.mainGUI = mainGUI;
 		if (currentRound == 0 || rounds == null) {
 			this.round = null;
 			this.totalRounds = 0;
@@ -285,13 +287,13 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 					delete.setActionCommand("delete");
 					update.addActionListener(new ButtonListener(
 							round[currentRound - 1], i + 1, qp, buttonPanel,
-							panel, this));
+							panel, this, mainGUI));
 					cancel.addActionListener(new ButtonListener(
 							round[currentRound - 1], i + 1, qp, buttonPanel,
-							panel, this));
+							panel, this, mainGUI));
 					delete.addActionListener(new ButtonListener(
 							round[currentRound - 1], i + 1, qp, buttonPanel,
-							panel, this));
+							panel, this, mainGUI));
 					buttonPanel.add(update);
 					buttonPanel.add(cancel);
 					buttonPanel.add(delete);
@@ -420,6 +422,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			BonusQuestion b = new BonusQuestion(question, answersRandom,
 					cAnswer);
 			round[currentRound - 1].addBonusQuestion(b);
+			mainGUI.writeSettings("settings.txt");
 			refresh();
 		} else if (cmd.equals("saveSA")) {
 			String[] answers;
@@ -436,6 +439,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			// Add new bonus question to round
 			BonusQuestion b = new BonusQuestion(question, answers, cAnswer);
 			round[currentRound - 1].addBonusQuestion(b);
+			mainGUI.writeSettings("settings.txt");
 			refresh();
 		} else if (cmd.equals("cancel")) {
 			refresh();

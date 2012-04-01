@@ -266,7 +266,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// contLiTable = new ContestantListGUI(contCount,
 		// this.contestantsArray);
 		contLiTable = new ContestantListGUI(contestantsArray, contCount);
-		bqPanel = new BonusQuestionGUI(rounds, roundNum);
+		bqPanel = new BonusQuestionGUI(rounds, roundNum, this);
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero", Font.PLAIN, 18);
 		// The jungle theme font
@@ -1803,7 +1803,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * @return a panel with the bonus question panel
 	 */
 	private JComponent bqPanel() {
-		bqPanel = new BonusQuestionGUI(rounds, roundNum);
+		bqPanel = new BonusQuestionGUI(rounds, roundNum, this);
 		Rectangle r = new Rectangle(800, 400);
 		bqPanel.setBounds(r);
 		qPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -3235,6 +3235,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					writeSettings("settings.txt");
 				}
 			}
-		}
+		} else if (e.getActionCommand().equals("BQupdate")) {
+			
+		} 
 	}
 }
