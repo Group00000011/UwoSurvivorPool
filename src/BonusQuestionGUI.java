@@ -78,7 +78,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		// make answer area
 		newAPanel = new JPanel();
-		newAPanel.setOpaque(false);
+		//newAPanel.setOpaque(false);
 		newAPanel.setLayout(new GridBagLayout());
 		// Constraints for lables
 		GridBagConstraints labelsCon = new GridBagConstraints();
@@ -102,7 +102,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		save.setFocusPainted(false);
 		save.setBorderPainted(false);
 		save.setContentAreaFilled(false);
-		save.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		save.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
 		save.setToolTipText("Save");
 		save.addActionListener(this);
 		cancel = new JButton(createImageIcon("images/q-discard.png"));
@@ -111,7 +111,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		cancel.setFocusPainted(false);
 		cancel.setBorderPainted(false);
 		cancel.setContentAreaFilled(false);
-		cancel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+		cancel.setBorder(BorderFactory.createEmptyBorder(10,10,0,10));
 		cancel.setToolTipText("Cancel");
 		cancel.addActionListener(this);
 		cancel.setActionCommand("cancel");
