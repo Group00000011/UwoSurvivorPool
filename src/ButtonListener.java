@@ -37,14 +37,14 @@ public class ButtonListener implements ActionListener {
 			} else {
 				BonusQuestion q = question.update();
 				round.updateQuestion(qNum, q);
-				mainGUI.writeSettings("settings.txt");
+				mainGUI.writeRounds("rounds.txt");
 			}
 		} else if (e.getActionCommand().equals("cancel")) {
 			question.discardChanges();
 			question.revalidate();
 		} else {
 			round.removeBonusQuestion(question.getQuestion());
-			mainGUI.writeSettings("settings.txt");
+			mainGUI.writeRounds("rounds.txt");
 			gui.refresh();
 		}
 

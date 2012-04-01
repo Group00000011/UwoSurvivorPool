@@ -49,7 +49,6 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	private Round[] round;
 	private JTabbedPane questionPane;
 	private JButton newSAQ, newMCQ;
-	private JScrollPane newQuestionScrollPane;
 	private JPanel newAPanel;
 	private TextArea questionArea, correct;
 	private JPanel answerArea;
@@ -422,7 +421,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			BonusQuestion b = new BonusQuestion(question, answersRandom,
 					cAnswer);
 			round[currentRound - 1].addBonusQuestion(b);
-			mainGUI.writeSettings("settings.txt");
+			mainGUI.writeRounds("rounds.txt");
 			refresh();
 		} else if (cmd.equals("saveSA")) {
 			String[] answers;
@@ -439,7 +438,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			// Add new bonus question to round
 			BonusQuestion b = new BonusQuestion(question, answers, cAnswer);
 			round[currentRound - 1].addBonusQuestion(b);
-			mainGUI.writeSettings("settings.txt");
+			mainGUI.writeRounds("rounds.txt");
 			refresh();
 		} else if (cmd.equals("cancel")) {
 			refresh();
