@@ -209,6 +209,40 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		createGame();
 	}
 
+	public void resetGame() {
+		BufferedWriter bWr = null;
+		String currString = "";
+		try {
+		bWr = new BufferedWriter(new FileWriter("players.txt"));
+		bWr.write("");
+		bWr.flush();
+		bWr.close();
+		bWr = new BufferedWriter(new FileWriter("settings.txt"));
+		bWr.write("");
+		bWr.flush();
+		bWr.close();
+		bWr = new BufferedWriter(new FileWriter("contestants.txt"));
+		bWr.write("");
+		bWr.flush();
+		bWr.close();
+		bWr = new BufferedWriter(new FileWriter("rounds.txt"));
+		bWr.write("");
+		bWr.flush();
+		bWr.close();
+		wager=0;
+		inputNumConts=0;
+		numRounds=0;
+		roundNum=1;
+		startGame=false;
+		this.rounds=null;
+		this.playersArray=null;
+		this.contestantsArray=null;
+		getContentPane().removeAll();
+		getContentPane().removeAll();
+		createGame();
+	} catch (IOException e) {
+	}
+	}
 	/**
 	 * Initializes default theme components, images, font type & panels, & sets
 	 * them to the main frame As well as setting the main frame
@@ -1185,7 +1219,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private JMenuBar menuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu, editMenu, windowMenu;
-		JMenuItem startGameItem, newItem, mainItem, quitItem, bonusQItem, playerItem, contestantItem, themeItem, statsItem, creditsItem, nextRoundItem;
+		JMenuItem startGameItem, newItem, mainItem, quitItem, bonusQItem, playerItem, contestantItem, themeItem, statsItem, creditsItem, nextRoundItem, resetItem;
 
 		fileMenu = new JMenu("File");
 		editMenu = new JMenu("Edit");
@@ -1194,7 +1228,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		startGameItem = new JMenuItem("Game Settings");
 		startGameItem.setActionCommand("settings");
 		startGameItem.addActionListener(this);
-
+		
+		resetItem=new JMenuItem("Reset");
+		resetItem.setActionCommand("resetGame");
+		resetItem.addActionListener(this);
+		
 		newItem = new JMenuItem("New");
 		newItem.setActionCommand("new");
 		newItem.addActionListener(this);
@@ -1236,8 +1274,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		fileMenu.add(mainItem);
 		fileMenu.add(startGameItem);
 		fileMenu.add(nextRoundItem);
+		fileMenu.add(resetItem);
 		fileMenu.add(quitItem);
-
+	
 		editMenu.add(bonusQItem);
 		editMenu.add(playerItem);
 		editMenu.add(contestantItem);
@@ -3031,7 +3070,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/** Reset Game button handler **/
 		if (e.getActionCommand().equals("resetGame")) {
-			// TODO
+			mainPanel.hide();
+			resetGame();
+			contLiTable = new ContestantListGUI(contestantsArray,contCount);
 		}
 		/**
 		 * Start Game Button Handler When the game starts, TextFields will
