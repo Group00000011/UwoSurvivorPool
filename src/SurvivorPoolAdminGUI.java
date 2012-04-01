@@ -175,14 +175,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 								"The contestant elimination in round "+roundNum+", "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+" , has been overwritten ");
 						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
 						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
-						writeOther("C:/SDCard/Blackberry/otherpick.txt");
+						writeOther("C:/SDCard/BlackBerry/otherpick.txt");
 						return true;
 					}
 
 					else{
 						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
 						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
-						writeOther("C:/SDCard/Blackberry/otherpick.txt");
+						writeOther("C:/SDCard/BlackBerry/otherpick.txt");
 						return true;
 					}
 				}
@@ -215,19 +215,19 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		BufferedWriter bWr = null;
 		String currString = "";
 		try {
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/Blackberry/players.txt"));
+			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/players.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/Blackberry/settings.txt"));
+			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/settings.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/Blackberry/contestants.txt"));
+			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/contestants.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/Blackberry/rounds.txt"));
+			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/rounds.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
@@ -252,14 +252,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	private void createGame() {
 		gRuinsThemeOn=true;
 		// initialize players and contestants array
-		String fileName = "C:/SDCard/Blackberry/players.txt";
+		String fileName = "C:/SDCard/BlackBerry/players.txt";
 		readPlayers(fileName);
-		readContestants("C:/SDCard/Blackberry/contestants.txt");
-		readSettings("C:/SDCard/Blackberry/settings.txt");
+		readContestants("C:/SDCard/BlackBerry/contestants.txt");
+		readSettings("C:/SDCard/BlackBerry/settings.txt");
 		if (inputNumConts != 0) {
-			readRounds("C:/SDCard/Blackberry/rounds.txt");
-			readOther("C:/SDCard/Blackberry/otherpick.txt");
+			readRounds("C:/SDCard/BlackBerry/rounds.txt");
+			readOther("C:/SDCard/BlackBerry/otherpick.txt");
 		}
+		this.calcEliminationScore();
 		textFields_p = new TextInputFields(this.contestantsArray,
 				this.contCount, this.playersArray);
 		textFields_c = new TextInputFields(this.contestantsArray,
@@ -268,6 +269,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// contLiTable = new ContestantListGUI(contCount,
 		// this.contestantsArray);
 		contLiTable = new ContestantListGUI(contestantsArray, contCount);
+		bqPanel = new BonusQuestionGUI(rounds, roundNum, this);
 		// Font for the Golden Ruin Theme
 		gFont = new Font("Pescadero", Font.PLAIN, 18);
 		// The jungle theme font
@@ -425,6 +427,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(this,
 			"You must start the game before going to the next round");
 		else if(this.roundNum>this.numRounds){
+			
 			checkWinners();
 			return;
 		}
@@ -441,8 +444,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				"Two contestants must be eliminated before ending the final round. \n (Contestants >> Contestant Options >> Update Contestant)");
 			else{
 				roundNum++;
+				assignRandomPicks(numRounds);
+				this.calcEliminationScore();
 				checkWinners();
-				writeSettings("C:/SDCard/Blackberry/settings.txt");
+				writeSettings("C:/SDCard/BlackBerry/settings.txt");
 				return;
 			}
 		}
@@ -468,8 +473,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							+ "\n The following players were assigned random contestant choices: \n\n"
 							+ s);
 					calcEliminationScore();
-					writePlayers("C:/SDCard/Blackberry/players.txt");
-					writeSettings("C:/SDCard/Blackberry/settings.txt");
+					writePlayers("C:/SDCard/BlackBerry/players.txt");
+					writeSettings("C:/SDCard/BlackBerry/settings.txt");
 				}
 			}
 		}
@@ -1254,12 +1259,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 */
 	private JMenuBar menuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu fileMenu, editMenu, windowMenu;
+		JMenu fileMenu, editMenu;
 		JMenuItem startGameItem, newItem, mainItem, quitItem, bonusQItem, playerItem, contestantItem, themeItem, statsItem, creditsItem, nextRoundItem, resetItem;
 
 		fileMenu = new JMenu("File");
 		editMenu = new JMenu("Edit");
-		windowMenu = new JMenu("Window");
 
 		startGameItem = new JMenuItem("Game Settings");
 		startGameItem.setActionCommand("settings");
@@ -1317,14 +1321,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		editMenu.add(playerItem);
 		editMenu.add(contestantItem);
 
-		windowMenu.add(statsItem);
-		windowMenu.add(themeItem);
-		windowMenu.addSeparator();
-		windowMenu.add(creditsItem);
-
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
-		menuBar.add(windowMenu);
 
 		return menuBar;
 	}
@@ -2510,7 +2508,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 					this.addPlayer(new Player(first, last, ID));
-					this.writePlayers("C:/SDCard/Blackberry/players.txt");
+					this.writePlayers("C:/SDCard/BlackBerry/players.txt");
 					standingsTable = new PlayerListGUI(playersArray, roundNum);
 					getContentPane().removeAll();
 					getContentPane().add(quitButton());
@@ -2562,7 +2560,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 				JOptionPane.showMessageDialog(this, "Player has been updated");
 
-				this.writePlayers("C:/SDCard/Blackberry/players.txt");
+				this.writePlayers("C:/SDCard/BlackBerry/players.txt");
 
 				standingsTable = new PlayerListGUI(playersArray, roundNum);
 				getContentPane().removeAll();
@@ -2643,7 +2641,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							JOptionPane.showMessageDialog(this, "" + inputFirst
 									+ " has been deleted");
 
-							this.writePlayers("C:/SDCard/Blackberry/players.txt");
+							this.writePlayers("C:/SDCard/BlackBerry/players.txt");
 
 							standingsTable = new PlayerListGUI(playersArray,
 									roundNum);
@@ -2741,7 +2739,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							inputLast, ID, inputTribe, imagePath);
 					contestantsArray[contCount] = newContestant;
 					contCount++;
-					this.writeContestants("C:/SDCard/Blackberry/contestants.txt");
+					this.writeContestants("C:/SDCard/BlackBerry/contestants.txt");
 					if (imagePath == null) {
 						JOptionPane
 						.showMessageDialog(this,
@@ -2828,7 +2826,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 				JOptionPane.showMessageDialog(this,
 				"Contestant has been updated");
-				this.writeContestants("C:/SDCard/Blackberry/contestants.txt");
+				this.writeContestants("C:/SDCard/BlackBerry/contestants.txt");
 				if(startGame==true){
 					if (eliminateYBtn.isSelected()) {
 						if (roundField.getText() == null
@@ -2846,8 +2844,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							} else {
 								if (this.eliminateContestant(position,
 										Integer.valueOf(roundField.getText()))) {
-									this.writeContestants("C:/SDCard/Blackberry/contestants.txt");
-									this.writeRounds("C:/SDCard/Blackberry/rounds.txt");
+									this.writeContestants("C:/SDCard/BlackBerry/contestants.txt");
+									this.writeRounds("C:/SDCard/BlackBerry/rounds.txt");
 									this.calcEliminationScore();
 									JOptionPane
 									.showMessageDialog(
@@ -2943,7 +2941,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 					}
 					contCount--;
-					this.writeContestants("C:/SDCard/Blackberry/contestants.txt");
+					this.writeContestants("C:/SDCard/BlackBerry/contestants.txt");
 					contLiTable = new ContestantListGUI(contestantsArray,
 							contCount);
 					getContentPane().removeAll();
@@ -3175,7 +3173,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 								"The total number of rounds will be: "
 								+ numRounds);
 					}
-					writeSettings("C:/SDCard/Blackberry/settings.txt");
+					writeSettings("C:/SDCard/Blackberry/C:/SDCard/BlackBerry/settings.txt");
 
 				}
 			}
@@ -3208,12 +3206,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						"Are you sure you want to start the game?",
 						"Once you start the gamem you will no longer be able to add/delete players & contestants.",
 						JOptionPane.PLAIN_MESSAGE);
-				writeRounds("C:/SDCard/Blackberry/rounds.txt");
+				writeRounds("C:/SDCard/BlackBerry/rounds.txt");
 				setStartGame(true);
 				if (getWager() != 0) {
 					wager = getWager();
 				}
-				writeSettings("C:/SDCard/Blackberry/settings.txt");
+				writeSettings("C:/SDCard/BlackBerry/settings.txt");
 			}
 
 		}
@@ -3267,7 +3265,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 						}
 						numRounds = inputNumConts - 2;
-						writeRounds("C:/SDCard/Blackberry/rounds.txt");
+						writeRounds("C:/SDCard/BlackBerry/rounds.txt");
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: "
 								+ numRounds);
@@ -3282,7 +3280,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					} else {
 						wager = getWager();
 					}
-					writeSettings("C:/SDCard/Blackberry/settings.txt");
+					writeSettings("C:/SDCard/BlackBerry/settings.txt");
 				}
 			}
 		} else if (e.getActionCommand().equals("BQupdate")) {

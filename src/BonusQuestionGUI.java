@@ -61,12 +61,12 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			SurvivorPoolAdminGUI mainGUI) {
 		super();
 		// game not started - display error label
-		if (currentRound == 0 || rounds == null || rounds[currentRound-1] == null) {
+		if (currentRound == 0 || rounds == null || rounds[0] == null) {
 			this.setLayout(new BorderLayout());
 			this.setOpaque(false);
 			JLabel lbl = new JLabel();
 			java.net.URL imgURL = SurvivorPoolAdminGUI.class
-					.getResource("images/no-bq.png");
+			.getResource("images/no-bq.png");
 			if (imgURL != null) {
 				lbl.setIcon(new ImageIcon(imgURL));
 			} else {
@@ -373,7 +373,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			this.setLayout(new BorderLayout());
 			JLabel lbl = new JLabel();
 			java.net.URL imgURL = SurvivorPoolAdminGUI.class
-					.getResource("images/no-bq.png");
+			.getResource("images/no-bq.png");
 			if (imgURL != null) {
 				lbl.setIcon(new ImageIcon(imgURL));
 			} else {
@@ -383,20 +383,21 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		}
 		// game started
 		else {
-			// this.setLayout(new BorderLayout());
 			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			initQuestionPane();
 			this.add(questionPane);
-			// this.add(questionPane, BorderLayout.WEST);
-			makeButtons();
-			JPanel buttonPanel = new JPanel();
-			buttonPanel.setOpaque(false);
-			buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-			buttonPanel.add(newSAQ);
-			buttonPanel.add(newMCQ);
-			// this.add(buttonPanel, BorderLayout.EAST);
-			this.add(buttonPanel);
+			// only make add question buttons if game is not over
+			if (currentRound <= totalRounds) {
+				makeButtons();
+				JPanel buttonPanel = new JPanel();
+				buttonPanel.setOpaque(false);
+				buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+				buttonPanel.add(newSAQ);
+				buttonPanel.add(newMCQ);
+				// this.add(buttonPanel, BorderLayout.EAST);
+				this.add(buttonPanel);
+			}
 		}
 		this.setOpaque(false);
 		this.setVisible(true);
