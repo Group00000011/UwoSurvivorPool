@@ -2,15 +2,15 @@
  * Round class creates round objects in the Survivor Pool
  * 
  * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
- *         Westaway, Delerina Hill
- *  V 1.0 03/01/12
+ *         Westaway, Delerina Hill V 1.0 03/01/12
  */
 public class Round {
 	// Attributes
 	private int roundNum;
 	private BonusQuestion[] bonusQuestion;
 	private Contestant contestantEliminated;
-	private Contestant	otherContestantEliminated;
+	private Contestant otherContestantEliminated;
+
 	/**
 	 * Constructor for objects of class Round that initializes the round number
 	 * of the round
@@ -22,19 +22,22 @@ public class Round {
 		this.roundNum = roundNum;
 		this.bonusQuestion = null;
 		this.contestantEliminated = null;
-		this.otherContestantEliminated=null;
+		this.otherContestantEliminated = null;
 	}
 
 	// Accessor Methods
-	public void setOtherContestantEliminated(Contestant cont){
-		this.otherContestantEliminated=cont;
-	}
-	
-	public Contestant getOtherContestantEliminated(){
+
+	/**
+	 * Gets the second contestant eliminated in the current round
+	 * 
+	 * @return The second contestant eliminated in the current round
+	 */
+	public Contestant getOtherContestantEliminated() {
 		return this.otherContestantEliminated;
 	}
+
 	/**
-	 *
+	 * 
 	 * Gets the round number of the round
 	 * 
 	 * @return the round number of the round
@@ -53,9 +56,9 @@ public class Round {
 	}
 
 	/**
-	 * Gets the contestant eliminated in that round
+	 * Gets the contestant eliminated in the current round
 	 * 
-	 * @return the contestant eliminated of the Round object
+	 * @return the contestant eliminated in Round object
 	 */
 	public Contestant getContestantEliminated() {
 		return this.contestantEliminated;
@@ -71,6 +74,16 @@ public class Round {
 	 */
 	public void setContestantEliminated(Contestant cont) {
 		this.contestantEliminated = cont;
+	}
+
+	/**
+	 * Sets second eliminated contestant for current round
+	 * 
+	 * @param cont
+	 *            The second contestant to be eliminated in the current round
+	 */
+	public void setOtherContestantEliminated(Contestant cont) {
+		this.otherContestantEliminated = cont;
 	}
 
 	/**
@@ -137,7 +150,15 @@ public class Round {
 
 	}
 
+	/**
+	 * Sets bonus question with question number qNumber to BonusQuestion q
+	 * 
+	 * @param qNumber
+	 *            question number of bonus question
+	 * @param q
+	 *            updated Bonus question
+	 */
 	public void updateQuestion(int qNumber, BonusQuestion q) {
-		bonusQuestion[qNumber-1] = q;
+		bonusQuestion[qNumber - 1] = q;
 	}
 }

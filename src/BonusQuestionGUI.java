@@ -1,12 +1,3 @@
-/**
- * BonusQuestionGUI -- Panel to display past weeks bonus questions
- * and with  an option to add new bonus questions for the current week
- * 
- * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
- *         Westaway, Delerina Hill
- *  V 1.0 03/15/12
- */
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -41,7 +32,16 @@ import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.text.AbstractDocument.Content;
 
+/**
+ * BonusQuestionGUI -- Panel to display past weeks bonus questions and with an
+ * option to add new bonus questions for the current week
+ * 
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill V 1.0 03/15/12
+ */
 public class BonusQuestionGUI extends JPanel implements ActionListener {
+
+	// Attributes
 
 	private static final int MAX_CHARACTERS = 200;
 	private static final int TAB_WIDTH = 100;
@@ -66,7 +66,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			this.setOpaque(false);
 			JLabel lbl = new JLabel();
 			java.net.URL imgURL = SurvivorPoolAdminGUI.class
-			.getResource("images/no-bq.png");
+					.getResource("images/no-bq.png");
 			if (imgURL != null) {
 				lbl.setIcon(new ImageIcon(imgURL));
 			} else {
@@ -373,7 +373,7 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 			this.setLayout(new BorderLayout());
 			JLabel lbl = new JLabel();
 			java.net.URL imgURL = SurvivorPoolAdminGUI.class
-			.getResource("images/no-bq.png");
+					.getResource("images/no-bq.png");
 			if (imgURL != null) {
 				lbl.setIcon(new ImageIcon(imgURL));
 			} else {
@@ -392,7 +392,8 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 				makeButtons();
 				JPanel buttonPanel = new JPanel();
 				buttonPanel.setOpaque(false);
-				buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+				buttonPanel.setLayout(new BoxLayout(buttonPanel,
+						BoxLayout.Y_AXIS));
 				buttonPanel.add(newSAQ);
 				buttonPanel.add(newMCQ);
 				// this.add(buttonPanel, BorderLayout.EAST);

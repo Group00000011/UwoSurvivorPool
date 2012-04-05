@@ -1,3 +1,12 @@
+
+ 
+import java.awt.*;
+import java.io.*;
+import java.awt.event.*;
+
+import javax.swing.*;
+import javax.swing.text.*;
+ 
 /**
  * Reusable text fields class
  *  Various Combo Boxes store values that have been inputted
@@ -8,22 +17,10 @@
  *         Westaway, Delerina Hill
  *  V 1.0 03/01/12
  */
- 
-import java.awt.*;
-import java.io.*;
-import java.awt.event.*;
-
-import javax.swing.*;
-import javax.swing.text.*;
- 
-/**
- * TextInputDemo.java uses these additional files:
- *   SpringUtilities.java
- *   ...
- */
 public class TextInputFields extends JPanel implements ActionListener {
+	
 	/************   Attributes ***************************/
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
     private static JTextField firstFieldP, lastFieldP, tribeField, firstFieldC, lastFieldC;
 	private String firstNameString = "", lastNameString = "", tribeString = "";  // Record Display String
 	private JComboBox playerComboBox, contestantComboBox;
@@ -39,11 +36,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     private int numConts;
     
     final static int GAP = 10;
-    
-    
-    
-    
-    ////stuff added
     private String pID, cID;
     
     
@@ -184,11 +176,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     	recordPanel.add(recordDisplay,BorderLayout.NORTH);
     	recordPanel.setPreferredSize(new Dimension(400,268));
     	
-    	////////////////// TO DO: Implement adding image box to record display for Contestant panel only
-    	/// Either by creating a seperate method and adding as an if statement in this panel
-    	/// IE if TextInputField contains uploadedImage()...Add the formatted image to this panel
-    	/// Or create a second method specific for contestants/players
-    	//////cuz players dont have pics or tribes & contestants dont have unique ids
     	return recordPanel;    	    	
     }
    /**
@@ -211,7 +198,6 @@ public class TextInputFields extends JPanel implements ActionListener {
     	sb.append(firstNameString);
     	sb.append(" ");
     	sb.append(lastNameString);
-//    	sb.append(uniqueID); // TODO Append to display panel with a unique id getter
     	sb.append("<br>");
     	sb.append(tribeString);
     	sb.append("</p></html>");

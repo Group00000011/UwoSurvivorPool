@@ -2,8 +2,7 @@
  * Contestant -- class creates a contestant in the Survivor Pool
  * 
  * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
- *         Westaway, Delerina Hill
- *  V 1.0 02/18/12 
+ *         Westaway, Delerina Hill V 1.0 02/18/12
  */
 public class Contestant {
 	// Attributes
@@ -31,27 +30,15 @@ public class Contestant {
 	 */
 	public Contestant(String first, String last, String contID, String tribe,
 			String picture) {
-		this.firstName=first;
-		this.lastName=last;
-		this.contID=contID;
-		this.tribe=tribe;
-		this.picture=picture;
-		this.eliminationRound=null;
+		this.firstName = first;
+		this.lastName = last;
+		this.contID = contID;
+		this.tribe = tribe;
+		this.picture = picture;
+		this.eliminationRound = null;
 
 	}
 
-	
-	public void setFirst(String first){
-		this.firstName=first;
-	}
-	
-	public void setPic(String pic){
-		this.picture=pic;
-	}
-	
-	public void setLast(String last){
-		this.lastName=last;
-	}
 	// Accessor methods
 
 	/**
@@ -102,7 +89,8 @@ public class Contestant {
 	/**
 	 * Gets the round that the contestant was eliminated
 	 * 
-	 * @return the round that the contestant was eliminated, if contestant has not been eliminated returns null
+	 * @return the round that the contestant was eliminated, if contestant has
+	 *         not been eliminated returns null
 	 */
 	public Round getElimRound() {
 		return this.eliminationRound;
@@ -111,13 +99,43 @@ public class Contestant {
 	// Mutator methods
 
 	/**
+	 * Sets the Contestant's first name
+	 * 
+	 * @param first
+	 *            Contestant's first name
+	 */
+	public void setFirst(String first) {
+		this.firstName = first;
+	}
+
+	/**
+	 * Sets the Contestant's picture
+	 * 
+	 * @param pic
+	 *            Contestant's picture
+	 */
+	public void setPic(String pic) {
+		this.picture = pic;
+	}
+
+	/**
+	 * Sets the Contestant's last name
+	 * 
+	 * @param last
+	 *            Contestant's last name
+	 */
+	public void setLast(String last) {
+		this.lastName = last;
+	}
+
+	/**
 	 * Sets the contestant's tribe
 	 * 
 	 * @param tribe
 	 *            the tribe of the contestant
 	 */
 	public void setTribe(String tribe) {
-		this.tribe=tribe;
+		this.tribe = tribe;
 	}
 
 	/**
@@ -127,6 +145,6 @@ public class Contestant {
 	 *            the round that the contestant was eliminated
 	 */
 	public void setElimRound(Round elimRound) {
-		this.eliminationRound=elimRound;
+		this.eliminationRound = elimRound;
 	}
 }

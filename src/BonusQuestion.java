@@ -1,11 +1,10 @@
 /**
- * BonuQuestion -- Class creates a bonus question for a round of the survivor pool
- * 				-- Gets & sets the bonus question and answers
+ * BonuQuestion -- Class creates a bonus question for a round of the survivor
+ * pool -- Gets & sets the bonus question and answers
  * 
  * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
- *         Westaway, Delerina Hill
- *  V 1.0 02/18/12
- *  	  
+ *         Westaway, Delerina Hill V 1.0 02/18/12
+ * 
  */
 public class BonusQuestion {
 
@@ -32,6 +31,7 @@ public class BonusQuestion {
 	}
 
 	// Accessor methods
+
 	/**
 	 * Gets the question of the bonus question
 	 * 

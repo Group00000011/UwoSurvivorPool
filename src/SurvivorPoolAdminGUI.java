@@ -35,16 +35,19 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// private ImageIcon survivorLogoImg =
 	// createImageIcon("images/survivorLogo.png");
 	private ImageIcon title, quitImg, mainMenuBtnImg;
-	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"),	jungleBackground;
-	private ImageIcon playerBtnImg, playersJungleImg, playersGoldImg = createImageIcon("images/bbG.png"), contestantImg, stadingsImg, bonusQImg, themeSelectImg, standingGBg, standingJBg, bqGBg, bqJBg, blankGFrame, blankJFrame;
+	private ImageIcon goldBackground = createImageIcon("images/ruins.jpg"),
+			jungleBackground;
+	private ImageIcon playerBtnImg, playersJungleImg,
+			playersGoldImg = createImageIcon("images/bbG.png"), contestantImg,
+			stadingsImg, bonusQImg, themeSelectImg, standingGBg, standingJBg,
+			bqGBg, bqJBg, blankGFrame, blankJFrame;
 	private ImageIcon uploadedImage;
 	private ImageIcon playerGBg, contestantGBg, playerJBg, contestantJBg;
-
 
 	// ///////// Attributes for the startGame Dialog box
 	// The Buttons
 	private JButton resetGameBtn, startGameBtn, saveSettingBtn,
-	playerModButton;
+			playerModButton;
 	private JRadioButton eliminateYBtn;
 
 	// Labels to ID fields
@@ -65,14 +68,14 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	// Buttons
 	private JButton quitBtn, mainMenuBtn, playersBtn, contestantsBtn,
-	standingsBtn, bonusQBtn, themeSelectBtn;
+			standingsBtn, bonusQBtn, themeSelectBtn;
 	private JButton addPlayerBtn, addContBtn, updateBtn, deletePlayerBtn,
-	deleteContBtn, resetBtn, uploadBtn, contOptionsBtn, contListBtn;
+			deleteContBtn, resetBtn, uploadBtn, contOptionsBtn, contListBtn;
 	private JButton[] gameSettingsButtons = new JButton[13];
 
 	// JLabels
 	private JLabel themeMaker = new JLabel(goldBackground), playerBg,
-	contestantBg, standingBg, bqBg, titleBanner, contestantPicFrame;
+			contestantBg, standingBg, bqBg, titleBanner, contestantPicFrame;
 
 	// For the standings Panel
 	private JLabel poolLabel, currWkLabel, numContLabel, recElimLabel;
@@ -82,8 +85,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	// JPanels
 	private JPanel mainPanel, quitPanel, mMenuBtnPanel, titlePanel,
-	mainButtonsPanel, pPanel, cPanel, cLPanel, sPanel, qPanel,
-	currWkPanel;
+			mainButtonsPanel, pPanel, cPanel, cLPanel, sPanel, qPanel,
+			currWkPanel;
 
 	private TextInputFields textFields_p, textFields_c;
 
@@ -102,155 +105,236 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	// Variables for setters & getters
 	private boolean startGame = false;
 	private boolean contEliminated = false;
-	private int wager, roundNum=1, inputNumConts;
+	private int wager, roundNum = 1, inputNumConts;
 	private Round[] rounds;
 
 	// STUFF YOU ADDED
 	private JComponent playPanel;
 
-
 	/******************************** Constructor *************************************/
-
-	/**
-	 * Calculates the top three players
-	 */
-	public void checkWinners(){
-		int remainingRounds = numRounds - roundNum;
-		int moneyPool = wager*playersArray.length;
-		double firstMoney = moneyPool*0.6;
-		double secondMoney = moneyPool*0.3;
-		double thirdMoney = moneyPool*0.1;
-		Player first=playersArray[0];
-		Player second=playersArray[1];
-		Player third=playersArray[2];
-
-		for (int i = 0; i < playersArray.length;i++){
-			if (playersArray[i].getScore() > first.getScore()){
-				third = second;
-				second = first;
-				first = playersArray[i];
-			}
-			else if(playersArray[i].getScore() > second.getScore() && !playersArray[i].equals(first)){
-				third = second;
-				second = playersArray[i];
-			}
-			else if (playersArray[i].getScore() > third.getScore() && !playersArray[i].equals(first) && !playersArray[i].equals(second)){
-				third = playersArray[i];
-			}
-		}
-		if (roundNum > numRounds){
-			JOptionPane.showMessageDialog(this,"First Place: "+first.getFirst()+" "+first.getLast()+" wins $"+firstMoney+"\n"+"Second Place: "+second.getFirst()+" "+second.getLast()+" wins $"+secondMoney+"\n"+"Third Place: "+third.getFirst()+" "+third.getLast()+" wins $"+thirdMoney+"\n");
-		}
-		else{
-			JOptionPane.showMessageDialog(this,"Number of Rounds Remaining: "+remainingRounds);
-		}
-	}
-
-	public boolean eliminateContestant(int contIndex, int roundNum) {
-		if (roundNum > numRounds) {
-			JOptionPane
-			.showMessageDialog(
-					this,
-			"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
-		} else if (contIndex >= contCount) {
-			JOptionPane
-			.showMessageDialog(this,
-			"The specified contestant no longer exists. \n Elimination not saved.");
-		}
-		else {
-			if(this.rounds[roundNum-1].getContestantEliminated()!=null){
-				int eliminatedContIndex=findContestant(this.rounds[roundNum-1].getContestantEliminated().getID());
-				if(contestantsArray[eliminatedContIndex].getID().equals(contestantsArray[contIndex].getID())){
-					JOptionPane.showMessageDialog(this,
-							"The contestant "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+"was already eliminated in round "+roundNum);
-					return false;
-				}
-
-				if(roundNum==this.numRounds){
-
-					if(rounds[roundNum-1].getOtherContestantEliminated()!=null){
-
-						this.contestantsArray[eliminatedContIndex].setElimRound(null);
-						JOptionPane.showMessageDialog(this,
-								"The contestant elimination in round "+roundNum+", "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+" , has been overwritten ");
-						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
-						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
-						writeOther("C:/SDCard/BlackBerry/otherpick.txt");
-						return true;
-					}
-
-					else{
-						this.contestantsArray[contIndex].setElimRound(rounds[roundNum-1]);
-						this.rounds[roundNum-1].setOtherContestantEliminated(this.contestantsArray[contIndex]);
-						writeOther("C:/SDCard/BlackBerry/otherpick.txt");
-						return true;
-					}
-				}
-				else if((boolean)(eliminatedContIndex!=-1)){
-					this.contestantsArray[eliminatedContIndex].setElimRound(null);
-					JOptionPane.showMessageDialog(this,
-							"The contestant elimination in round "+roundNum+", "+ contestantsArray[eliminatedContIndex].getFirst()+" "+contestantsArray[eliminatedContIndex].getLast()+" , has been overwritten ");
-					this.rounds[roundNum - 1]
-					            .setContestantEliminated(this.contestantsArray[contIndex]);
-					contestantsArray[contIndex].setElimRound(new Round(roundNum));
-					return true;
-				}
-			}
-			else{
-				this.rounds[roundNum - 1]
-				            .setContestantEliminated(this.contestantsArray[contIndex]);
-				contestantsArray[contIndex].setElimRound(new Round(roundNum));
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/** Initializes the Administrative GUI */
 	public SurvivorPoolAdminGUI() {
 		createGame();
 	}
 
+	/**
+	 * Calculates the top three players
+	 */
+	public void checkWinners() {
+		int remainingRounds = numRounds - roundNum;
+		int moneyPool = wager * playersArray.length;
+		double firstMoney = moneyPool * 0.6;
+		double secondMoney = moneyPool * 0.3;
+		double thirdMoney = moneyPool * 0.1;
+		Player first = playersArray[0];
+		Player second = playersArray[1];
+		Player third = playersArray[2];
+
+		for (int i = 0; i < playersArray.length; i++) {
+			if (playersArray[i].getScore() > first.getScore()) {
+				third = second;
+				second = first;
+				first = playersArray[i];
+			} else if (playersArray[i].getScore() > second.getScore()
+					&& !playersArray[i].equals(first)) {
+				third = second;
+				second = playersArray[i];
+			} else if (playersArray[i].getScore() > third.getScore()
+					&& !playersArray[i].equals(first)
+					&& !playersArray[i].equals(second)) {
+				third = playersArray[i];
+			}
+		}
+		if (roundNum > numRounds) {
+			JOptionPane.showMessageDialog(this,
+					"First Place: " + first.getFirst() + " " + first.getLast()
+							+ " wins $" + firstMoney + "\n" + "Second Place: "
+							+ second.getFirst() + " " + second.getLast()
+							+ " wins $" + secondMoney + "\n" + "Third Place: "
+							+ third.getFirst() + " " + third.getLast()
+							+ " wins $" + thirdMoney + "\n");
+		} else {
+			JOptionPane.showMessageDialog(this, "Number of Rounds Remaining: "
+					+ remainingRounds);
+		}
+	}
+
+	/**
+	 * Eliminates contestant from game at specified round
+	 * 
+	 * @param contIndex
+	 *            index of contestant in contestants array
+	 * @param roundNum
+	 *            round that contestant is eliminated in
+	 * @return true if contestant successfully eliminated, false otherwise
+	 */
+	public boolean eliminateContestant(int contIndex, int roundNum) {
+		// If contestant is eliminated in round that is after last round of
+		// game, display message
+		if (roundNum > numRounds) {
+			JOptionPane
+					.showMessageDialog(
+							this,
+							"The round that has been specified is after the final Round of the game. \n Elimination not saved.");
+		}
+		// If contestant specified does not exist, display message
+		else if (contIndex >= contCount) {
+			JOptionPane
+					.showMessageDialog(this,
+							"The specified contestant no longer exists. \n Elimination not saved.");
+		}
+		// if contestant and round exist
+		else {
+			// if contestant has already been eliminated in specified round
+			if (this.rounds[roundNum - 1].getContestantEliminated() != null) {
+				int eliminatedContIndex = findContestant(this.rounds[roundNum - 1]
+						.getContestantEliminated().getID());
+				// if contestant to be eliminated has already been eliminated in
+				// specified round, display message
+				if (contestantsArray[eliminatedContIndex].getID().equals(
+						contestantsArray[contIndex].getID())) {
+					JOptionPane.showMessageDialog(
+							this,
+							"The contestant "
+									+ contestantsArray[eliminatedContIndex]
+											.getFirst()
+									+ " "
+									+ contestantsArray[eliminatedContIndex]
+											.getLast()
+									+ "was already eliminated in round "
+									+ roundNum);
+					return false;
+				}
+				// if last round of game
+				if (roundNum == this.numRounds) {
+					// if two contestants have already been eliminated in final
+					// round
+					if (rounds[roundNum - 1].getOtherContestantEliminated() != null) {
+						// Overwrite second contestant and show message
+						this.contestantsArray[eliminatedContIndex]
+								.setElimRound(null);
+						JOptionPane.showMessageDialog(
+								this,
+								"The contestant elimination in round "
+										+ roundNum
+										+ ", "
+										+ contestantsArray[eliminatedContIndex]
+												.getFirst()
+										+ " "
+										+ contestantsArray[eliminatedContIndex]
+												.getLast()
+										+ " , has been overwritten ");
+						this.contestantsArray[contIndex]
+								.setElimRound(rounds[roundNum - 1]);
+						this.rounds[roundNum - 1]
+								.setOtherContestantEliminated(this.contestantsArray[contIndex]);
+						// save second contestant eliminated
+						writeOther("C:/SDCard/BlackBerry/otherpick.txt");
+						return true;
+					}
+					// if second contestant hasn't been eliminated
+					else {
+						// eliminate second contestant
+						this.contestantsArray[contIndex]
+								.setElimRound(rounds[roundNum - 1]);
+						this.rounds[roundNum - 1]
+								.setOtherContestantEliminated(this.contestantsArray[contIndex]);
+						// save elimination
+						writeOther("C:/SDCard/BlackBerry/otherpick.txt");
+						return true;
+					}
+				}
+				// if current round is not final round
+				else if ((boolean) (eliminatedContIndex != -1)) {
+					// eliminate contestant and show message
+					this.contestantsArray[eliminatedContIndex]
+							.setElimRound(null);
+					JOptionPane.showMessageDialog(
+							this,
+							"The contestant elimination in round "
+									+ roundNum
+									+ ", "
+									+ contestantsArray[eliminatedContIndex]
+											.getFirst()
+									+ " "
+									+ contestantsArray[eliminatedContIndex]
+											.getLast()
+									+ " , has been overwritten ");
+					this.rounds[roundNum - 1]
+							.setContestantEliminated(this.contestantsArray[contIndex]);
+					contestantsArray[contIndex]
+							.setElimRound(new Round(roundNum));
+					return true;
+				}
+			}
+			// if no contestant has been eliminated in the specified round
+			else {
+				// eliminate contestant
+				this.rounds[roundNum - 1]
+						.setContestantEliminated(this.contestantsArray[contIndex]);
+				contestantsArray[contIndex].setElimRound(new Round(roundNum));
+				return true;
+			}
+		}
+		// if contestant was not eliminated, return false
+		return false;
+	}
+
+	/**
+	 * Resets the game and deletes all saved information
+	 */
 	public void resetGame() {
 		BufferedWriter bWr = null;
 		String currString = "";
 		try {
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/players.txt"));
+			// clear players.txt flat file
+			bWr = new BufferedWriter(new FileWriter(
+					"C:/SDCard/BlackBerry/players.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/settings.txt"));
+			// clear settings.txt flat file
+			bWr = new BufferedWriter(new FileWriter(
+					"C:/SDCard/BlackBerry/settings.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/contestants.txt"));
+			// clear contestants.txt flat file
+			bWr = new BufferedWriter(new FileWriter(
+					"C:/SDCard/BlackBerry/contestants.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
-			bWr = new BufferedWriter(new FileWriter("C:/SDCard/BlackBerry/rounds.txt"));
+			// clear rounds.txt flat file
+			bWr = new BufferedWriter(new FileWriter(
+					"C:/SDCard/BlackBerry/rounds.txt"));
 			bWr.write("");
 			bWr.flush();
 			bWr.close();
-			wager=0;
-			inputNumConts=0;
-			numRounds=0;
-			roundNum=1;
-			startGame=false;
-			this.rounds=null;
-			this.playersArray=null;
-			this.contestantsArray=null;
+			// set all non-static information to initial values
+			wager = 0;
+			inputNumConts = 0;
+			numRounds = 0;
+			roundNum = 1;
+			startGame = false;
+			this.rounds = null;
+			this.playersArray = null;
+			this.contestantsArray = null;
+			// clear screen and restart game
 			getContentPane().removeAll();
 			getContentPane().removeAll();
 			createGame();
 		} catch (IOException e) {
 		}
 	}
+
 	/**
 	 * Initializes default theme components, images, font type & panels, & sets
 	 * them to the main frame As well as setting the main frame
 	 */
 	private void createGame() {
-		gRuinsThemeOn=true;
+		gRuinsThemeOn = true;
 		// initialize players and contestants array
 		String fileName = "C:/SDCard/BlackBerry/players.txt";
 		readPlayers(fileName);
@@ -320,74 +404,126 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	}// End of SurvivorPoolAdminGUI Constructor
 
 	/****************************** Methods *********************************/
-
-
-
-	public int findContestantWinner(){
-		if(roundNum>numRounds){
-			for(int i=0;i<contCount;i++){
-				if(this.contestantsArray[i].getElimRound()==null)
+	/**
+	 * Returns index of last remaining contestant when Survivor ends
+	 * 
+	 * @return index of last remaining contestant
+	 */
+	public int findContestantWinner() {
+		// if game is over
+		if (roundNum > numRounds) {
+			// return index of last remaining contestant
+			for (int i = 0; i < contCount; i++) {
+				if (this.contestantsArray[i].getElimRound() == null)
 					return i;
 			}
 
 		}
+		// if game is not over or contestant was not found, return -1
 		return -1;
 	}
+
+	/**
+	 * Assigns random weekly pick to player at specified index for specified
+	 * round
+	 * 
+	 * @param index
+	 *            Index of player in array
+	 * @param roundNum
+	 *            Round number
+	 * @return String describing which contestant was assigned
+	 */
 	public String assignRandomCont(int index, int roundNum) {
 		if (this.playersArray[index] == null)
 			return null;
 		else {
+			// create random number generator
 			Random numGenerator = new Random();
+			// use generator to generate index for random contestant
 			int contIndex = numGenerator.nextInt(this.contCount);
 			this.playersArray[index].makeRoundPick(roundNum,
 					contestantsArray[contIndex]);
+			// create string describing elimination
 			String s = "" + this.playersArray[index].getFirst() + " "
-			+ this.playersArray[index].getLast() + ": "
-			+ contestantsArray[contIndex].getFirst() + " "
-			+ contestantsArray[contIndex].getLast();
+					+ this.playersArray[index].getLast() + ": "
+					+ contestantsArray[contIndex].getFirst() + " "
+					+ contestantsArray[contIndex].getLast();
 			return s;
 		}
 
 	}
 
+	/**
+	 * Returns round object of specified round
+	 * 
+	 * @param rndNum
+	 *            Round number of target round
+	 * @return Round object of target round
+	 */
 	public Round getRound(int rndNum) {
+		// if game has not started yet
 		if (numRounds == 0)
 			return null;
+		// if round specified does not exist
 		if (rndNum > numRounds)
 			return null;
+		// if round specified exists
 		else
 			return this.rounds[rndNum - 1];
 	}
 
+	/**
+	 * Assigns round weekly contestant pick to all players who have not made a
+	 * weekly pick at the specified round
+	 * 
+	 * @param roundNum
+	 *            Round to assign weekly picks for
+	 * @return String describing which contestant each player was assigned
+	 */
 	public String assignRandomPicks(int roundNum) {
 		String s = "";
+		// assign week pick to each player that didn't make one for the
+		// specified round
 		for (int i = 0; i < this.playersArray.length
-		&& this.playersArray[i] != null; i++) {
+				&& this.playersArray[i] != null; i++) {
 			if (playersArray[i].getWeekPick(roundNum) == null)
 				s = s + assignRandomCont(i, roundNum) + "\n";
 		}
+		// return null string if no players have been assigned picks
 		if (s.equals(""))
 			return null;
+		// otherwise, return string describing picks
 		else
 			return s;
 	}
 
+	/**
+	 * Calculates the score of each player and sets there score to that value
+	 */
 	public void calcEliminationScore() {
+		// if game hasn't started, do not alter score
 		if (startGame == false)
 			; // don't need to change peoples score
+		// else
 		else if (roundNum > 1 && roundNum < numRounds + 2) {
+			// clear each players score, and set there score to equal score
+			// earned from bonus questions
 			for (int i = 0; i < playersArray.length; i++) {
 				playersArray[i].setScore(0);
 				playersArray[i].incScore(playersArray[i].getBQScore());
 			}
 			String contElimID;
 			int max = roundNum - 1;
+			// if game is over
 			if (roundNum > numRounds) {
 				max = numRounds;
 				contElimID = contestantsArray[findContestantWinner()].getID();
+				// loop through all players
 				for (int i = 0; i < playersArray.length; i++) {
+					// if player has chosen a winner
 					if (playersArray[i].getFinal() != null
 							&& playersArray[i].getFinal().getContestant() != null) {
+						// if player has chosen winner correctly, award points
 						if (playersArray[i].getFinal().getContestant().getID()
 								.equals(contElimID)) {
 							playersArray[i].incScore(2 * (this.inputNumConts
@@ -397,52 +533,75 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 			}
+			// loop through rounds
 			for (int i = 0; i < max; i++) {
 				contElimID = rounds[i].getContestantEliminated().getID();
+				// loop through players
 				for (int j = 0; j < playersArray.length; j++) {
-					if (playersArray[j].getWeekPick(i+1) != null) 
+					// if players made a week pick
+					if (playersArray[j].getWeekPick(i + 1) != null)
+						// if round is final round
 						if (i == numRounds - 1) {
-							if (playersArray[j].getWeekPick(i+1) != null){
-								if (contestantsArray[findContestantWinner()].getID().equals(playersArray[j]
-								                                                                         .getWeekPick(i + 1).getContestant().getID())) 
+							// if player chose winner correctly, award points
+							if (playersArray[j].getWeekPick(i + 1) != null) {
+								if (contestantsArray[findContestantWinner()]
+										.getID().equals(
+												playersArray[j]
+														.getWeekPick(i + 1)
+														.getContestant()
+														.getID()))
 									playersArray[j].incScore(40);
 							}
 
-						} else{
-							if (playersArray[j].getWeekPick(i+1) != null){
+						}
+						// if not final round
+						else {
+							// if player chose elimination correctly, award
+							// points
+							if (playersArray[j].getWeekPick(i + 1) != null) {
 								if (contElimID.equals(playersArray[j]
-								                                   .getWeekPick(i + 1).getContestant().getID())) 
+										.getWeekPick(i + 1).getContestant()
+										.getID()))
 									playersArray[j].incScore(20);
 							}
 						}
-
 
 				}
 			}
 		}
 	}
 
+	/**
+	 * Changes survivor pool to next round
+	 */
 	public void nextRound() {
+		// if game hasn't started, show message
 		if (startGame == false)
 			JOptionPane.showMessageDialog(this,
-			"You must start the game before going to the next round");
-		else if(this.roundNum>this.numRounds){
-			
+					"You must start the game before going to the next round");
+		// if game is over, show the winners
+		else if (this.roundNum > this.numRounds) {
+
 			checkWinners();
 			return;
 		}
+		// if no contestant has been eliminated in the current round, show
+		// message
 		else if (this.rounds[roundNum - 1].getContestantEliminated() == null)
 			JOptionPane
-			.showMessageDialog(
-					this,
-			"You must eliminate a contestant before going to the next round. \n (Contestants >> Contestant Options >> Update Contestant)");
-		else if (this.roundNum==this.numRounds){
-			if(this.rounds[roundNum-1].getOtherContestantEliminated()==null)
+					.showMessageDialog(
+							this,
+							"You must eliminate a contestant before going to the next round. \n (Contestants >> Contestant Options >> Update Contestant)");
+		// if it is the final round
+		else if (this.roundNum == this.numRounds) {
+			// if two contestants haven't been eliminated, show message
+			if (this.rounds[roundNum - 1].getOtherContestantEliminated() == null)
 				JOptionPane
-				.showMessageDialog(
-						this,
-				"Two contestants must be eliminated before ending the final round. \n (Contestants >> Contestant Options >> Update Contestant)");
-			else{
+						.showMessageDialog(
+								this,
+								"Two contestants must be eliminated before ending the final round. \n (Contestants >> Contestant Options >> Update Contestant)");
+			// else, end game
+			else {
 				roundNum++;
 				assignRandomPicks(numRounds);
 				this.calcEliminationScore();
@@ -451,27 +610,31 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				return;
 			}
 		}
+		// if it is not the final round
 		else {
+			// if players or contesants haven't been added to the game
 			if (contCount == 0 || playersArray == null)
 				JOptionPane
-				.showMessageDialog(this,
-				"Please add players and contestants before changing to the next round");
+						.showMessageDialog(this,
+								"Please add players and contestants before changing to the next round");
+			// if players and contestants have been added, go to next round
 			else {
 				String s = assignRandomPicks(this.roundNum);
 				roundNum++;
 				calcEliminationScore();
-
+				// If players weren't assigned random picks, show message
 				if (s == null)
 					JOptionPane.showMessageDialog(this, "It is now round "
 							+ this.roundNum);
+				// else, show different message
 				else {
 					JOptionPane
-					.showMessageDialog(
-							this,
-							"It is now round "
-							+ this.roundNum
-							+ "\n The following players were assigned random contestant choices: \n\n"
-							+ s);
+							.showMessageDialog(
+									this,
+									"It is now round "
+											+ this.roundNum
+											+ "\n The following players were assigned random contestant choices: \n\n"
+											+ s);
 					calcEliminationScore();
 					writePlayers("C:/SDCard/BlackBerry/players.txt");
 					writeSettings("C:/SDCard/BlackBerry/settings.txt");
@@ -480,13 +643,22 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 	}
 
-	public void writeOther(String fileName){
+	/**
+	 * Writes second contestant eliminated in final round to file
+	 * 
+	 * @param fileName
+	 *            name of file that will be written to
+	 */
+	public void writeOther(String fileName) {
 		BufferedWriter bWr = null;
 		try {
-			String s="";
+			String s = "";
 			bWr = new BufferedWriter(new FileWriter(fileName));
-			if(inputNumConts!=0){
-				s=rounds[numRounds-1].getOtherContestantEliminated().getID()+"\n";
+			// if the number of contestants have been specified
+			if (inputNumConts != 0) {
+				// write the ID of the contestant to the file
+				s = rounds[numRounds - 1].getOtherContestantEliminated()
+						.getID() + "\n";
 			}
 			bWr.write(s);
 			bWr.flush();
@@ -495,18 +667,30 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Reads the second contestant eliminated in final round from a file
+	 * 
+	 * @param fileName
+	 *            The file being read from
+	 */
 	public void readOther(String fileName) {
 		try {
 			DataInputStream input = new DataInputStream(new FileInputStream(
 					fileName));
 			BufferedReader in = new BufferedReader(new InputStreamReader(input));
 			String currRound = in.readLine();
+			// if the file is not empty
 			if (currRound != null && !currRound.trim().equals("")) {
-				rounds[roundNum-1].setOtherContestantEliminated(contestantsArray[findContestant(currRound.trim())]);
+				// set second contestant eliminated in final round to contestant
+				// specified in file
+				rounds[roundNum - 1]
+						.setOtherContestantEliminated(contestantsArray[findContestant(currRound
+								.trim())]);
 			}
+		} catch (Exception e) {
 		}
-		catch(Exception e){}
 	}
+
 	/**
 	 * Persistence for player fields - reads the player name and ID from the
 	 * file where all player records are stored.
@@ -523,26 +707,31 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			Player currPlayerObj;
 			Contestant contElim;
 			int pScr, rnd, finRnd;
+			// while there are more lines in the file
 			while (currPlayer != null && !currPlayer.trim().equals("")) {
 				int i = 0;
 				pFirst = pLast = pID = rndStr = finRndStr = pScrStr = cFirst = cLast = cID = cTrb = cPic = "";
 				pScr = rnd = finRnd = 0;
+				// read first name
 				while (currPlayer.charAt(i) != '+' && i < currPlayer.length()) {
 					pFirst = pFirst + currPlayer.charAt(i);
 					i++;
 				}// end of first name field
 				i++;
+				// read last name
 				while (currPlayer.charAt(i) != '+' && i < currPlayer.length()) {
 					pLast = pLast + currPlayer.charAt(i);
 					i++;
 				}// end of last name field
 				i++;
+				// read player ID
 				while (currPlayer.charAt(i) != '+' && i < currPlayer.length()) {
 					pID = pID + currPlayer.charAt(i);
 					i++;
 				}// end of first last name field
 				i++;
 				currPlayerObj = new Player(pFirst, pLast, pID);
+				// read player score
 				for (; i < currPlayer.length(); i++) {
 					if (currPlayer.charAt(i) == '+') {
 						pScr = Integer.valueOf(pScrStr);
@@ -553,23 +742,27 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				}
 				i++;
 				currPlayerObj.setScore(pScr);
-
+				// if player has not answered bonus questions
 				if (currPlayer.charAt(i) == '_')
 					i = i + 2;
+				// if player has answered bonus questions
 				else {
 					String numBQAnswersStr = "", roundBQStr = "", answer = "", qstn = "", numQstnAnsStr = "", qstAns = "", qstCorAns = "";
 					int numBQAnswers = 0, roundBQ = 0, numQstAns = 0;
+					// read number of bonus questions player has answered
 					for (; i < currPlayer.length(); i++) {
 						if (currPlayer.charAt(i) == '{') {
 							numBQAnswers = Integer.valueOf(numBQAnswersStr);
 							break;
 						} else {
 							numBQAnswersStr = numBQAnswersStr
-							+ currPlayer.charAt(i);
+									+ currPlayer.charAt(i);
 						}
 					}
 					i++;
+					// while there are more bonus question answers
 					for (int index = 0; index < numBQAnswers; index++) {
+						// read the round of the bonus question
 						for (; i < currPlayer.length(); i++) {
 							if (currPlayer.charAt(i) == '{') {
 								roundBQ = Integer.valueOf(roundBQStr);
@@ -579,32 +772,39 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							}
 						}
 						i++;
+						// read the player's answer to the bonus question
 						while (currPlayer.charAt(i) != '{'
-							&& i < currPlayer.length()) {
+								&& i < currPlayer.length()) {
 							answer = answer + currPlayer.charAt(i);
 							i++;
 						}// end of first last name field
 						i++;
+						// read the question of the bonus question
 						while (currPlayer.charAt(i) != '{'
-							&& i < currPlayer.length()) {
+								&& i < currPlayer.length()) {
 							qstn = qstn + currPlayer.charAt(i);
 							i++;
 						}// end of first last name field
 						i++;
+						// read the number of question answers of the bonus
+						// question
 						for (; i < currPlayer.length(); i++) {
 							if (currPlayer.charAt(i) == '{') {
 								numQstAns = Integer.valueOf(numQstnAnsStr);
 								break;
 							} else {
 								numQstnAnsStr = numQstnAnsStr
-								+ currPlayer.charAt(i);
+										+ currPlayer.charAt(i);
 							}
 						}
 						i++;
 						String[] qstAnswers = new String[numQstAns];
+						// while there are more question answers to bonus
+						// question
 						for (int k = 0; k < numQstAns; k++) {
+							// read each answer to the bonus question
 							while (currPlayer.charAt(i) != '{'
-								&& i < currPlayer.length()) {
+									&& i < currPlayer.length()) {
 								qstAns = qstAns + currPlayer.charAt(i);
 								i++;
 							}// end of first last name field
@@ -612,8 +812,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							qstAnswers[k] = qstAns;
 							qstAns = "";
 						}
+						// read correct answer of bonus question
 						while (currPlayer.charAt(i) != '{'
-							&& i < currPlayer.length()) {
+								&& i < currPlayer.length()) {
 							qstCorAns = qstCorAns + currPlayer.charAt(i);
 							i++;
 						}// end of first last name field
@@ -623,9 +824,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 
 				}
+				// if player has not made a final pick
 				if (currPlayer.charAt(i) == '_')
 					i++;
+				// if player has made final pick
 				else {
+					// read round final pick was chosen
 					for (; i < currPlayer.length(); i++) {
 						if (currPlayer.charAt(i) == '{') {
 							finRnd = Integer.valueOf(finRndStr);
@@ -635,6 +839,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 					i++;
+					// read the round number of the final pick
 					for (; i < currPlayer.length(); i++) {
 						if (currPlayer.charAt(i) == '{') {
 							rnd = Integer.valueOf(rndStr);
@@ -644,30 +849,38 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 					i++;
+					// read the first name of the contestant chosen to be
+					// eliminated
 					while (i < currPlayer.length()
 							&& currPlayer.charAt(i) != '{') {
 						cFirst = cFirst + currPlayer.charAt(i);
 						i++;
 					}
 					i++;
+					// read the last name of the contestant chosen to be
+					// eliminated
 					while (i < currPlayer.length()
 							&& currPlayer.charAt(i) != '{') {
 						cLast = cLast + currPlayer.charAt(i);
 						i++;
 					}
 					i++;
+					// read the ID of the contestant chosen to be eliminated
 					while (i < currPlayer.length()
 							&& currPlayer.charAt(i) != '{') {
 						cID = cID + currPlayer.charAt(i);
 						i++;
 					}
 					i++;
+					// read the picture filepath of the contestant chosen to be
+					// eliminated
 					while (i < currPlayer.length()
 							&& currPlayer.charAt(i) != '{') {
 						cPic = cPic + currPlayer.charAt(i);
 						i++;
 					}
 					i++;
+					// read the tribe of the contestant chosen to be eliminated
 					while (i < currPlayer.length()
 							&& currPlayer.charAt(i) != '{') {
 						cTrb = cTrb + currPlayer.charAt(i);
@@ -680,12 +893,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				cFirst = cLast = cID = cTrb = cPic = rndStr = "";
 				finRnd = rnd = 0;
 				for (; i < currPlayer.length();) {
+					// if no weekly picks have been made
 					if (currPlayer.charAt(i) == '_'
-						|| currPlayer.charAt(i) == '{')
+							|| currPlayer.charAt(i) == '{')
 						i++;
+					// if weekly pick has been
 					else {
 						cFirst = cLast = cID = cTrb = cPic = rndStr = "";
 						rnd = 0;
+						// read round number of weekly pick
 						for (; i < currPlayer.length(); i++) {
 							if (currPlayer.charAt(i) == '{') {
 
@@ -697,30 +913,39 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							}
 						}
 						i++;
+						// read first name of the contestant chosen to be
+						// eliminated
 						while (i < currPlayer.length()
 								&& currPlayer.charAt(i) != '{') {
 							cFirst = cFirst + currPlayer.charAt(i);
 							i++;
 						}
 						i++;
+						// read the last name of the contestant chosen to be
+						// eliminated
 						while (i < currPlayer.length()
 								&& currPlayer.charAt(i) != '{') {
 							cLast = cLast + currPlayer.charAt(i);
 							i++;
 						}
 						i++;
+						// read the ID of the contestant chosen to be eliminated
 						while (i < currPlayer.length()
 								&& currPlayer.charAt(i) != '{') {
 							cID = cID + currPlayer.charAt(i);
 							i++;
 						}
 						i++;
+						// read the picture of the contestant chosen to be
+						// eliminated
 						while (i < currPlayer.length()
 								&& currPlayer.charAt(i) != '{') {
 							cPic = cPic + currPlayer.charAt(i);
 							i++;
 						}
 						i++;
+						// read the tribe name of the contestant chosen to be
+						// eliminated
 						while (i < currPlayer.length()
 								&& currPlayer.charAt(i) != '{') {
 							cTrb = cTrb + currPlayer.charAt(i);
@@ -732,7 +957,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						currPlayerObj.makeRoundPick(rnd, contElim);
 					}
 				}
+				// add player to array
 				addPlayer(currPlayerObj);
+				// read next line
 				currPlayer = in.readLine();
 
 			}
@@ -752,32 +979,37 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		try {
 
 			bWr = new BufferedWriter(new FileWriter(fileName));
+			// loop through players
 			for (int i = 0; i < this.playersArray.length; i++) {
-
+				// write first name, last name, ID, and score of player to file
 				currString = currString + this.playersArray[i].getFirst() + "+";
 				currString = currString + this.playersArray[i].getLast() + "+";
 				currString = currString + this.playersArray[i].getID() + "+";
 				currString = currString + this.playersArray[i].getScore() + "+";
+				// write underscore if player hasn't answered bonus questions
 				if (this.playersArray[i].getAnswers() == null)
 					currString = currString + "_{";
 				else {
 					Vector<BQAnswer> answersHolder = this.playersArray[i]
-					                                                   .getAnswers();
+							.getAnswers();
+					// write underscore if player hasn't answered bonus
+					// questions
 					if (answersHolder.isEmpty())
 						currString = currString + "_{";
 					else {
 						int numAnswers = answersHolder.size();
 						currString = currString + numAnswers + "{";
 						Iterator<BQAnswer> answers = answersHolder.iterator();
+						// write each bonus question on line in file
 						for (int j = 0; i < numAnswers; i++) {
 							BQAnswer curAnswer = answers.next();
 							currString = currString + curAnswer.getRound()
-							+ "{";
+									+ "{";
 							currString = currString + curAnswer.getAnswer()
-							+ "{";
+									+ "{";
 							BonusQuestion question = curAnswer.getQuestion();
 							currString = currString + question.getQuestion()
-							+ "{";
+									+ "{";
 							String[] answersAr = question.getAnswers();
 							currString = currString + answersAr.length + "{";
 							for (int k = 0; k < answersAr.length; k++) {
@@ -785,67 +1017,72 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							}
 
 							currString = currString
-							+ question.getCorrectAnswer() + "{";
+									+ question.getCorrectAnswer() + "{";
 
 						}
 					}
 
 				}
-
+				// if player hasn't made final pick
 				if (this.playersArray[i].getFinal() == null)
 					currString = currString + "_{";
+				// else, write final pick to file
 				else {
 					currString = currString
-					+ this.playersArray[i].getRoundOfFinal() + "{";
+							+ this.playersArray[i].getRoundOfFinal() + "{";
 					currString = currString
-					+ this.playersArray[i].getFinal().getRound() + "{";
+							+ this.playersArray[i].getFinal().getRound() + "{";
 					currString = currString
-					+ this.playersArray[i].getFinal().getContestant()
-					.getFirst() + "{";
+							+ this.playersArray[i].getFinal().getContestant()
+									.getFirst() + "{";
 					currString = currString
-					+ this.playersArray[i].getFinal().getContestant()
-					.getLast() + "{";
+							+ this.playersArray[i].getFinal().getContestant()
+									.getLast() + "{";
 					currString = currString
-					+ this.playersArray[i].getFinal().getContestant()
-					.getID() + "{";
+							+ this.playersArray[i].getFinal().getContestant()
+									.getID() + "{";
 					currString = currString
-					+ this.playersArray[i].getFinal().getContestant()
-					.getPicture() + "{";
+							+ this.playersArray[i].getFinal().getContestant()
+									.getPicture() + "{";
 					currString = currString
-					+ this.playersArray[i].getFinal().getContestant()
-					.getTribe() + "{";
+							+ this.playersArray[i].getFinal().getContestant()
+									.getTribe() + "{";
 				}
+				// if player hasn't made week picks, write nothing
 				if (this.playersArray[i].getAllWeekPicks() == null) {
 					;
-				} else {
+				}
+				// if player has made week picks
+				else {
 					RoundPick[] weekPicks = this.playersArray[i]
-					                                          .getAllWeekPicks();
+							.getAllWeekPicks();
 					int max = weekPicks.length;
-
+					// write each weekpick to the file
 					for (int j = 0; j < max; j++) {
 						if (weekPicks[j] == null)
 							;
 						else {
 							currString = currString + weekPicks[j].getRound()
-							+ "{";
+									+ "{";
 							currString = currString
-							+ weekPicks[j].getContestant().getFirst()
-							+ "{";
+									+ weekPicks[j].getContestant().getFirst()
+									+ "{";
 							currString = currString
-							+ weekPicks[j].getContestant().getLast()
-							+ "{";
+									+ weekPicks[j].getContestant().getLast()
+									+ "{";
 							currString = currString
-							+ weekPicks[j].getContestant().getID()
-							+ "{";
+									+ weekPicks[j].getContestant().getID()
+									+ "{";
 							currString = currString
-							+ weekPicks[j].getContestant().getPicture()
-							+ "{";
+									+ weekPicks[j].getContestant().getPicture()
+									+ "{";
 							currString = currString
-							+ weekPicks[j].getContestant().getTribe()
-							+ "{";
+									+ weekPicks[j].getContestant().getTribe()
+									+ "{";
 						}
 					}
 				}
+				// go to next line
 				currString = currString + "\n";
 
 			}
@@ -858,6 +1095,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 	}
 
+	/**
+	 * Persistence for round array - reads round array from file
+	 * 
+	 * @param fileName
+	 *            -- the pathname of the file where round information is stored.
+	 */
 	public void readRounds(String fileName) {
 		try {
 			DataInputStream input = new DataInputStream(new FileInputStream(
@@ -868,10 +1111,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String cFirst = "", cLast = "", cID = "", cPic = "", cTrb = "", bQuest = "", bAns = "", bCorAns = "", rndStr = "", numAnsStr = "", numBonusStr = "";
 			int rnd = 0, numAns = 0, numBonus = 0;
 			this.rounds = new Round[inputNumConts - 2];
+			// loop through each line of file
 			for (int j = 0; currRound != null && currRound.trim() != ""; j++) {
 				int i = 0;
 				cFirst = cLast = cID = cPic = cTrb = bQuest = bAns = rndStr = numAnsStr = bCorAns = numBonusStr = "";
 				rnd = numAns = numBonus = 0;
+				// read round number
 				for (; i < currRound.length(); i++) {
 					if (currRound.charAt(i) == '+') {
 						rnd = Integer.valueOf(rndStr);
@@ -882,43 +1127,54 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					}
 				}
 				i++;
+				// if read underscore, the no contestant has been eliminated
 				if (currRound.charAt(i) == '_')
 					i++;
+				// else, read contestant eliminated from file
 				else {
 					cFirst = cLast = cID = cPic = cTrb = "";
+					// read first name
 					while (i < currRound.length() && currRound.charAt(i) != '{') {
 						cFirst = cFirst + currRound.charAt(i);
 						i++;
 					}
 					i++;
+					// read last name
 					while (i < currRound.length() && currRound.charAt(i) != '{') {
 						cLast = cLast + currRound.charAt(i);
 						i++;
 					}
 					i++;
+					// read ID
 					while (i < currRound.length() && currRound.charAt(i) != '{') {
 						cID = cID + currRound.charAt(i);
 						i++;
 					}
 					i++;
+					// read picture
 					while (i < currRound.length() && currRound.charAt(i) != '{') {
 						cPic = cPic + currRound.charAt(i);
 						i++;
 					}
 					i++;
+					// read tribe name
 					while (i < currRound.length() && currRound.charAt(i) != '{') {
 						cTrb = cTrb + currRound.charAt(i);
 						i++;
 					}
+					// read contstant eliminated
 					this.rounds[j].setContestantEliminated(new Contestant(
 							cFirst, cLast, cID, cTrb, cPic));
 				}
 				i++;
+				// if underscore, no bonus questions have been added to round
 				if (currRound.charAt(i) == '_')
 					i++;
+				// if bonus questions have been added to round
 				else {
 					bQuest = bAns = rndStr = numAnsStr = bCorAns = numBonusStr = "";
 					numAns = numBonus = 0;
+					// read number of bonus questions
 					for (; i < currRound.length(); i++) {
 						if (currRound.charAt(i) == '{') {
 							numBonus = Integer.valueOf(numBonusStr);
@@ -928,13 +1184,15 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 					i++;
+					// loop through bonus questions
 					for (int k = 0; k < numBonus && i < currRound.length(); k++) {
 						cFirst = cLast = cID = cPic = cTrb = bQuest = bAns = rndStr = numAnsStr = bCorAns = numBonusStr = "";
 						rnd = numAns = 0;
-
+						// if underscore, no question stored
 						if (currRound.charAt(i) == '_')
 							i = i + 2;
 						else {
+							// read question
 							while (i < currRound.length()
 									&& currRound.charAt(i) != '{') {
 								bQuest = bQuest + currRound.charAt(i);
@@ -942,15 +1200,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							}
 							i++;
 						}
+						// if underscore, no answers stored
 						if (currRound.charAt(i) == '_')
 							i = i + 2;
+						// answers to bonus question are stored
 						else {
-							boolean escapeLoop=false;
-							for (;currRound.charAt(i)!='{';) {
+							boolean escapeLoop = false;
+							// read number of bonus question answers
+							for (; currRound.charAt(i) != '{';) {
 								if (currRound.charAt(i) == '{') {
 									numAns = Integer.valueOf(numAnsStr);
 									ans = new String[numAns];
-									escapeLoop=true;
+									escapeLoop = true;
 								} else {
 									numAnsStr = numAnsStr + currRound.charAt(i);
 									i++;
@@ -959,8 +1220,10 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							numAns = Integer.valueOf(numAnsStr);
 							ans = new String[numAns];
 							i++;
+							// loop through bonus question answers
 							for (int l = 0; l < numAns
-							&& i < currRound.length(); l++) {
+									&& i < currRound.length(); l++) {
+								// read each bonus question answer
 								while (i < currRound.length()
 										&& currRound.charAt(i) != '{') {
 									bAns = bAns + currRound.charAt(i);
@@ -972,9 +1235,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							}
 
 						}
+						// if underscore, no correct answer to bonus question
+						// store
 						if (currRound.charAt(i) == '_')
 							i = i + 2;
+						// if correct answer to bonus question is stored
 						else {
+							// read correct answer
 							while (i < currRound.length()
 									&& currRound.charAt(i) != '{') {
 								bCorAns = bCorAns + currRound.charAt(i);
@@ -982,6 +1249,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							}
 							i++;
 						}
+						// add bonus question to round
 						BonusQuestion bQuestion = new BonusQuestion(bQuest,
 								ans, bCorAns);
 						this.rounds[j].addBonusQuestion(bQuestion);
@@ -993,44 +1261,60 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Persistence for round array - writes round array to file
+	 * 
+	 * @param fileName
+	 *            -- the pathname of the file where round information is
+	 *            written.
+	 */
 	public void writeRounds(String fileName) {
 		BufferedWriter bWr = null;
 		String currString = "";
 		try {
 
 			bWr = new BufferedWriter(new FileWriter(fileName));
+			// for each round of round array
 			for (int i = 0; i < this.rounds.length; i++) {
+				// write round number
 				currString = currString + this.rounds[i].getRoundNum() + "+";
+				// if no contestant eliminated write _{
 				if (rounds[i].getContestantEliminated() == null) {
 					currString = currString + "_{";
-				} else {
+				}
+				// otherwise, write contestant information to file
+				else {
 					currString = currString
-					+ this.rounds[i].getContestantEliminated()
-					.getFirst() + "{";
+							+ this.rounds[i].getContestantEliminated()
+									.getFirst() + "{";
 					currString = currString
-					+ this.rounds[i].getContestantEliminated()
-					.getLast() + "{";
+							+ this.rounds[i].getContestantEliminated()
+									.getLast() + "{";
 					currString = currString
-					+ this.rounds[i].getContestantEliminated().getID()
-					+ "{";
+							+ this.rounds[i].getContestantEliminated().getID()
+							+ "{";
 					currString = currString
-					+ this.rounds[i].getContestantEliminated()
-					.getPicture() + "{";
+							+ this.rounds[i].getContestantEliminated()
+									.getPicture() + "{";
 					currString = currString
-					+ this.rounds[i].getContestantEliminated()
-					.getTribe() + "{";
+							+ this.rounds[i].getContestantEliminated()
+									.getTribe() + "{";
 				}
 				BonusQuestion[] bonus = this.rounds[i].getBonusQuestion();
+				// if round has no bonus questions, write _{
 				if (bonus == null)
 					currString = currString + "_{";
+				// if round has bonus questions
 				else {
 					currString = currString + bonus.length + "{";
+					// loop through each bonus question
 					for (int j = 0; j < bonus.length; j++) {
+						// write bonus question information to file
 						if (bonus[j].getQuestion() == null)
 							currString = currString + "_{";
 						else
 							currString = currString + bonus[j].getQuestion()
-							+ "{";
+									+ "{";
 						if (bonus[j].getAnswers() == null)
 							currString = currString + "_{";
 						else {
@@ -1044,14 +1328,16 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							currString = currString + "_{";
 						else {
 							currString = currString
-							+ bonus[j].getCorrectAnswer()+'{';
+									+ bonus[j].getCorrectAnswer() + '{';
 						}
 
 					}
 				}
+				// go to next line
 				currString = currString + "\n";
 
 			}
+			// write round information to file
 			bWr.write(currString);
 			bWr.flush();
 			bWr.close();
@@ -1059,50 +1345,69 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		} // won't happen
 	}
 
+	/**
+	 * Persistence for settings - reads settings from file
+	 * 
+	 * @param fileName
+	 *            -- the pathname of the file where setting information is read.
+	 */
 	public void readSettings(String fileName) {
 		try {
 			DataInputStream input = new DataInputStream(new FileInputStream(
 					fileName));
 			BufferedReader in = new BufferedReader(new InputStreamReader(input));
 			String currRound = in.readLine();
+			// for each line in file
 			if (currRound != null && !currRound.trim().equals("")) {
+				// read round number from file
 				this.roundNum = Integer.valueOf(currRound.trim());
-
 				String gameStarted = in.readLine(), inputWager;
+				// read if the game has started
 				if (gameStarted != null && !gameStarted.trim().equals("")) {
 					if (gameStarted.equals("true")) {
 						this.startGame = true;
 					} else
 						this.startGame = false;
 					String inputSpecifier = in.readLine();
+					// if there is another line
 					if (inputSpecifier != null) {
+						// if the next section contains round information
 						if (inputSpecifier.equals("R")) {
+							// read the number of rounds
 							String inputNumRounds = in.readLine();
 							if (inputNumRounds != null) {
 								this.numRounds = Integer
-								.valueOf(inputNumRounds);
+										.valueOf(inputNumRounds);
 
 								String inNumContestants = in.readLine();
+								// read the number of contestants
 								if (inNumContestants != null) {
 									this.inputNumConts = Integer
-									.valueOf(inNumContestants);
+											.valueOf(inNumContestants);
 									this.rounds = new Round[inputNumConts - 2];
 									for (int i = 0; i < inputNumConts - 2; i++) {
 										this.rounds[i] = new Round(i + 1);
 									}
+									// if there is another line
 									inputSpecifier = in.readLine();
 									if (inputSpecifier != null) {
+										// if the next section specifies wager
+										// information
 										if (inputSpecifier.equals("W")) {
+											// read wager
 											inputWager = in.readLine();
 											if (inputWager != null)
 												this.wager = Integer
-												.valueOf(inputWager);
+														.valueOf(inputWager);
 										}
 									}
 								}
 							}
-						} else if (inputSpecifier.equals("W")) {
+						}
+						// if next section specifies wager
+						else if (inputSpecifier.equals("W")) {
 							inputWager = in.readLine();
+							// read wager
 							if (inputWager != null)
 								this.wager = Integer.valueOf(inputWager);
 						}
@@ -1113,17 +1418,27 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Persistence for settigs - reads settings from file
+	 * 
+	 * @param fileName
+	 *            -- the pathname of the file where settings information is
+	 *            stored.
+	 */
 	public void writeSettings(String fileName) {
 		BufferedWriter bWr = null;
 		try {
 
 			bWr = new BufferedWriter(new FileWriter(fileName));
+			// write round number and whether game started
 			String settingsStr = "" + this.roundNum + "\n" + this.startGame
-			+ "\n";
+					+ "\n";
+			// write number of rounds, and number of contestants
 			if (this.inputNumConts != 0) {
 				settingsStr = settingsStr + "R\n" + numRounds + "\n"
-				+ this.inputNumConts + "\n";
+						+ this.inputNumConts + "\n";
 			}
+			// write wager
 			if (this.wager != 0)
 				settingsStr = settingsStr + "W\n" + this.wager + "\n";
 			bWr.write(settingsStr);
@@ -1133,6 +1448,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Persistence for contestants array - reads contestant array from file
+	 * 
+	 * @param fileName
+	 *            -- the pathname of the file where contestant information is
+	 *            stored.
+	 */
 	public void readContestants(String fileName) {
 		try {
 			DataInputStream input = new DataInputStream(new FileInputStream(
@@ -1141,39 +1463,47 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			String currCont = in.readLine();
 			this.contCount = 0;
 			this.contestantsArray = new Contestant[15];
+			// while there are more contestants to read
 			while (currCont != null && !currCont.trim().equals("")) {
 				int i = 0;
 				String cFirst = "", cLast = "", cID = "", cTrb = "", cPic = "", cElimRoundStr = "";
 				int elimRound = 0;
+				// read first name
 				while (i < currCont.length() && currCont.charAt(i) != '+') {
 					cFirst = cFirst + currCont.charAt(i);
 					i++;
 				}
 				i++;
+				// read last name
 				while (i < currCont.length() && currCont.charAt(i) != '+') {
 					cLast = cLast + currCont.charAt(i);
 					i++;
 				}
 				i++;
+				// read ID
 				while (i < currCont.length() && currCont.charAt(i) != '+') {
 					cID = cID + currCont.charAt(i);
 					i++;
 				}
 				i++;
+				// read Pic
 				while (i < currCont.length() && currCont.charAt(i) != '+') {
 					cPic = cPic + currCont.charAt(i);
 					i++;
 				}
 				i++;
+				// read tribe
 				while (i < currCont.length() && currCont.charAt(i) != '+') {
 					cTrb = cTrb + currCont.charAt(i);
 					i++;
 				}
 				i++;
+				// add contestant
 				Contestant contElim = new Contestant(cFirst, cLast, cID, cTrb,
 						cPic);
-
+				// if contestant has been eliminated
 				if (i < currCont.length() && currCont.charAt(i) != '+') {
+					// read round that contestant was eliminated during
 					for (; i < currCont.length(); i++) {
 						if (currCont.charAt(i) == '+') {
 							elimRound = Integer.valueOf(cElimRoundStr);
@@ -1185,6 +1515,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						}
 					}
 				}
+				// add contestant
 				this.contestantsArray[contCount] = contElim;
 
 				contCount++;
@@ -1194,28 +1525,41 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Persistence for contestant array - reads contestant array from file
+	 * 
+	 * @param fileName
+	 *            -- the pathname of the file where contestant information is
+	 *            stored.
+	 */
 	public void writeContestants(String fileName) {
 		BufferedWriter bWr = null;
 		String currString = "";
 		try {
 
 			bWr = new BufferedWriter(new FileWriter(fileName));
+			// for each contestant stored
 			for (int i = 0; i < this.contCount; i++) {
+				// write contestant's first name, last name, ID, picture, tribe
+				// to file
 				currString = currString + this.contestantsArray[i].getFirst()
-				+ "+";
+						+ "+";
 				currString = currString + this.contestantsArray[i].getLast()
-				+ "+";
+						+ "+";
 				currString = currString + this.contestantsArray[i].getID()
-				+ "+";
+						+ "+";
 				currString = currString + this.contestantsArray[i].getPicture()
-				+ "+";
+						+ "+";
 				currString = currString + this.contestantsArray[i].getTribe()
-				+ "+";
+						+ "+";
+				// if contestant has been eliminated write elimination round to
+				// file
 				if (this.contestantsArray[i].getElimRound() != null) {
 					currString = currString
-					+ this.contestantsArray[i].getElimRound()
-					.getRoundNum();
+							+ this.contestantsArray[i].getElimRound()
+									.getRoundNum();
 				}
+				// go to next line
 				currString = currString + "+\n";
 			}
 			bWr.write(currString);
@@ -1234,11 +1578,12 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 *            data that is read from readPlayers(String fileName)
 	 */
 	public void addPlayer(Player p) {
-
+		// if no players added to game
 		if (this.playersArray == null) {
 			this.playersArray = new Player[1];
 			this.playersArray[0] = p;
 		} else {
+			// add player to array
 			Player[] newPlayers = new Player[this.playersArray.length + 1];
 			for (int i = 0; i < this.playersArray.length; i++) {
 				newPlayers[i] = this.playersArray[i];
@@ -1248,6 +1593,11 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Returns player array
+	 * 
+	 * @return
+	 */
 	public Player[] getPlayers() {
 		return this.playersArray;
 	}
@@ -1269,7 +1619,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		startGameItem.setActionCommand("settings");
 		startGameItem.addActionListener(this);
 
-		resetItem=new JMenuItem("Reset");
+		resetItem = new JMenuItem("Reset");
 		resetItem.setActionCommand("resetGame");
 		resetItem.addActionListener(this);
 
@@ -1379,9 +1729,9 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					gameSettingsArray[i]);
 			// Set the text position
 			gameSettingsButtons[i]
-			                    .setVerticalTextPosition(AbstractButton.BOTTOM);
+					.setVerticalTextPosition(AbstractButton.BOTTOM);
 			gameSettingsButtons[i]
-			                    .setHorizontalTextPosition(AbstractButton.CENTER);
+					.setHorizontalTextPosition(AbstractButton.CENTER);
 			// Set the button layout
 			gameSettingsButtons[i].setOpaque(false);
 			gameSettingsButtons[i].setFocusPainted(false);
@@ -1392,13 +1742,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			gameSettingsButtons[i].setMnemonic(KeyEvent.VK_N);
 			// Set Action Commands & Listeners
 			gameSettingsButtons[i]
-			                    .setToolTipText("Current Game Settings - Current Round: "
-			                    		+ i);
+					.setToolTipText("Current Game Settings - Current Round: "
+							+ i);
 			gameSettingsButtons[i].setActionCommand("settings");
 			gameSettingsButtons[i].addActionListener(this);
 		}
 		gameSettingsButtons[0]
-		                    .setToolTipText("Game Settings - Start Game - Create New Game");
+				.setToolTipText("Game Settings - Start Game - Create New Game");
 
 		// Players List Button - Set Gold image as part of default theme
 		playersBtn = new JButton("Players", playerBtnImg);
@@ -1726,7 +2076,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		title = createImageIcon("images/title.png");
 		titleBanner = new JLabel(title);
 		titleBanner
-		.setToolTipText("By Hazel R, Manor F, Jeff W, Liam C, Delerina H, Martin G");
+				.setToolTipText("By Hazel R, Manor F, Jeff W, Liam C, Delerina H, Martin G");
 
 		titlePanel.setOpaque(false);
 		titlePanel.add(titleBanner);
@@ -1850,17 +2200,17 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		// Assemble the text fields with the background as a large panel
 		SpringLayout bqLayout = new SpringLayout();
 		JPanel contPanel = new JPanel(bqLayout);
-		contPanel.setSize(800,400);
+		contPanel.setSize(800, 400);
 		this.setLayout(bqLayout);
 
 		getContentPane().add(mainMenuButton());
 		getContentPane().add(qPanel);
 		getContentPane().add(bqBg);
 
-		bqLayout.putConstraint(SpringLayout.WEST, bqBg, 0,
-				SpringLayout.WEST, getContentPane());
-		bqLayout.putConstraint(SpringLayout.NORTH, bqBg, 0,
-				SpringLayout.NORTH, getContentPane());
+		bqLayout.putConstraint(SpringLayout.WEST, bqBg, 0, SpringLayout.WEST,
+				getContentPane());
+		bqLayout.putConstraint(SpringLayout.NORTH, bqBg, 0, SpringLayout.NORTH,
+				getContentPane());
 
 		bqLayout.putConstraint(SpringLayout.WEST, mMenuBtnPanel, 0,
 				SpringLayout.WEST, getContentPane());
@@ -1876,10 +2226,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		bqLayout.putConstraint(SpringLayout.SOUTH, qPanel, -10,
 				SpringLayout.SOUTH, getContentPane());
 
-
 		return contPanel;
 	}
-
 
 	/**
 	 * Standings Panel A Chart and current information
@@ -2265,8 +2613,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		wagerField.setValue(new Integer(0));
 		wagerField.setColumns(10);
 
-
-
 		// Tell accessibility tools about label/textfield & area pairs
 		contLabel.setLabelFor(contField);
 		playLabel.setLabelFor(playArea);
@@ -2350,7 +2696,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * The Golden Ruins Theme Modifications of components to the theme
 	 */
 	private void goldenRuinsTheme() {
-		gRuinsThemeOn=true;
+		gRuinsThemeOn = true;
 		// Switch the images
 		playerBg.setIcon(playerGBg);
 		contestantBg.setIcon(contestantGBg);
@@ -2386,7 +2732,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 	 * The Jungle Theme Modifications of components to the theme
 	 */
 	private void jungleTheme() {
-		gRuinsThemeOn=false;
+		gRuinsThemeOn = false;
 		playersJungleImg = createImageIcon("images/bbJ.png");
 		jungleBackground = createImageIcon("images/jungle1.jpg");
 		playerJBg = createImageIcon("images/playerJungleBg.jpg");
@@ -2456,34 +2802,42 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this,
 						"You cannot add/delete anymore players",
 						"Game has started", JOptionPane.ERROR_MESSAGE);
-			} 
+			}
+			// if game hasn't started
 			else {
+				// read first and last name
 				String first = textFields_p.getFirstP();
 				String last = textFields_p.getLastP();
 				int firstLen = first.length(), lastLen = last.length();
+				// if first name incorrect number of characters, show message
 				if (firstLen < 1 || firstLen > 20) {
 					JOptionPane
-					.showMessageDialog(this,
-					"The player's first Name must be between 1 and 20 characters");
+							.showMessageDialog(this,
+									"The player's first Name must be between 1 and 20 characters");
 
-
-				} 
+				}
+				// if first name has invalid characters, show message
 				else if (!checkValidChars(first)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid first name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid first name, it must only contain letters");
 				}
+				// if players last name has incorrect number of characters, show
+				// message
 				else if (lastLen < 1 || lastLen > 20) {
 					JOptionPane
-					.showMessageDialog(this,
-					"The player's last name must be between 1 and 20 characters");
-				} 
+							.showMessageDialog(this,
+									"The player's last name must be between 1 and 20 characters");
+				}
+				// if last name has invalid characters show message
 				else if (!checkValidChars(last)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid last name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid last name, it must only contain letters");
 				}
+				// if first and last name were valid input
 				else {
+					// generate player ID
 					String IDchars = "" + first.charAt(0), ID = "";
 					int IDnum = 1;
 					boolean isUnique = false;
@@ -2492,6 +2846,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					else
 						IDchars = IDchars + last;
 					ID = IDchars + IDnum;
+					// find unique player ID
 					while (!isUnique) {
 						isUnique = true;
 						if (playersArray != null) {
@@ -2507,6 +2862,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							}
 						}
 					}
+					// add player to array and save to file
 					this.addPlayer(new Player(first, last, ID));
 					this.writePlayers("C:/SDCard/BlackBerry/players.txt");
 					standingsTable = new PlayerListGUI(playersArray, roundNum);
@@ -2527,31 +2883,31 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			// Validate Text Input Fields
 			if ((inputFirst.length() < 1) || (inputFirst.length() > 20)) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-				"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+						.showMessageDialog(
+								this,
+								"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 			} else if (!checkValidChars(inputFirst)) {
 				JOptionPane
-				.showMessageDialog(this,
-				"Sorry that's not a valid first name, it must only contain letters");
+						.showMessageDialog(this,
+								"Sorry that's not a valid first name, it must only contain letters");
 			}
 
 			else if ((inputLast.length() < 1) || (inputLast.length() > 20)) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-				"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+						.showMessageDialog(
+								this,
+								"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
 			} else if (!checkValidChars(inputLast)) {
 				JOptionPane
-				.showMessageDialog(this,
-				"Sorry that's not a valid last name, it must only contain letters");
+						.showMessageDialog(this,
+								"Sorry that's not a valid last name, it must only contain letters");
 			}
 
 			int position = findPlayer(textFields_p.getMenuPlayerID());
 			if (position == -1) {
 				JOptionPane
-				.showMessageDialog(this,
-				"That player does not exist, please check your player ID and try again");
+						.showMessageDialog(this,
+								"That player does not exist, please check your player ID and try again");
 			} else {
 				Player tempPlayer = new Player(inputFirst, inputLast,
 						textFields_p.getMenuPlayerID());
@@ -2596,25 +2952,25 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 				} else {
 					if ((inputFirst.length() < 1) || (inputFirst.length() > 20)) {
 						JOptionPane
-						.showMessageDialog(
-								this,
-						"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+								.showMessageDialog(
+										this,
+										"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 					} else if (!checkValidChars(inputFirst)) {
 						JOptionPane
-						.showMessageDialog(this,
-						"Sorry that's not a valid first name, it must only contain letters");
+								.showMessageDialog(this,
+										"Sorry that's not a valid first name, it must only contain letters");
 					}
 
 					else if ((inputLast.length() < 1)
 							|| (inputLast.length() > 20)) {
 						JOptionPane
-						.showMessageDialog(
-								this,
-						"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+								.showMessageDialog(
+										this,
+										"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
 					} else if (!checkValidChars(inputLast)) {
 						JOptionPane
-						.showMessageDialog(this,
-						"Sorry that's not a valid last name, it must only contain letters");
+								.showMessageDialog(this,
+										"Sorry that's not a valid last name, it must only contain letters");
 					}
 
 					else {
@@ -2622,8 +2978,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 								.getMenuPlayerID());
 						if (position == -1) {
 							JOptionPane
-							.showMessageDialog(this,
-							"That player does not exist, please check your ID entry and try again");
+									.showMessageDialog(this,
+											"That player does not exist, please check your ID entry and try again");
 						} else {
 							playersArray[position] = null;
 							Player tempArray[] = new Player[playersArray.length - 1];
@@ -2671,46 +3027,46 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 						"Game has started", JOptionPane.ERROR_MESSAGE);
 			} else if (contCount > 15) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-						"You cannot add/delete anymore contestants",
-						"The maximum number of contestants have been added (15)",
-						JOptionPane.ERROR_MESSAGE);
+						.showMessageDialog(
+								this,
+								"You cannot add/delete anymore contestants",
+								"The maximum number of contestants have been added (15)",
+								JOptionPane.ERROR_MESSAGE);
 			} else {
 				if ((inputFirst.length() < 1) || (inputFirst.length() > 20)) {
 					JOptionPane
-					.showMessageDialog(
-							this,
-					"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+							.showMessageDialog(
+									this,
+									"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 				} else if (!checkValidChars(inputFirst)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid first name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid first name, it must only contain letters");
 				}
 
 				else if ((inputLast.length() < 1) || (inputLast.length() > 20)) {
 					JOptionPane
-					.showMessageDialog(
-							this,
-					"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+							.showMessageDialog(
+									this,
+									"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
 				} else if (!checkValidChars(inputLast)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid last name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid last name, it must only contain letters");
 				}
 
 				else if ((inputTribe.length() < 1)
 						|| (inputTribe.length() > 30)) {
 					JOptionPane
-					.showMessageDialog(
-							this,
-					"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+							.showMessageDialog(
+									this,
+									"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
 				}
 
 				else if (!checkValidChars(inputTribe)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid tribe name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid tribe name, it must only contain letters");
 				} else {
 					char IDchar = 'a';
 					int IDint = 1;
@@ -2742,8 +3098,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					this.writeContestants("C:/SDCard/BlackBerry/contestants.txt");
 					if (imagePath == null) {
 						JOptionPane
-						.showMessageDialog(this,
-						"Contestant added, but you didn't add a picture!");
+								.showMessageDialog(this,
+										"Contestant added, but you didn't add a picture!");
 					} else {
 						JOptionPane.showMessageDialog(this, "Contestant added");
 					}
@@ -2767,37 +3123,37 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			// Validate Text Input Fields
 			if ((inputFirst.length() < 1) || (inputFirst.length() > 20)) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-				"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+						.showMessageDialog(
+								this,
+								"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 			} else if (!checkValidChars(inputFirst)) {
 				JOptionPane
-				.showMessageDialog(this,
-				"Sorry that's not a valid first name, it must only contain letters");
+						.showMessageDialog(this,
+								"Sorry that's not a valid first name, it must only contain letters");
 			}
 
 			else if ((inputLast.length() < 1) || (inputLast.length() > 20)) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-				"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+						.showMessageDialog(
+								this,
+								"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
 			} else if (!checkValidChars(inputLast)) {
 				JOptionPane
-				.showMessageDialog(this,
-				"Sorry that's not a valid last name, it must only contain letters");
+						.showMessageDialog(this,
+								"Sorry that's not a valid last name, it must only contain letters");
 			}
 
 			else if ((inputTribe.length() < 1) || (inputTribe.length() > 30)) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-				"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+						.showMessageDialog(
+								this,
+								"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
 			}
 
 			else if (!checkValidChars(inputTribe)) {
 				JOptionPane
-				.showMessageDialog(this,
-				"Sorry that's not a valid tribe name, it must only contain letters");
+						.showMessageDialog(this,
+								"Sorry that's not a valid tribe name, it must only contain letters");
 			}
 
 			// When game has started the round eliminated & eliminate contestant
@@ -2817,30 +3173,30 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			int position = findContestant(textFields_c.getMenuContsID());
 			if (position == -1) {
 				JOptionPane
-				.showMessageDialog(this,
-				"That contestant does not exist, please check your contestant ID and try again");
+						.showMessageDialog(this,
+								"That contestant does not exist, please check your contestant ID and try again");
 			} else {
 				Contestant tempCont = new Contestant(inputFirst, inputLast,
 						textFields_c.getMenuContsID(), inputTribe, imagePath);
 				contestantsArray[position] = tempCont;
 
 				JOptionPane.showMessageDialog(this,
-				"Contestant has been updated");
+						"Contestant has been updated");
 				this.writeContestants("C:/SDCard/BlackBerry/contestants.txt");
-				if(startGame==true){
+				if (startGame == true) {
 					if (eliminateYBtn.isSelected()) {
 						if (roundField.getText() == null
 								|| roundField.getText().trim().equals("")) {
 							JOptionPane
-							.showMessageDialog(
-									this,
-							"To eliminate a contestant, specify the round the contestant is eliminated during");
+									.showMessageDialog(
+											this,
+											"To eliminate a contestant, specify the round the contestant is eliminated during");
 						} else {
 							if (Integer.valueOf(roundField.getText()) == 0) {
 								JOptionPane
-								.showMessageDialog(
-										this,
-								"To eliminate a contestant, specify the round the contestant is eliminated during");
+										.showMessageDialog(
+												this,
+												"To eliminate a contestant, specify the round the contestant is eliminated during");
 							} else {
 								if (this.eliminateContestant(position,
 										Integer.valueOf(roundField.getText()))) {
@@ -2848,19 +3204,19 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 									this.writeRounds("C:/SDCard/BlackBerry/rounds.txt");
 									this.calcEliminationScore();
 									JOptionPane
-									.showMessageDialog(
-											this,
-											"In Round "
-											+ getRoundEliminated()
-											+ "\n"
-											+ textFields_c
-											.getFirstC()
-											+ " "
-											+ textFields_c
-											.getLastC()
-											+ " has been eliminated from Survivor!",
-											"Contestant Record Updated",
-											JOptionPane.PLAIN_MESSAGE);
+											.showMessageDialog(
+													this,
+													"In Round "
+															+ getRoundEliminated()
+															+ "\n"
+															+ textFields_c
+																	.getFirstC()
+															+ " "
+															+ textFields_c
+																	.getLastC()
+															+ " has been eliminated from Survivor!",
+													"Contestant Record Updated",
+													JOptionPane.PLAIN_MESSAGE);
 								}
 
 							}
@@ -2891,46 +3247,46 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			} else {
 				if ((inputFirst.length() < 1) || (inputFirst.length() > 20)) {
 					JOptionPane
-					.showMessageDialog(
-							this,
-					"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
+							.showMessageDialog(
+									this,
+									"Sorry that's not a valid first name, it must be between 1 and 20 characters long");
 				} else if (!checkValidChars(inputFirst)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid first name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid first name, it must only contain letters");
 				}
 
 				else if ((inputLast.length() < 1) || (inputLast.length() > 20)) {
 					JOptionPane
-					.showMessageDialog(
-							this,
-					"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
+							.showMessageDialog(
+									this,
+									"Sorry that's not a valid last name, it must be between 1 and 20 characters long");
 				} else if (!checkValidChars(inputLast)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid last name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid last name, it must only contain letters");
 				}
 
 				else if ((inputTribe.length() < 1)
 						|| (inputTribe.length() > 30)) {
 					JOptionPane
-					.showMessageDialog(
-							this,
-					"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
+							.showMessageDialog(
+									this,
+									"Sorry that's not a valid tribe name, it must be between 1 and 30 characters long");
 				}
 
 				else if (!checkValidChars(inputTribe)) {
 					JOptionPane
-					.showMessageDialog(this,
-					"Sorry that's not a valid tribe name, it must only contain letters");
+							.showMessageDialog(this,
+									"Sorry that's not a valid tribe name, it must only contain letters");
 				}
 
 				else {
 					int position = findContestant(textFields_c.getMenuContsID());
 					if (position == -1) {
 						JOptionPane
-						.showMessageDialog(this,
-						"That contestant does not exist, please check your entry and try again");
+								.showMessageDialog(this,
+										"That contestant does not exist, please check your entry and try again");
 					} else {
 						contestantsArray[position] = null;
 						for (int i = position; i < contestantsArray.length - 1; i++) {
@@ -2983,14 +3339,13 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		}
 		/** Main Menu Button Handler **/
 		if (e.getActionCommand().equals("main")) {
-
-
+			// go to main screen
 			getContentPane().removeAll();
 			getContentPane().add(mainScreen());
-
 			repaint();
 			validate();
-			if(gRuinsThemeOn){
+			// display selected theme
+			if (gRuinsThemeOn) {
 				playersBtn.setFont(gFont);
 				playersBtn.setForeground(Color.YELLOW);
 				contestantsBtn.setFont(gFont);
@@ -3006,7 +3361,8 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 					gameSettingsButtons[i].setForeground(Color.YELLOW);
 				}
 			}
-			else{
+			// display selected theme
+			else {
 				for (int i = 0; i < gameSettingsButtons.length; i++) {
 					gameSettingsButtons[i].setFont(jFont);
 					gameSettingsButtons[i].setForeground(Color.WHITE);
@@ -3058,7 +3414,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		 * Standings List Button Handler Enabled only if game has already begun
 		 **/
 		if (e.getActionCommand().equals("standings")) {
-			// if(getStartGame()==true) {
+
 			getContentPane().removeAll();
 
 			getContentPane().add(quitButton());
@@ -3066,10 +3422,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 			repaint();
 			validate();
-			// }
-			// else
-			// JOptionPane.showMessageDialog(this, "Game has not started yet.",
-			// null, JOptionPane.ERROR_MESSAGE);
+
 		}
 		/** Bonus Question Admin Button Handler **/
 		if (e.getActionCommand().equals("bonus")) {
@@ -3080,20 +3433,22 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			repaint();
 			validate();
 		}
-		/** Start the Game **/
+		/** Settings handler **/
 		if (e.getActionCommand().equals("settings")) {
-
+			// if game has started, show message
 			if (startGame == true) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-						"Settings can no longer be changed once the game has started. \n The number of players is: "
-						+ playersArray.length
-						+ "\nThe number of contestants is: "
-						+ contCount
-						+ "\nThe amount wager is: "
-						+ wager);
-			} else {
+						.showMessageDialog(
+								this,
+								"Settings can no longer be changed once the game has started. \n The number of players is: "
+										+ playersArray.length
+										+ "\nThe number of contestants is: "
+										+ contCount
+										+ "\nThe amount wager is: "
+										+ wager);
+			}
+			// else, go to screen
+			else {
 				getContentPane().removeAll();
 
 				getContentPane().add(quitButton());
@@ -3101,8 +3456,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 				repaint();
 				validate();
-				// If Game Start has confirmed ******** TODO ****************
-				// Disable edit and delete Player/Contestant Forms
+
 			}
 		}
 		/** Start a new Game **/
@@ -3112,7 +3466,7 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		/** Upload Button Handler **/
 		if (e.getActionCommand().equals("upload")) {
 			imagePath = JOptionPane.showInputDialog(null,
-			"Enter the photo's path : ");
+					"Enter the photo's path : ");
 			ImageIcon contestantImage = createImageIcon(imagePath);
 			contestantPicFrame.setIcon(contestantImage);
 		}
@@ -3120,29 +3474,33 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 		if (e.getActionCommand().equals("resetGame")) {
 			mainPanel.hide();
 			resetGame();
-			contLiTable = new ContestantListGUI(contestantsArray,contCount);
+			contLiTable = new ContestantListGUI(contestantsArray, contCount);
 		}
 		/**
 		 * Start Game Button Handler When the game starts, TextFields will
 		 * convert to TextAreas that display settings panel TODO
 		 **/
 		if (e.getActionCommand().equals("startGame")) {
-
+			// if no text entered
 			if (contField.getText() == null
 					|| contField.getText().trim().equals(""))
 				;
-
+			// if text entered, check if valid input
 			else {
+				// if input is incorrect length
 				if (Integer.valueOf(contField.getText()) < 6
 
-						|| Integer.valueOf(contField.getText()) > 15) {
+				|| Integer.valueOf(contField.getText()) > 15) {
 					contField.setText(""); // resets the field if the number of
 					// contestants is outside the range
 					JOptionPane.showMessageDialog(this,
-					"Number of Contestants must be between 6 and 15");
+							"Number of Contestants must be between 6 and 15");
 
-				} else {
+				}
+				// if input is valid length
+				else {
 					inputNumConts = Integer.valueOf(contField.getText());
+					// if rounds haven't been previously specified
 					if (numRounds == 0) {
 						numRounds = inputNumConts - 2;
 						this.rounds = new Round[numRounds];
@@ -3150,62 +3508,80 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							this.rounds[i] = new Round(i + 1);
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: "
-								+ numRounds);
-					} 
+										+ numRounds);
+					}
+					// if rounds have been previously specified
 					else {
+						// if larger number of rounds was previously specified
 						if (numRounds >= (inputNumConts - 2)) {
+							// copy as many rounds as possible from previous
+							// round array
 							Round[] newRounds = new Round[inputNumConts - 2];
 							for (int i = 0; i < inputNumConts - 2; i++) {
 								newRounds[i] = this.rounds[i];
 							}
-						} else {
+							this.rounds = newRounds;
+						}
+						// if smaller number of rounds was previously specified
+						else {
 							Round[] newRounds = new Round[inputNumConts - 2];
+							// copy all rounds from previous rounds array
 							for (int i = 0; i < numRounds; i++) {
 								newRounds[i] = this.rounds[i];
 							}
+							// create new round objects for remainder of round
+							// array
 							for (int j = numRounds; j < (inputNumConts - 2); j++) {
 								newRounds[j] = new Round(j + 1);
 							}
-
+							this.rounds = newRounds;
 						}
+						// set number of rounds and display message
 						numRounds = inputNumConts - 2;
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: "
-								+ numRounds);
+										+ numRounds);
 					}
+					// save settings
 					writeSettings("C:/SDCard/Blackberry/C:/SDCard/BlackBerry/settings.txt");
 
 				}
 			}
-			if(playersArray==null || playersArray.length<3)
-				JOptionPane.showMessageDialog(this,
-				"Number of players must be greater than or equal to three");
+			// if less than 3 players added to game, show message
+			if (playersArray == null || playersArray.length < 3)
+				JOptionPane
+						.showMessageDialog(this,
+								"Number of players must be greater than or equal to three");
+			// if no wager specified show message
 			else if (getWager() == 0 && wager == 0) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-						"Please enter the amount of money that each player is going to pitch in.",
-						"No Wager Entered",
-						JOptionPane.INFORMATION_MESSAGE);
-			} else if (inputNumConts == 0)
+						.showMessageDialog(
+								this,
+								"Please enter the amount of money that each player is going to pitch in.",
+								"No Wager Entered",
+								JOptionPane.INFORMATION_MESSAGE);
+			}
+			// if number of contestants not specified show message
+			else if (inputNumConts == 0)
 				JOptionPane.showMessageDialog(this,
 						"Please enter the number of contestants in the game",
 						"", JOptionPane.INFORMATION_MESSAGE);
+			// if number of contestants in correct, show message
 			else if (inputNumConts != contCount) {
 				JOptionPane
-				.showMessageDialog(
-						this,
-						"The game cannot be started until the number of contestants specified have been added to the game",
-						"", JOptionPane.INFORMATION_MESSAGE);
+						.showMessageDialog(
+								this,
+								"The game cannot be started until the number of contestants specified have been added to the game",
+								"", JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				// Before the game starts, a dialog box will appear to confirm
 				// settings
 				JOptionPane
-				.showMessageDialog(
-						this,
-						"Are you sure you want to start the game?",
-						"Once you start the gamem you will no longer be able to add/delete players & contestants.",
-						JOptionPane.PLAIN_MESSAGE);
+						.showMessageDialog(
+								this,
+								"Are you sure you want to start the game?",
+								"Once you start the gamem you will no longer be able to add/delete players & contestants.",
+								JOptionPane.PLAIN_MESSAGE);
 				writeRounds("C:/SDCard/BlackBerry/rounds.txt");
 				setStartGame(true);
 				if (getWager() != 0) {
@@ -3218,17 +3594,18 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 
 		/** Saves the inputted settings before game starts Button Handler **/
 		if (e.getActionCommand().equals("saveSettings")) {
+			// if no contestants specified, show message
 			if (contField.getText() == null
 					|| contField.getText().trim().equals("")) {
 
 				JOptionPane
-				.showMessageDialog(
-						this,
-						"Please enter the number of contestants. No settings were saved",
-						null, contCount);
+						.showMessageDialog(
+								this,
+								"Please enter the number of contestants. No settings were saved",
+								null, contCount);
 
 			} else {
-
+				// if invalid input specified, show message
 				if (Integer.valueOf(contField.getText()) < 6
 						|| Integer.valueOf(contField.getText()) > 15) {
 					contField.setText(""); // resets the field if the number of
@@ -3238,23 +3615,32 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							null, contCount); // notifies the user of this
 					// requirement
 
-				} else {
+				}
+				// if input was valid
+				else {
 					inputNumConts = Integer.valueOf(contField.getText());
+					// if no rounds previously specified
 					if (numRounds == 0) {
+						// create rounds array and show message
 						numRounds = inputNumConts - 2;
 						this.rounds = new Round[numRounds];
 						for (int i = 0; i < numRounds; i++)
 							this.rounds[i] = new Round(i + 1);
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: "
-								+ numRounds);
-					} else {
+										+ numRounds);
+					}
+					// if rounds previously specified
+					else {
+						// copy rounds from old rounds array to new rounds array
 						if (numRounds >= (inputNumConts - 2)) {
 							Round[] newRounds = new Round[inputNumConts - 2];
 							for (int i = 0; i < inputNumConts - 2; i++) {
 								newRounds[i] = this.rounds[i];
 							}
+							rounds = newRounds;
 						} else {
+							// copy rounds fromold array to new array
 							Round[] newRounds = new Round[inputNumConts - 2];
 							for (int i = 0; i < numRounds; i++) {
 								newRounds[i] = this.rounds[i];
@@ -3262,22 +3648,27 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 							for (int j = numRounds; j < (inputNumConts - 2); j++) {
 								newRounds[j] = new Round(j + 1);
 							}
+							rounds = newRounds;
 
 						}
+						// save rounds information and show message
 						numRounds = inputNumConts - 2;
 						writeRounds("C:/SDCard/BlackBerry/rounds.txt");
 						JOptionPane.showMessageDialog(this,
 								"The total number of rounds will be: "
-								+ numRounds);
+										+ numRounds);
 					}
+					// if no wager entered show message
 					if (getWager() == 0) {
 						JOptionPane
-						.showMessageDialog(
-								this,
-								"Please enter the amount of money that each player is going to pitch in.",
-								"No Wager Entered",
-								JOptionPane.INFORMATION_MESSAGE);
-					} else {
+								.showMessageDialog(
+										this,
+										"Please enter the amount of money that each player is going to pitch in.",
+										"No Wager Entered",
+										JOptionPane.INFORMATION_MESSAGE);
+					}
+					// otherwise, save wager
+					else {
 						wager = getWager();
 					}
 					writeSettings("C:/SDCard/BlackBerry/settings.txt");
@@ -3285,6 +3676,6 @@ public class SurvivorPoolAdminGUI extends JFrame implements ActionListener {
 			}
 		} else if (e.getActionCommand().equals("BQupdate")) {
 
-		} 
+		}
 	}
 }

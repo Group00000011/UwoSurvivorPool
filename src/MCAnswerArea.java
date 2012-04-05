@@ -31,7 +31,7 @@ public class MCAnswerArea extends JPanel {
 		GridBagConstraints c = new GridBagConstraints();
 		question = q;
 		answers = new String[4];
-		
+
 		// Add Title
 		header = new JLabel();
 		header.setText(title);
@@ -59,7 +59,7 @@ public class MCAnswerArea extends JPanel {
 		d2 = new Doc(MAX_CHARACTERS);
 		d3 = new Doc(MAX_CHARACTERS);
 		d4 = new Doc(MAX_CHARACTERS);
-		
+
 		row1.add(a1);
 		row1.add(a2);
 		row2.add(a3);
@@ -69,10 +69,10 @@ public class MCAnswerArea extends JPanel {
 		a2.setDocument(d2);
 		a3.setDocument(d3);
 		a4.setDocument(d4);
-		
+
 		setCorrectAnswer(question.getCorrectAnswer());
 		setAnswers(question.getAnswers());
-			
+
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
@@ -142,7 +142,7 @@ public class MCAnswerArea extends JPanel {
 		getFields();
 		return answers;
 	}
-	
+
 	private void getFields() {
 		if (a1.getBackground() == Color.GREEN) {
 			setCorrectAnswer(a1.getText());
