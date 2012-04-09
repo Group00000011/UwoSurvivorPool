@@ -1,18 +1,11 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseListener;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -20,31 +13,35 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.text.AbstractDocument.Content;
 
 /**
- * BonusQuestionGUI -- Panel to display past weeks bonus questions and with an
- * option to add new bonus questions for the current week
+ * Panel to display bonus questions from all past weeks 
+ * and with buttons to add new questions for the current week.
+ * Questions from the current week are editable.
  * 
+ * BonusQuestionGUI -- Custom subclass of JPanel
+ * 
+ * V 1.0 04/01/12
+ *  
  * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
- *         Westaway, Delerina Hill V 1.0 03/15/12
+ *         Westaway, Delerina Hill 
+ *
  */
+@SuppressWarnings("serial")
 public class BonusQuestionGUI extends JPanel implements ActionListener {
-
-	// Attributes
-
+	
+	// CONSTANTS
 	private static final int MAX_CHARACTERS = 200;
 	private static final int TAB_WIDTH = 100;
+	
+	// FIELDS
 	private int currentRound, totalRounds;
 	private Round[] round;
 	private JTabbedPane questionPane;
@@ -56,7 +53,15 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 	private JLabel fakeAnswersLabel;
 	private JButton save, cancel;
 	private SurvivorPoolAdminGUI mainGUI;
-
+	
+	// CONSTRUCTOR
+	/**
+	 * Constructor sets up JPanel which is meant to be 
+	 * displayed inside a parent window.
+	 * @param rounds array of Round objects. Each round in the array represents one round in the game.
+	 * @param currentRound current week/round number of play
+	 * @param mainGUI parent window displaying the BonusQuestionGUI panel. Needed to call file persistence methods for saving and loading the game.
+	 */
 	public BonusQuestionGUI(Round[] rounds, int currentRound,
 			SurvivorPoolAdminGUI mainGUI) {
 		super();
@@ -83,7 +88,123 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		}
 	}
 
-	public void addQuestion(boolean isMC) {
+	// PUBLIC METHODS
+	/**
+	 * button listener method implemented by ActionListener listens to GUI buttons
+	 * for creating new questions and saving new questions.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		String cmd = arg0.getActionCommand();
+		if (cmd.equals("newMC")) {
+			addQuestion(true);
+		} else if (cmd.equals("newSA")) {
+			addQuestion(false);
+		} else if (cmd.equals("saveMC")) {
+			String[] answers, answersRandom;
+			String cAnswer, question;
+			cAnswer = correct.getText();
+			question = questionArea.getText();
+			answers = new String[4];
+			answersRandom = new String[4];
+			answers[0] = correct.getText();
+			answers[1] = fake1.getText();
+			answers[2] = fake2.getText();
+			answers[3] = fake3.getText();
+			// Check input lengths
+			if (question.length() < 1 || answers[0].length() < 1
+					|| answers[1].length() < 1 || answers[2].length() < 1
+					|| answers[3].length() < 1) {
+				Toolkit.getDefaultToolkit().beep();
+				return;
+			}
+			// Randomize answers
+			Random rand = new Random();
+			int randomNumber = rand.nextInt(4);
+			for (int i = 0; i < 4; i++) {
+				answersRandom[(randomNumber + i) % 4] = answers[i];
+			}
+			// New Bonus Question to round and load current week tab
+			BonusQuestion b = new BonusQuestion(question, answersRandom,
+					cAnswer);
+			round[currentRound - 1].addBonusQuestion(b);
+			mainGUI.writeRounds("rounds.txt");
+			refresh();
+		} else if (cmd.equals("saveSA")) {
+			String[] answers;
+			String cAnswer, question;
+			cAnswer = ((TextArea) answerArea).getText();
+			question = questionArea.getText();
+			answers = new String[1];
+			answers[0] = cAnswer;
+			// Check input length
+			if (answers[0].length() < 1) {
+				Toolkit.getDefaultToolkit().beep();
+				return;
+			}
+			// Add new bonus question to round
+			if (round[currentRound - 1] == null)
+				round[currentRound - 1] = new Round(currentRound);
+			BonusQuestion b = new BonusQuestion(question, answers, cAnswer);
+			round[currentRound - 1].addBonusQuestion(b);
+			mainGUI.writeRounds("rounds.txt");
+			refresh();
+
+		} else if (cmd.equals("cancel")) {
+			refresh();
+		}
+
+	}
+
+	/**
+	 * refreshes the screen when something has changed like a new question was added or deleted
+	 */
+	public void refresh() {
+		this.removeAll();
+		// game not started - display error label
+		if (currentRound == 0) {
+			this.setLayout(new BorderLayout());
+			JLabel lbl = new JLabel();
+			java.net.URL imgURL = SurvivorPoolAdminGUI.class
+					.getResource("images/no-bq.png");
+			if (imgURL != null) {
+				lbl.setIcon(new ImageIcon(imgURL));
+			} else {
+				System.err.println("Couldn't find file: no-bq.png");
+			}
+			this.add(lbl, BorderLayout.CENTER);
+		}
+		// game started
+		else {
+			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			initQuestionPane();
+			this.add(questionPane);
+			// only make add question buttons if game is not over
+			if (currentRound <= totalRounds) {
+				makeButtons();
+				JPanel buttonPanel = new JPanel();
+				buttonPanel.setOpaque(false);
+				buttonPanel.setLayout(new BoxLayout(buttonPanel,
+						BoxLayout.Y_AXIS));
+				buttonPanel.add(newSAQ);
+				buttonPanel.add(newMCQ);
+				// this.add(buttonPanel, BorderLayout.EAST);
+				this.add(buttonPanel);
+			}
+		}
+		this.setOpaque(false);
+		this.setVisible(true);
+		this.setBounds(new Rectangle(800, 400));
+		this.revalidate();
+	}
+	
+	// PRIVATE METHODS
+	/**
+	 * method called to change screen to add a new question
+	 * @param isMC boolean parameter TRUE if adding a new Multiple Choice question or FALSE if adding a new short answer question
+	 */
+	private void addQuestion(boolean isMC) {
 
 		this.removeAll();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -171,14 +292,19 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		this.revalidate();
 	}
 
-	// TODO return to home uses this getter to save bonus questions
 	/**
-	 * getter to access updated round array
-	 * 
-	 * @return
+	 * Method generates an icon from an image path. Has try-catch blocks to check for IO errors
+	 * @param path String representing the path where the image is located on disk.
+	 * @return icon (ImageIcon) created from the image
 	 */
-	public Round[] getRoundsArray() {
-		return this.round;
+	private ImageIcon createImageIcon(String path) {
+		java.net.URL imgURL = SurvivorPoolAdminGUI.class.getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
 	}
 
 	/**
@@ -204,6 +330,35 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 
 		}
 
+	}
+
+	/**
+	 * creates new question buttons
+	 */
+	private void makeButtons() {
+		newSAQ = new JButton();
+		newSAQ.setIcon(createImageIcon("images/new-sa.png"));
+		newSAQ.setPressedIcon(createImageIcon("images/new-sa-click.png"));
+		newSAQ.setToolTipText("New Short Answer Question");
+		newSAQ.setActionCommand("newSA");
+		newSAQ.setOpaque(false);
+		newSAQ.setFocusPainted(false);
+		newSAQ.setBorderPainted(false);
+		newSAQ.setContentAreaFilled(false);
+		newSAQ.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		newSAQ.addActionListener(this);
+
+		newMCQ = new JButton();
+		newMCQ.setIcon(createImageIcon("images/new-mc.png"));
+		newMCQ.setPressedIcon(createImageIcon("images/new-mc-click.png"));
+		newMCQ.setToolTipText("New Multiple Choice Question");
+		newMCQ.setActionCommand("newMC");
+		newMCQ.setOpaque(false);
+		newMCQ.setFocusPainted(false);
+		newMCQ.setBorderPainted(false);
+		newMCQ.setContentAreaFilled(false);
+		newMCQ.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+		newMCQ.addActionListener(this);
 	}
 
 	/**
@@ -327,145 +482,6 @@ public class BonusQuestionGUI extends JPanel implements ActionListener {
 		sp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		return sp;
-
-	}
-
-	public ImageIcon createImageIcon(String path) {
-		java.net.URL imgURL = SurvivorPoolAdminGUI.class.getResource(path);
-		if (imgURL != null) {
-			return new ImageIcon(imgURL);
-		} else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
-	}
-
-	private void makeButtons() {
-		newSAQ = new JButton();
-		newSAQ.setIcon(createImageIcon("images/new-sa.png"));
-		newSAQ.setPressedIcon(createImageIcon("images/new-sa-click.png"));
-		newSAQ.setToolTipText("New Short Answer Question");
-		newSAQ.setActionCommand("newSA");
-		newSAQ.setOpaque(false);
-		newSAQ.setFocusPainted(false);
-		newSAQ.setBorderPainted(false);
-		newSAQ.setContentAreaFilled(false);
-		newSAQ.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		newSAQ.addActionListener(this);
-
-		newMCQ = new JButton();
-		newMCQ.setIcon(createImageIcon("images/new-mc.png"));
-		newMCQ.setPressedIcon(createImageIcon("images/new-mc-click.png"));
-		newMCQ.setToolTipText("New Multiple Choice Question");
-		newMCQ.setActionCommand("newMC");
-		newMCQ.setOpaque(false);
-		newMCQ.setFocusPainted(false);
-		newMCQ.setBorderPainted(false);
-		newMCQ.setContentAreaFilled(false);
-		newMCQ.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		newMCQ.addActionListener(this);
-	}
-
-	public void refresh() {
-		this.removeAll();
-		// game not started - display error label
-		if (currentRound == 0) {
-			this.setLayout(new BorderLayout());
-			JLabel lbl = new JLabel();
-			java.net.URL imgURL = SurvivorPoolAdminGUI.class
-					.getResource("images/no-bq.png");
-			if (imgURL != null) {
-				lbl.setIcon(new ImageIcon(imgURL));
-			} else {
-				System.err.println("Couldn't find file: no-bq.png");
-			}
-			this.add(lbl, BorderLayout.CENTER);
-		}
-		// game started
-		else {
-			this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-			this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-			initQuestionPane();
-			this.add(questionPane);
-			// only make add question buttons if game is not over
-			if (currentRound <= totalRounds) {
-				makeButtons();
-				JPanel buttonPanel = new JPanel();
-				buttonPanel.setOpaque(false);
-				buttonPanel.setLayout(new BoxLayout(buttonPanel,
-						BoxLayout.Y_AXIS));
-				buttonPanel.add(newSAQ);
-				buttonPanel.add(newMCQ);
-				// this.add(buttonPanel, BorderLayout.EAST);
-				this.add(buttonPanel);
-			}
-		}
-		this.setOpaque(false);
-		this.setVisible(true);
-		this.setBounds(new Rectangle(800, 400));
-		this.revalidate();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		String cmd = arg0.getActionCommand();
-		if (cmd.equals("newMC")) {
-			addQuestion(true);
-		} else if (cmd.equals("newSA")) {
-			addQuestion(false);
-		} else if (cmd.equals("saveMC")) {
-			String[] answers, answersRandom;
-			String cAnswer, question;
-			cAnswer = correct.getText();
-			question = questionArea.getText();
-			answers = new String[4];
-			answersRandom = new String[4];
-			answers[0] = correct.getText();
-			answers[1] = fake1.getText();
-			answers[2] = fake2.getText();
-			answers[3] = fake3.getText();
-			// Check input lengths
-			if (question.length() < 1 || answers[0].length() < 1
-					|| answers[1].length() < 1 || answers[2].length() < 1
-					|| answers[3].length() < 1) {
-				Toolkit.getDefaultToolkit().beep();
-				return;
-			}
-			// Randomize answers
-			Random rand = new Random();
-			int randomNumber = rand.nextInt(4);
-			for (int i = 0; i < 4; i++) {
-				answersRandom[(randomNumber + i) % 4] = answers[i];
-			}
-			// New Bonus Question to round and load current week tab
-			BonusQuestion b = new BonusQuestion(question, answersRandom,
-					cAnswer);
-			round[currentRound - 1].addBonusQuestion(b);
-			mainGUI.writeRounds("rounds.txt");
-			refresh();
-		} else if (cmd.equals("saveSA")) {
-			String[] answers;
-			String cAnswer, question;
-			cAnswer = ((TextArea) answerArea).getText();
-			question = questionArea.getText();
-			answers = new String[1];
-			answers[0] = cAnswer;
-			// Check input length
-			if (answers[0].length() < 1) {
-				Toolkit.getDefaultToolkit().beep();
-				return;
-			}
-			// Add new bonus question to round
-			if (round[currentRound - 1] == null)
-				round[currentRound - 1] = new Round(currentRound);
-			BonusQuestion b = new BonusQuestion(question, answers, cAnswer);
-			round[currentRound - 1].addBonusQuestion(b);
-			mainGUI.writeRounds("rounds.txt");
-			refresh();
-
-		} else if (cmd.equals("cancel")) {
-			refresh();
-		}
 
 	}
 }

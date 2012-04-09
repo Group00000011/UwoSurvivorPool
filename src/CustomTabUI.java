@@ -23,14 +23,27 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 
+/**
+ * Custom subclass of BasicTabbedPaneUI created to get custom graphics and
+ * override the default look and feel settings for the bonus question screen
+ * 
+ * code adapted from ModdernTabbedPaneUI.java
+ * http://www.jroller.com/DhilshukReddy/entry/custom_jtabbedpane
+ * 
+ * V 1.0 04/01/12
+ * 
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill
+ * 
+ */
 public class CustomTabUI extends BasicTabbedPaneUI {
+	// CONSTANTS
 	private static final String TABBED_PANE_UI_LOGGER = "TabbedPaneUI";
 	private static final Logger LOGGER = Logger
 			.getLogger(TABBED_PANE_UI_LOGGER);
-
-	private int TAB_WIDTH = 0;
+	private static int TAB_WIDTH = 0;
 	private static int TAB_HEIGHT = 40;
-
+	// FIELDS
 	private static BufferedImage tabSelectedPressed;
 	private static BufferedImage tabSelected;
 	private static BufferedImage tabRollover;
@@ -38,6 +51,8 @@ public class CustomTabUI extends BasicTabbedPaneUI {
 	private static ResourceBundle bundle;
 	private int tabPressed = -1;
 	private int width;
+
+	// set up static fields
 	static {
 		ResourceBundle bundle = getResourceBundle();
 		try {
@@ -54,6 +69,11 @@ public class CustomTabUI extends BasicTabbedPaneUI {
 		}
 	}
 
+	// CONSTRUCTOR
+	/**
+	 * Constructor sets up custom UI
+	 * @param width <code>int</code> width in pixels of a tab
+	 */
 	public CustomTabUI(int width) {
 		TAB_WIDTH = width;
 	}

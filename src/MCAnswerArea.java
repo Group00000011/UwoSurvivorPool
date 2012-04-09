@@ -1,23 +1,25 @@
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 
+/**
+ * Custom JPanel to display the four possible answers for a multiple choice question.
+ * The correct answer is highlighted by a green background. Text can be made editable 
+ * to modify/update a question.
+ * 
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill V 1.0 02/18/12
+ * 
+ */
+@SuppressWarnings("serial")
 public class MCAnswerArea extends JPanel {
-
+	// CONSTANTS
 	private static final int MAX_CHARACTERS = 200;
-	private static final int MAX_QUESTIONS = 4;
+	// FIELDS
 	private JLabel header;
 	private JTextField a1, a2, a3, a4;
 	private Doc d1, d2, d3, d4;
@@ -26,6 +28,12 @@ public class MCAnswerArea extends JPanel {
 	private String answers[];
 	private BonusQuestion question;
 
+	/**
+	 * Constructor creates an answer area. The bonus question passed in must be a 
+	 * multiple choice and contain atleast 4 answers.
+	 * @param title <code>String</code> to set as the title to this answer area
+	 * @param q <code>BonusQuestion</code> to display answers from. 
+	 */
 	public MCAnswerArea(String title, BonusQuestion q) {
 		super(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -81,10 +89,20 @@ public class MCAnswerArea extends JPanel {
 		revalidate();
 	}
 
+	/**
+	 * Sets the correct answer
+	 * @param answer <code>String</code> to set as the new correct answer
+	 */
 	public void setCorrectAnswer(String answer) {
 		this.correctAnswer = answer.trim();
 	}
 
+	/**
+	 * checks to make sure a <code>String</code> is less than or equal to
+	 * MAX_CHARACTERS and shortens it if it is too long
+	 * @param testString <code>String</code> whose length to test
+	 * @return the <code>String</code> with leading and trailing zeros removed and shortened if need be.
+	 */
 	private String testLength(String testString) {
 		testString = testString.trim();
 		if (testString.length() > MAX_CHARACTERS) {
@@ -93,6 +111,10 @@ public class MCAnswerArea extends JPanel {
 		return testString;
 	}
 
+	/**
+	 * Sets the four answer text fields and highlights the correct answer
+	 * @param answers <code>String</code> array containing four answers
+	 */
 	public void setAnswers(String answers[]) {
 		this.answers = answers;
 		a1.setText(testLength(answers[0]));
@@ -124,6 +146,10 @@ public class MCAnswerArea extends JPanel {
 		this.revalidate();
 	}
 
+	/**
+	 * sets weather or not text fields are editable
+	 * @param canEdit <code>boolean</code> true to set the fields editable, false otherwise.
+	 */
 	public void setEditable(boolean canEdit) {
 		a1.setEditable(canEdit);
 		a2.setEditable(canEdit);
@@ -133,16 +159,30 @@ public class MCAnswerArea extends JPanel {
 		this.revalidate();
 	}
 
+	/**
+	 * gets the correct answer
+	 * @return <code>String</code> of correct answer
+	 */
 	public String getCorrectAnswer() {
 		getFields();
 		return correctAnswer;
 	}
 
+	/**
+	 * gets the array of answers (three fake and one real)
+	 * @return array of <code>String</code> answers
+	 */
 	public String[] getAnswers() {
 		getFields();
 		return answers;
 	}
 
+	/**
+	 * gets the <code>String</code> from each field to refresh answer fields. 
+	 * Sets each textfield's text into the answers array. 
+	 * Also checks for the correct answer field and sets the 
+	 * correctAnswer field accordingly
+	 */
 	private void getFields() {
 		if (a1.getBackground() == Color.GREEN) {
 			setCorrectAnswer(a1.getText());

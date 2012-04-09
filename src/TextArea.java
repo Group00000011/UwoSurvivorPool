@@ -5,10 +5,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
+/**
+ * Custom titled text area packed into a JPanel. Text area has an input
+ * character limit.
+ * 
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill V 1.0 02/18/12
+ * 
+ */
+@SuppressWarnings("serial")
 public class TextArea extends JPanel {
 
 	private static final int MAX_CHARACTERS = 200;
@@ -17,6 +24,11 @@ public class TextArea extends JPanel {
 	private JScrollPane scrollPane;
 	private Doc document;
 
+	/**
+	 * Constructor to create 
+	 * @param title <code>String</code> to set as the title of panel
+	 * @param text	<code>String</code> to set as the body of the JTextArea
+	 */
 	public TextArea(String title, String text) {
 		super(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -43,6 +55,10 @@ public class TextArea extends JPanel {
 
 	}
 
+	/**
+	 * sets the text in the JTextArea
+	 * @param	text <code> String </code> that you want to change the text to
+	 */
 	public void setText(String text) {
 		text = text.trim();
 		if (text.length() > MAX_CHARACTERS) {
@@ -60,11 +76,19 @@ public class TextArea extends JPanel {
 		this.revalidate();
 	}
 	
+	/**
+	 * Method sets whether you can edit the JTextArea in this panel
+	 * @param	canEdit <code> boolean </code> true to make JTextArea editable. False to disable editing
+	 */
 	public void setEditable(boolean canEdit) {
 		body.setEditable(canEdit);
 		this.revalidate();
 	}
 	
+	/**
+	 * Gets the text from the JTextArea
+	 * @return	text <code>String</code> of text from JTextArea
+	 */
 	public String getText() {
 		try {
 			return body.getDocument().getText(0, body.getDocument().getLength());

@@ -3,7 +3,19 @@ import java.awt.Dimension;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-
+/**
+ * Custom JPanel to display a bonus question.
+ * One of these panel is created for each bonus question. The panel 
+ * displays the question and answer(s) with headings.
+ * If the question is multiple choice the correct answer will be 
+ * displayed along side three fake answers but will be highlighted in 
+ * green.
+ * 
+ * @author Manor Freeman, Hazel Rivera, Martin Grabarczyk, Liam Corrigan, Jeff
+ *         Westaway, Delerina Hill V 1.0 02/18/12
+ * 
+ */
+@SuppressWarnings("serial")
 public class QuestionPanel extends JPanel {
 	// CONSTANTS
 	private final static String Q_TITLE = "QUESTION:", A_TITLE = "ANSWER:";
@@ -17,6 +29,13 @@ public class QuestionPanel extends JPanel {
 	private boolean isMC;
 	
 	// CONSTRUCTOR
+	/**
+	 * Constructor makes a panel to display a bonus question. 
+	 * The panel's text areas can be set to editable.
+	 * 
+	 * @param q <code>BonusQuestion</code> to display.
+	 * @param canEdit <code>boolean</code> true makes text fields editable
+	 */
 	public QuestionPanel(BonusQuestion q, boolean canEdit) {
 		super();
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -46,6 +65,12 @@ public class QuestionPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * gets text from question and answer text fields and updates the BonusQuestion variable
+	 * using those fields.
+	 * 
+	 * @return <code>BonusQuestion</code> object updated to match the TextAreas
+	 */
 	public BonusQuestion update() {
 		question.setQuestion(qArea.getText());
 		if (isMC) {
@@ -59,6 +84,11 @@ public class QuestionPanel extends JPanel {
 		return question;
 	}
 	
+	/**
+	 * resets the question and answer text fields to match the BonusQuestion variable.
+	 * ie. gets question and answer(s) from BonusQuestion and displays them.
+	 * 
+	 */
 	public void discardChanges() {
 		qArea.setText(question.getQuestion());
 		if (isMC) {
@@ -70,6 +100,10 @@ public class QuestionPanel extends JPanel {
 		}
 	}
 
+	/**
+	 * Gets the question <code>String</code> from the bonus question field 
+	 * @return	the question as a <code>String</code>
+	 */
 	public String getQuestion() {
 		return question.getQuestion();
 	}
