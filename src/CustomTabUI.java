@@ -26,9 +26,14 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 /**
  * Custom subclass of BasicTabbedPaneUI created to get custom graphics and
  * override the default look and feel settings for the bonus question screen
- * 
- * code adapted from ModdernTabbedPaneUI.java
+ *
+ * This class adapted from ModdernTabbedPaneUI.java from
  * http://www.jroller.com/DhilshukReddy/entry/custom_jtabbedpane
+ * 
+ * The only modifications were to the corresponding messages.properties file
+ * to point the resource bundle to the proper images and to remove a few undesired
+ * hover effects. I think all the changes I made to this actual class were in the static field 
+ * to initialize the resource bundle.
  * 
  * V 1.0 04/01/12
  * 
